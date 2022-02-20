@@ -1,4 +1,4 @@
-# math_game
+# cs114proj
 
 ## Project setup
 ```
