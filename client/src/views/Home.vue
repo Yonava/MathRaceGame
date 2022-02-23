@@ -4,12 +4,16 @@
     <div v-if="menuDisplay">
       <h1>Home page</h1>
       <h1>Join Group Session</h1>
-      <input v-model="username" type="text" placeholder="Enter Username" />
-      <button v-on:click="menuDisplay = !menuDisplay">Connect</button>
+      <input v-model="username" type="text" placeholder="Enter Username" @keyup.enter="menuDisplay = false" />
+      <button @click="menuDisplay = !menuDisplay">Connect</button>
     </div>
 
     <!-- Session Room -->
     <div v-else>
+      <Room v-bind:username="username" />
+      <Room v-bind:username="username" />
+      <Room v-bind:username="username" />
+      <Room v-bind:username="username" />
       <Room v-bind:username="username" />
     </div>
 
