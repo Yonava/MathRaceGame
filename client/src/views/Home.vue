@@ -13,8 +13,6 @@
       <Room v-bind:username="username" />
       <Room v-bind:username="username" />
       <Room v-bind:username="username" />
-      <Room v-bind:username="username" />
-      <Room v-bind:username="username" />
     </div>
 
   </div>
