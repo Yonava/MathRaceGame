@@ -1,28 +1,42 @@
 <template>
-  <div>
-    <p>this is the room, your username is {{ username }}</p>
-    <input type="number" v-model="number1">
-    <input type="number" v-model="number2">
-    <p>Output = {{ output }}</p>
+  <div class="room">
+
+    <div v-if="roomDisplay">
+      <p>this is the room, your username is {{ username }}</p>
+
+      <button @click="roomDisplay = !roomDisplay, gametype = 1">Practice Mode</button>
+      <br><br><br> <!-- Whitespace -->
+      <button @click="roomDisplay = !roomDisplay, gametype = 2">Multiplayer Mode</button>
+    </div>
+
+    <div v-else>
+      <component :is="computedComponent(gametype)" :username="username" /> <!-- Enable chosen component -->
+    </div>
+
   </div>
 </template>
 
 <script>
 
 // import io from 'socket.io-client'
+import Practice from '../components/Practice.vue'
+import Multiplayer from '../components/Multiplayer.vue'
 
 export default {
   name: 'app',
   data: () => {
     return {
-      number1: 0,
-      number2: 0,
-      output: 0
+      roomDisplay: true,
+      gametype: 0
     }
   },
   props: [
     'username'
   ],
+  components: {
+    Practice,
+    Multiplayer
+  },
   mounted() {
 
   },
@@ -33,17 +47,18 @@ export default {
 
   },
   methods: {
-    addthenums() {
-      this.output = parseInt(this.number1) + parseInt(this.number2);
+    // Choose whether to enable practice mode or multiplayer mode
+    computedComponent(gametype) {
+      if(gametype == 1) {
+        return Practice;
+      }
+      else if(gametype == 2) {
+        return Multiplayer;
+      }
     }
   },
   watch: {
-    number1() {
-      this.addthenums();
-    },
-    number2() {
-      this.addthenums();
-    }
+
   }
 
 }

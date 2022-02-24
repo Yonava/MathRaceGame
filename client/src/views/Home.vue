@@ -10,9 +10,7 @@
 
     <!-- Session Room -->
     <div v-else>
-      <Room v-bind:username="username" />
-      <Room v-bind:username="username" />
-      <Room v-bind:username="username" />
+      <Room :username="username" />
     </div>
 
   </div>
