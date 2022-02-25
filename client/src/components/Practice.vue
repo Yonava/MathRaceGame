@@ -1,3 +1,4 @@
+<!-- Singleplayer Session Room -->
 <template>
     <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
 </template>
