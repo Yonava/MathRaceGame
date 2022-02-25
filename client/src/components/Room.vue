@@ -1,3 +1,4 @@
+<!-- Multiplayer Session Room -->
 <template>
 <div>
   <div class="list-container">
@@ -26,6 +27,9 @@ export default {
   props: [
     'username'
   ],
+  components: {
+    
+  },
   mounted() {
     this.socketInstance = io("http://localhost:1010");
       this.socketInstance.on(
@@ -65,7 +69,7 @@ export default {
       }
       this.uniqueScoreCard.sort((a, b) => b.score - a.score);
     }
-  }
+  },
 };
 </script>
 
