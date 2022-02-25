@@ -1,12 +1,13 @@
 <template>
   <div class="home">
-
-    <div v-if="menuDisplay">
-      <h1>Home page</h1>
-      <h1>Join Group Session</h1>
-      <input v-model="username" type="text" placeholder="Enter Username" @keyup.enter="menuDisplay = false" />
-      <button @click="menuDisplay = !menuDisplay">Connect</button>
-    </div>
+    <center v-if="menuDisplay">
+      <br><br><br>
+      <div>
+        <h1>Join Group Session</h1>
+        <input v-model="username" type="text" placeholder="Enter Username" @keyup.enter="menuDisplay = false" />
+        <button @click="menuDisplay = !menuDisplay">Connect</button>
+      </div>
+    </center>
 
     <!-- Session Room -->
     <div v-else>
@@ -30,7 +31,6 @@ import Practice from '../components/Practice'
 import Room from '../components/Room.vue'
 
 export default {
-  name: 'app',
   data: () => {
     return {
       menuDisplay: true,
@@ -59,6 +59,7 @@ export default {
         return Practice;
       }
       else if(gametype == 2) {
+        username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000000)})`
         return Room;
       }
     }

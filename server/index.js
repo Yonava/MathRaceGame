@@ -1,25 +1,31 @@
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-// const mongoose = require('mongoose');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ['GET', "POST"]
+    }
+});
 
-app.use(bodyParser.json());
-app.use(cors());
+io.on('connection', (socket) => {
+    console.log(`user ${socket.id} is connected.`)
 
-// mongoose.connect("\mongodb+srv://press:dpM2qhDcvhsbwxOk@cluster0.wfzfa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", () => console.log('Successfully Connected'))
+    socket.on('score', data => {
+        socket.broadcast.emit('scoreRecieved', data)
+    })
 
-// Handle production
-if (process.env.NODE_ENV === 'production') {
-    // Static folder
-    app.use(express.static(__dirname + '/public/'));
-  
-    // Handle SPA
-    app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
-}
+    socket.on('disconnect', () => {
+        console.log(`user ${socket.id} left.`)
+    })
+})
 
 const port = process.env.PORT || 1010;
 
-app.listen(port, () => console.log(`Listening @ localhost:${port}`));
+server.listen(port, () => {
+    console.log(`Server listening on localhost:${port}`)
+})
