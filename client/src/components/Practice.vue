@@ -1,6 +1,6 @@
-<!-- Multiplayer Session Room -->
+<!-- Singleplayer Session Room -->
 <template>
-    <p>this is the room, your username is {{ username }}</p>
+    <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
 </template>
 
 <script>
@@ -17,9 +17,6 @@ export default {
   props: [
     'username'
   ],
-  components: {
-    
-  },
   mounted() {
 
   },
