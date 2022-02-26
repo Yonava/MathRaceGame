@@ -1,7 +1,6 @@
 {
   "name": "Math Race",
   "short_name": "Math Race",
-  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFFFFF",

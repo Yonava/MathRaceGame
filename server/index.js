@@ -1,17 +1,14 @@
 
-const express = require('express');
-const http = require('http');
-const { disconnect } = require('process');
-const { Server } = require('socket.io');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
+let express = require('express');
+let app = express();
+let server = app.listen(1010);
+let io = require('socket.io')(server, {
     cors: {
-        origin: "*",
-        methods: ['GET', "POST"]
+        origin: "*"
     }
-});
+})
+
+
 
 io.on('connection', (socket) => {
     console.log(`user ${socket.id} is connected.`)
@@ -37,9 +34,3 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public/'));
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
-
-const port = process.env.PORT || 1010;
-
-server.listen(port, () => {
-    console.log(`Server listening on localhost:${port}`)
-})
