@@ -39,7 +39,7 @@ export default {
     'host'
   ],
   mounted() {
-    this.socketInstance = io("http://localhost:1010");
+    this.socketInstance = io('/');
     this.socketInstance.on(
       "scoreRecieved", (data) => {
         this.scoreCard.push(data);

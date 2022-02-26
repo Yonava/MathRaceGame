@@ -1,16 +1,17 @@
 
-let express = require('express');
-let app = express();
-let server = app.listen(1010);
-let io = require('socket.io')(server, {
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = module.exports.io = require('socket.io')(server, {
     cors: {
         origin: "*"
     }
 })
 
+const PORT = process.env.PORT || 1010
 
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
     console.log(`user ${socket.id} is connected.`)
 
     socket.on('score', (data, room) => {
@@ -34,3 +35,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public/'));
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
+
+server.listen(PORT, () => {
+    console.log(`Listening on localhost:${PORT}`)
+})
