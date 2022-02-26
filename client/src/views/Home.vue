@@ -4,14 +4,19 @@
       <br><br><br>
       <div>
         <h1>Join Group Session</h1>
-        <input v-model="username" type="text" placeholder="Enter Username" @keyup.enter="menuDisplay = false" />
-        <button @click="menuDisplay = !menuDisplay">Connect</button>
+        <input v-model="username" type="text" placeholder="Enter Username" />
+        <input v-model="roomID" placeholder="Enter Room ID" type="number">
+        <br>
+        <button @click="menuDisplay = !menuDisplay">Join Room</button>
+        <button @click="createRoom()">Create Room</button>
       </div>
     </center>
 
     <!-- Session Room -->
     <div v-else>
-      <Room v-bind:username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000000)})`" />
+      <Room 
+      v-bind:username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
+      v-bind:room="roomID" />
     </div>
 
   </div>
@@ -26,6 +31,7 @@ export default {
     return {
       menuDisplay: true,
       username: '',
+      roomID: '',
     }
   },
   components: {
@@ -41,7 +47,14 @@ export default {
 
   },
   methods: {
-
+    createRoom() {
+      this.roomID = 0;
+      while (this.roomID < 1000) {
+        this.roomID = Math.round(Math.random() * 10000);
+      }
+      this.menuDisplay = !this.menuDisplay;
+      this.roomID = String(this.roomID);
+    },
   },
   watch: {
 

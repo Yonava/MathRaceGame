@@ -1,10 +1,12 @@
 <template>
 <div>
   <div class="list-container">
-    <button @click="postScore(qNumber)">Answer a question</button>
+    <button @click="questionAnswered()">Answer a question</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
+    <button @click="isReady = !isReady">Ready?</button>
+    <p>{{ players.length }} player(s) are in room #{{ room }}.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1>{{ player.user }} is on question number {{ player.score }}</h1>
+      <h1>{{ player.user }} is on question {{ player.score }}. Are they ready? {{ player.ready ? "Yes":"No" }}</h1>
     </div>
   </div>
 </div>
@@ -17,37 +19,43 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
+      isReady: false,
+      players: [],
       qNumber: 1,
-      score: 0,
       scoreCard: [],
       uniqueScoreCard: []
     };
   },
   props: [
-    'username'
+    'username',
+    'room'
   ],
   mounted() {
     this.socketInstance = io("http://localhost:1010");
-      this.socketInstance.on(
-        "scoreRecieved", (data) => {
-          this.scoreCard = this.scoreCard.concat(data);
-        }
-      )
-      this.postScore(this.qNumber);
+    this.socketInstance.on(
+      "scoreRecieved", (data) => {
+        this.scoreCard.push(data);
+      }
+    )
+    this.socketInstance.emit(
+      "join-room", (this.room)
+    )
+
+    this.updateScore();
   },
   methods: {
-    postScore(qnum) {
-      this.updateScore(qnum);
-      this.score = 0;
+    questionAnswered() {
       this.qNumber++;
+      this.updateScore();
     },
-    updateScore(qnum) {
+    updateScore() {
       const newScore = {
-        score: qnum,
+        score: this.qNumber,
         user: this.username,
+        ready: this.isReady
       };
-      this.scoreCard = this.scoreCard.concat(newScore);
-      this.socketInstance.emit('score', newScore);
+      this.scoreCard.push(newScore);
+      this.socketInstance.emit('score', newScore, this.room);
     },
     consolelog(x) {
       console.log(x)
@@ -55,15 +63,18 @@ export default {
   },
   watch: {
     scoreCard() {
-      let playerArray = [];
+      this.players = [];
       this.uniqueScoreCard = [];
       for (let i = this.scoreCard.length - 1; i >= 0; i--) {
-        if (!playerArray.includes(this.scoreCard[i].user)) {
-          playerArray.push(this.scoreCard[i].user);
+        if (!this.players.includes(this.scoreCard[i].user)) {
+          this.players.push(this.scoreCard[i].user);
           this.uniqueScoreCard.push(this.scoreCard[i]);
         }
       }
       this.uniqueScoreCard.sort((a, b) => b.score - a.score);
+    },
+    isReady() {
+      this.updateScore(this.qNumber);
     }
   }
 };

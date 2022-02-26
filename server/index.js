@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: ["http://localhost:8080"],
         methods: ['GET', "POST"]
     }
 });
@@ -15,12 +15,16 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log(`user ${socket.id} is connected.`)
 
-    socket.on('score', data => {
-        socket.broadcast.emit('scoreRecieved', data)
+    socket.on('score', (data, room) => {
+        socket.to(room).emit('scoreRecieved', data)
     })
 
     socket.on('disconnect', () => {
         console.log(`user ${socket.id} left.`)
+    })
+    
+    socket.on('join-room', room => {
+        socket.join(room)
     })
 })
 
