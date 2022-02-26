@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="list-container">
-    <button @click="$parent.menuDisplay = true">Return to Menu</button>
+    <button @click="disconnect()">Return to Menu</button>
     <button @click="questionAnswered()">Answer a question</button>
     <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
@@ -47,7 +47,7 @@ export default {
     );
 
     this.socketInstance.emit(
-      "joinRoom", (this.room)
+      "joinRoom", this.room
     );
 
     this.updateScore();
@@ -78,6 +78,11 @@ export default {
     },
     consolelog(x) {
       console.log(x);
+    },
+    disconnect() {
+      this.socketInstance.emit('disconnectMsg', this.username)
+      this.socketInstance.disconnect();
+      this.$parent.menuDisplay = true;
     }
   },
   watch: {

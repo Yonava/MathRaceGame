@@ -1,6 +1,7 @@
 
 const express = require('express');
 const http = require('http');
+const { disconnect } = require('process');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -18,9 +19,13 @@ io.on('connection', (socket) => {
     socket.on('score', (data, room) => {
         socket.to(room).emit('scoreRecieved', data)
     })
+    
+    socket.on('disconnectMsg', username => {
+        console.log(`${username} left.`)
+    })
 
     socket.on('disconnect', () => {
-        console.log(`user ${socket.id} left.`)
+        console.log('Disconnect Successful.')
     })
     
     socket.on('joinRoom', room => {
