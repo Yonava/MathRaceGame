@@ -7,7 +7,7 @@
         <input v-model="username" type="text" placeholder="Enter Username" />
         <input v-model="roomID" placeholder="Enter Room ID" type="number">
         <br>
-        <button @click="menuDisplay = !menuDisplay">Join Room</button>
+        <button @click="joinRoom()">Join Room</button>
         <button @click="createRoom()">Create Room</button>
       </div>
     </center>
@@ -16,7 +16,8 @@
     <div v-else>
       <Room 
       v-bind:username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
-      v-bind:room="roomID" />
+      v-bind:room="roomID" 
+      v-bind:host="host" />
     </div>
 
   </div>
@@ -32,6 +33,7 @@ export default {
       menuDisplay: true,
       username: '',
       roomID: '',
+      host: false
     }
   },
   components: {
@@ -52,9 +54,14 @@ export default {
       while (this.roomID < 1000) {
         this.roomID = Math.round(Math.random() * 10000);
       }
+      this.host = true;
       this.menuDisplay = !this.menuDisplay;
       this.roomID = String(this.roomID);
     },
+    joinRoom() {
+      this.host = false;
+      this.menuDisplay = !this.menuDisplay;
+    }
   },
   watch: {
 

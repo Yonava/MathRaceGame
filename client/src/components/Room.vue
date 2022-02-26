@@ -1,12 +1,17 @@
 <template>
 <div>
   <div class="list-container">
+    <button @click="$parent.menuDisplay = true">Return to Menu</button>
     <button @click="questionAnswered()">Answer a question</button>
+    <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
-    <button @click="isReady = !isReady">Ready?</button>
-    <p>{{ players.length }} player(s) are in room #{{ room }}.</p>
+    <button v-show="host && gameStarted">Start Game</button>
+    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1>{{ player.user }} is on question {{ player.score }}. Are they ready? {{ player.ready ? "Yes":"No" }}</h1>
+      <h1>{{ player.isHost ? "host -":"" }} 
+        {{ player.user }} is on question 
+        {{ player.qnum }}. {{ player.isPlayerReady ? "R":"Not r" }}eady.
+      </h1>
     </div>
   </div>
 </div>
@@ -19,7 +24,9 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
-      isReady: false,
+      gameStarted: false,
+      isPlayerReady: false,
+      isClientReady: false,
       players: [],
       qNumber: 1,
       scoreCard: [],
@@ -28,7 +35,8 @@ export default {
   },
   props: [
     'username',
-    'room'
+    'room',
+    'host'
   ],
   mounted() {
     this.socketInstance = io("http://localhost:1010");
@@ -36,33 +44,45 @@ export default {
       "scoreRecieved", (data) => {
         this.scoreCard.push(data);
       }
-    )
+    );
+
     this.socketInstance.emit(
-      "join-room", (this.room)
-    )
+      "joinRoom", (this.room)
+    );
 
     this.updateScore();
   },
   methods: {
+    hasGameStarted() {
+      for (let i in this.uniqueScoreCard) {
+        if (!this.uniqueScoreCard[i].isPlayerReady) {
+          return false;
+        }
+      }
+      return true;
+    },
     questionAnswered() {
       this.qNumber++;
       this.updateScore();
     },
     updateScore() {
       const newScore = {
-        score: this.qNumber,
+        qnum: this.qNumber,
         user: this.username,
-        ready: this.isReady
+        isPlayerReady: this.isPlayerReady,
+        isClientReady: this.isClientReady,
+        isHost: this.host
       };
       this.scoreCard.push(newScore);
       this.socketInstance.emit('score', newScore, this.room);
     },
     consolelog(x) {
-      console.log(x)
+      console.log(x);
     }
   },
   watch: {
     scoreCard() {
+
       this.players = [];
       this.uniqueScoreCard = [];
       for (let i = this.scoreCard.length - 1; i >= 0; i--) {
@@ -71,10 +91,13 @@ export default {
           this.uniqueScoreCard.push(this.scoreCard[i]);
         }
       }
+
+      this.gameStarted = this.hasGameStarted();
+      
       this.uniqueScoreCard.sort((a, b) => b.score - a.score);
     },
-    isReady() {
-      this.updateScore(this.qNumber);
+    isPlayerReady() {
+      this.updateScore();
     }
   }
 };
