@@ -1,2 +1,2 @@
 (window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d22d746"],{f820:function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement;e._self._c;return e._m(0)},r=[function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",{staticClass:"about"},[t("h1",[e._v("This is an about page")]),t("br"),t("br"),t("br"),t("h2",[e._v("Application Created by Yona Voss-Andreae and Josh Burdick")])])}],s=t("2877"),c={},i=Object(s["a"])(c,a,r,!1,null,null,null);n["default"]=i.exports}}]);
-//# sourceMappingURL=chunk-2d22d746.284d95aa.js.map
+//# sourceMappingURL=chunk-2d22d746.58b6a8ad.js.map
