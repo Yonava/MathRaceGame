@@ -56,11 +56,11 @@ export default {
   },
   methods: {
     OnGoogleAuthSuccess (idToken) {
-      console.log(idToken)
+      console.log('success', idToken)
       // Receive the idToken and make your magic with the backend
     },
     OnGoogleAuthFail (error) {
-      console.log(error)
+      console.log('error', error)
     },
     createRoom() {
 
