@@ -3,7 +3,7 @@ used by our filter to ensure a safe playing environment */
 
 let bannedWords = 
 ['fuck', 'shit', 'bitch', 'cunt', 'cock', 'pussy', 'anal', 'anus', '69', '420',
-'nigger', 'nigga', 'faggot', 'dyke', 'sex', 'dick', 'epstein', 'ass', 'asshole',
+'nigger', 'nigga', 'faggot', 'dyke', 'sex', 'dick', 'epstein', 'asshole', 'ass',
 'kike', 'homo', 'jigaboo', 'coon', 'tranny', 'kkk', 'nazi', 'hitler', 'cocaine',
 'chink', 'gook', 'retard', 'rape', 'rapist', 'porn', 'incest', 'queer', 'blowjob',
 'redskin', 'spic', 'beaner', 'midget', 'osama', 'raghead', 'jizz', 'cum',
