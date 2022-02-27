@@ -12,6 +12,7 @@
         <br><br>
         <h1>{{ errorMessage }}</h1>
       </div>
+      <button v-google-signin-button="clientID" class="google-signin-button"> Continue with Google</button>
     </center>
 
     <!-- Session Room -->
@@ -33,6 +34,7 @@ import bannedWords from '../assets/filteredWords.js'
 export default {
   data: () => {
     return {
+      clientID: '753802137960-ukun04t2m988p528mghffjqqfkqpare3.apps.googleusercontent.com',
       menuDisplay: true,
       username: '',
       roomID: '',
@@ -53,6 +55,13 @@ export default {
 
   },
   methods: {
+    OnGoogleAuthSuccess (idToken) {
+      console.log(idToken)
+      // Receive the idToken and make your magic with the backend
+    },
+    OnGoogleAuthFail (error) {
+      console.log(error)
+    },
     createRoom() {
 
       this.validateUsername();
@@ -122,9 +131,17 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+.google-signin-button {
+  color: white;
+  background-color: red;
+  height: 50px;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 10px 20px 25px 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 </style>
