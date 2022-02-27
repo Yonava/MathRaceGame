@@ -87,8 +87,9 @@ export default {
       if (this.username.length < 4)
         return this.errorMessage = 'Username Is Too Short'
 
-      for (let i in bannedWords.bannedWords) {
-        if (this.username.toLowerCase().includes(bannedWords.bannedWords[i])) return this.errorMessage = 'Inappropriate Username';
+      for (let i in bannedWords) {
+        console.log(bannedWords[i])
+        if (this.username.toLowerCase().includes(bannedWords[i])) return this.errorMessage = 'Inappropriate Username';
       }
 
       let dreamStan = ['innit', 'dream', 'dream smp',
@@ -108,3 +109,22 @@ export default {
 
 }
 </script>
+
+<style scoped>
+
+ * {
+   margin: 5px;
+}
+/* gets rid of up and down arrows in input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
