@@ -1,31 +1,41 @@
 
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
+const server = require('http').Server(app);
+const io = module.exports.io = require('socket.io')(server, {
     cors: {
-        origin: "*",
-        methods: ['GET', "POST"]
+        origin: "*"
     }
-});
+})
 
-io.on('connection', (socket) => {
+const PORT = process.env.PORT || 1010
+
+
+io.on('connection', socket => {
     console.log(`user ${socket.id} is connected.`)
 
-    socket.on('score', data => {
-        socket.broadcast.emit('scoreRecieved', data)
+    socket.on('score', (data, room) => {
+        socket.to(room).emit('scoreRecieved', data)
+    })
+    
+    socket.on('disconnectMsg', username => {
+        console.log(`${username} left.`)
     })
 
     socket.on('disconnect', () => {
-        console.log(`user ${socket.id} left.`)
+        console.log('Disconnect Successful.')
+    })
+    
+    socket.on('joinRoom', room => {
+        socket.join(room)
     })
 })
 
-const port = process.env.PORT || 1010;
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(__dirname + '/public/'));
+    app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+}
 
-server.listen(port, () => {
-    console.log(`Server listening on localhost:${port}`)
+server.listen(PORT, () => {
+    console.log(`Listening on localhost:${PORT}`)
 })

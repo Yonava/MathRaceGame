@@ -1,11 +1,17 @@
 <template>
-  <div class="home">
+  <div>
     <center v-if="menuDisplay">
       <br><br><br>
       <div>
+        <h2>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</h2>
         <h1>Join Group Session</h1>
-        <input v-model="username" type="text" placeholder="Enter Username" @keyup.enter="menuDisplay = false" />
-        <button @click="menuDisplay = !menuDisplay">Connect</button>
+        <input v-model="username" type="text" placeholder="Enter Username" />
+        <input v-model="roomID" placeholder="Enter Room ID" type="number">
+        <br>
+        <button @click="joinRoom()">Join Room</button>
+        <button @click="createRoom()">Create Room</button>
+        <br><br>
+        <h1>{{ errorMessage }}</h1>
       </div>
     </center>
 
@@ -16,9 +22,11 @@
         <br><br><br>
         <button @click="modeDisplay = !modeDisplay, gametype = 2">Multiplayer Mode</button> <!-- Multiplayer -->
       </div>
-
       <div v-else>
-        <component :is="computedComponent(gametype)" :username="username" /> <!-- Enable chosen component -->
+        <Room 
+        :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
+        :room="roomID" 
+        :host="host" /> <!-- Enable chosen component -->
       </div>
     </div>
 
@@ -29,6 +37,7 @@
 
 import Practice from '../components/Practice'
 import Room from '../components/Room.vue'
+import validateUsername from '../functionality/usernameValidation.js'
 
 export default {
   data: () => {
@@ -36,6 +45,9 @@ export default {
       menuDisplay: true,
       modeDisplay: true,
       username: '',
+      roomID: '',
+      host: false,
+      errorMessage: '',
       gametype: 0
     }
   },
@@ -53,6 +65,32 @@ export default {
 
   },
   methods: {
+    createRoom() {
+
+      this.errorMessage = validateUsername(this.username);
+   
+      if (this.errorMessage) return;
+
+      this.roomID = 0;
+
+      while (this.roomID < 1000) {
+        this.roomID = Math.round(Math.random() * 10000);
+      }
+
+      this.host = true;
+      this.menuDisplay = !this.menuDisplay;
+      this.roomID = String(this.roomID);
+
+    },
+    joinRoom() {
+
+      this.errorMessage = validateUsername(this.username);
+
+      if (this.errorMessage) return;
+
+      this.host = false;
+      this.menuDisplay = !this.menuDisplay;
+    },
     // Choose whether to enable practice mode or multiplayer mode
     computedComponent(gametype) {
       if(gametype == 1) {
@@ -70,3 +108,21 @@ export default {
 
 }
 </script>
+
+<style scoped>
+
+ * {
+   margin: 5px;
+}
+/* gets rid of up and down arrows in input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>

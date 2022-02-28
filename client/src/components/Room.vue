@@ -2,10 +2,17 @@
 <template>
 <div>
   <div class="list-container">
-    <button @click="postScore(qNumber)">Answer a question</button>
+    <button @click="disconnect()">Return to Menu</button>
+    <button @click="questionAnswered()">Answer a question</button>
+    <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
+    <button v-show="host && gameStarted">Start Game</button>
+    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1>{{ player.user }} is on question number {{ player.score }}</h1>
+      <h1>{{ player.isHost ? "host -":"" }} 
+        {{ player.user }} is on question 
+        {{ player.qnum }}. {{ player.isPlayerReady ? "R":"Not r" }}eady.
+      </h1>
     </div>
   </div>
 </div>
@@ -18,56 +25,88 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
+      gameStarted: false,
+      isPlayerReady: false,
+      isClientReady: false,
+      players: [],
       qNumber: 1,
-      score: 0,
       scoreCard: [],
       uniqueScoreCard: []
     };
   },
   props: [
-    'username'
+    'username',
+    'room',
+    'host'
   ],
   components: {
     
   },
   mounted() {
-    this.socketInstance = io("http://localhost:1010");
-      this.socketInstance.on(
-        "scoreRecieved", (data) => {
-          this.scoreCard = this.scoreCard.concat(data);
-        }
-      )
-      this.postScore(this.qNumber);
+    this.socketInstance = io('/');
+    this.socketInstance.on(
+      "scoreRecieved", (data) => {
+        this.scoreCard.push(data);
+      }
+    );
+
+    this.socketInstance.emit(
+      "joinRoom", this.room
+    );
+
+    this.updateScore();
   },
   methods: {
-    postScore(qnum) {
-      this.updateScore(qnum);
-      this.score = 0;
-      this.qNumber++;
+    hasGameStarted() {
+      for (let i in this.uniqueScoreCard) {
+        if (!this.uniqueScoreCard[i].isPlayerReady) {
+          return false;
+        }
+      }
+      return true;
     },
-    updateScore(qnum) {
+    questionAnswered() {
+      this.qNumber++;
+      this.updateScore();
+    },
+    updateScore() {
       const newScore = {
-        score: qnum,
+        qnum: this.qNumber,
         user: this.username,
+        isPlayerReady: this.isPlayerReady,
+        isClientReady: this.isClientReady,
+        isHost: this.host
       };
-      this.scoreCard = this.scoreCard.concat(newScore);
-      this.socketInstance.emit('score', newScore);
+      this.scoreCard.push(newScore);
+      this.socketInstance.emit('score', newScore, this.room);
     },
     consolelog(x) {
-      console.log(x)
+      console.log(x);
+    },
+    disconnect() {
+      this.socketInstance.emit('disconnectMsg', this.username)
+      this.socketInstance.disconnect();
+      this.$parent.menuDisplay = true;
     }
   },
   watch: {
     scoreCard() {
-      let playerArray = [];
+
+      this.players = [];
       this.uniqueScoreCard = [];
       for (let i = this.scoreCard.length - 1; i >= 0; i--) {
-        if (!playerArray.includes(this.scoreCard[i].user)) {
-          playerArray.push(this.scoreCard[i].user);
+        if (!this.players.includes(this.scoreCard[i].user)) {
+          this.players.push(this.scoreCard[i].user);
           this.uniqueScoreCard.push(this.scoreCard[i]);
         }
       }
+
+      this.gameStarted = this.hasGameStarted();
+      
       this.uniqueScoreCard.sort((a, b) => b.score - a.score);
+    },
+    isPlayerReady() {
+      this.updateScore();
     }
   },
 };

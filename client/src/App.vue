@@ -6,6 +6,17 @@
   </div>
 </template>
 
+<script>
+export default {
+  data: () => {
+    return {
+      throughApp: false,
+    }
+  }
+}
+</script>
+
+
 <style>
 
 </style>
