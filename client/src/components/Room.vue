@@ -1,3 +1,4 @@
+<!-- Multiplayer Session Room -->
 <template>
 <div>
   <div class="list-container">
@@ -38,6 +39,9 @@ export default {
     'room',
     'host'
   ],
+  components: {
+    
+  },
   mounted() {
     this.socketInstance = io('/');
     this.socketInstance.on(
@@ -104,7 +108,7 @@ export default {
     isPlayerReady() {
       this.updateScore();
     }
-  }
+  },
 };
 </script>
 
