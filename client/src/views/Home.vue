@@ -27,7 +27,7 @@
     </div>
 
     <!-- Navigation Panel -->
-    <footer class="bottom">
+    <footer v-show="!$parent.inGame" class="bottom">
       <div class="bottom-container">
         <div @click="switchView('Home')" class="nav-container">
           <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
