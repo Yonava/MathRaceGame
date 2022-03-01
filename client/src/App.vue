@@ -18,5 +18,19 @@ export default {
 
 
 <style>
-
+/* GLOBAL DISPLAY */
+body {
+    -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
+    user-select: none; /* disabled ability to highlight text & iconography */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0px;
+}
+button {
+  margin: 2.5%;
+  background-color: white;
+  padding: 1%;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 10px;
+}
 </style>

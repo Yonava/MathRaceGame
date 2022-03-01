@@ -1,6 +1,9 @@
 <template>
-    <div>
-        <h1>profile page</h1>
-    </div>
+    <center>
+        <div>
+            <h1>Profile Page</h1>
+            <button @click="$router.push('/')">Back</button>
+        </div>
+    </center>
 </template>
 

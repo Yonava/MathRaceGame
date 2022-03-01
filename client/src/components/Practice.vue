@@ -1,11 +1,9 @@
 <!-- Singleplayer Session Room -->
 <template>
-    <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
+    <h1>Welcome to practice mode, were you can hone your skills!</h1>
 </template>
 
 <script>
-
-// import io from 'socket.io-client'
 
 export default {
   name: 'app',
@@ -15,7 +13,7 @@ export default {
     }
   },
   props: [
-    'username'
+
   ],
   mounted() {
 

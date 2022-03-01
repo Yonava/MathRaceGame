@@ -1,59 +1,74 @@
 <template>
   <div>
-    <center v-if="menuDisplay">
-      <br><br><br>
-      <div>
-        <h2>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</h2>
-        <h1>Join Group Session</h1>
-        <input v-model="username" type="text" placeholder="Enter Username" />
-        <input v-model="roomID" placeholder="Enter Room ID" type="number">
-        <br>
-        <button @click="joinRoom()">Join Room</button>
-        <button @click="createRoom()">Create Room</button>
-        <br><br>
-        <h1>{{ errorMessage }}</h1>
-      </div>
-    </center>
 
-    <!-- Session Room -->
-    <div v-else>
-      <div v-if="modeDisplay">
-        <button @click="modeDisplay = !modeDisplay, gametype = 1">Practice Mode</button> <!-- Singleplayer -->
-        <br><br><br>
-        <button @click="modeDisplay = !modeDisplay, gametype = 2">Multiplayer Mode</button> <!-- Multiplayer -->
-      </div>
-      <div v-else>
-        <Room 
-        :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
-        :room="roomID" 
-        :host="host" /> <!-- Enable chosen component -->
-      </div>
+    <!-- Singleplayer Practice -->
+    <div class="view-container" v-if="viewController[renderedView] === 'Practice'">
+      <Practice />
     </div>
+
+    <!-- Leaderboard -->
+    <div class="view-container" v-else-if="viewController[renderedView] === 'Leaderboard'">
+      <Leaderboard />
+    </div>
+
+    <!-- Multiplayer -->
+    <div class="view-container" v-else-if="viewController[renderedView] === 'Multiplayer'">
+      <Multiplayer />
+    </div>
+
+    <!-- Info Page -->
+    <div class="view-container" v-else-if="viewController[renderedView] === 'Info'">
+      <Info />
+    </div>
+
+    <div class="view-container" v-else>
+      <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
+      <button @click="$router.push('/profile')">View Profile</button>
+    </div>
+
+    <!-- Navigation Panel -->
+    <footer class="bottom">
+      <div class="bottom-container">
+        <div @click="switchView('Home')" class="nav-container">
+          <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
+        </div>
+        <div @click="switchView('Multiplayer')" class="nav-container">
+          <img class="icon" src="https://www.pngitem.com/pimgs/m/391-3911003_multiplayer-visitor-icon-hd-png-download.png" alt="multiplayer">
+        </div>
+        <div @click="switchView('Practice')" class="nav-container">
+          <img class="icon" src="https://previews.123rf.com/images/sarahdesign/sarahdesign1706/sarahdesign170600477/80760345-target-practice-icon.jpg" alt="singleplayer">
+        </div>
+        <div @click="switchView('Leaderboard')" class="nav-container">
+          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png" alt="singleplayer">
+        </div>
+        <div @click="switchView('Info')" class="nav-container">
+          <img class="icon" src="https://www.pngitem.com/pimgs/m/195-1951784_info-icon-svg-transparent-background-information-icon-hd.png" alt="info">
+        </div>
+      </div>
+    </footer> 
 
   </div>
 </template>
 
 <script>
 
-import Practice from '../components/Practice'
-import Room from '../components/Room.vue'
-import validateUsername from '../functionality/usernameValidation.js'
+import Practice from '../components/Practice.vue'
+import Leaderboard from '../components/Leaderboard.vue'
+import Multiplayer from '../components/Multiplayer.vue'
+import Info from '../components/Info.vue'
 
 export default {
   data: () => {
     return {
-      menuDisplay: true,
-      modeDisplay: true,
-      username: '',
-      roomID: '',
-      host: false,
-      errorMessage: '',
-      gametype: 0
+      viewController: ['Home', 'Practice', 'Leaderboard', 'Multiplayer', 'Info'],
+      renderedView: 0
     }
   },
   components: {
     Practice,
-    Room,
+    Leaderboard,
+    Multiplayer,
+    Info
   },
   mounted() {
 
@@ -65,64 +80,53 @@ export default {
 
   },
   methods: {
-    createRoom() {
-
-      this.errorMessage = validateUsername(this.username);
-   
-      if (this.errorMessage) return;
-
-      this.roomID = 0;
-
-      while (this.roomID < 1000) {
-        this.roomID = Math.round(Math.random() * 10000);
-      }
-
-      this.host = true;
-      this.menuDisplay = !this.menuDisplay;
-      this.roomID = String(this.roomID);
-
-    },
-    joinRoom() {
-
-      this.errorMessage = validateUsername(this.username);
-
-      if (this.errorMessage) return;
-
-      this.host = false;
-      this.menuDisplay = !this.menuDisplay;
-    },
-    // Choose whether to enable practice mode or multiplayer mode
-    computedComponent(gametype) {
-      if(gametype == 1) {
-        return Practice;
-      }
-      else if(gametype == 2) {
-        username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000000)})`
-        return Room;
-      }
+    switchView(view) {
+      this.renderedView = this.viewController.indexOf(view);
     }
   },
   watch: {
-
   }
 
 }
 </script>
 
 <style scoped>
-
- * {
-   margin: 5px;
+div.view-container {
+  padding: 2.5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-/* gets rid of up and down arrows in input */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+/* NAVIGATION DISPLAY */
+.icon {
+    height: 5vh;
+    width: 5.3vh;
+    margin-bottom: 0px;
 }
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+.nav-container {
+    height: 5vh;
+    width: 5vh;
+    margin-top: .5vh;
+    margin-right: 7.5vw;
+    margin-left: 7.5vw;
+    margin-bottom: 0px;
+}
+.bottom-container {
+    margin-top: .5vh;
+    width: 90vw;
+    justify-content: center;
+    display: flex;
+    background-color: white;
+}
+.bottom {
+    height: 7.75vh;
+    background-color: white;
+    position: fixed;
+    bottom: 0;
+    min-width: 100vw;
+    border-top: 1px black solid;
+    display: flex;
+    justify-content: center;
 }
 </style>
