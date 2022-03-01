@@ -7,6 +7,7 @@
     <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
+    <p>Invite Link: <a target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
     <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
       <h1>{{ player.isHost ? "host -":"" }} 
@@ -148,5 +149,10 @@ export default {
   height: 70px;
   padding: 10px;
   box-sizing: border-box;
+}
+a {
+  font-weight: bold;
+  color: lightcoral
+  user-select: 
 }
 </style>
