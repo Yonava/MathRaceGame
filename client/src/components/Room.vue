@@ -104,7 +104,7 @@ export default {
 
       this.gameStarted = this.hasGameStarted();
       
-      this.uniqueScoreCard.sort((a, b) => b.score - a.score);
+      this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
     },
     isPlayerReady() {
       this.updateScore();
@@ -149,10 +149,5 @@ export default {
   height: 70px;
   padding: 10px;
   box-sizing: border-box;
-}
-a {
-  font-weight: bold;
-  color: lightcoral
-  user-select: 
 }
 </style>
