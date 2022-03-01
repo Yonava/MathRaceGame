@@ -108,8 +108,8 @@ div.view-container {
     height: 5vh;
     width: 5vh;
     margin-top: .5vh;
-    margin-right: 7.5vw;
-    margin-left: 7.5vw;
+    margin-right: 5vw;
+    margin-left: 5vw;
     margin-bottom: 0px;
 }
 .bottom-container {
