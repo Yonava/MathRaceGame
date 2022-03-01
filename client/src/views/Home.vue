@@ -23,7 +23,7 @@
 
     <div class="view-container" v-else>
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
-      <button @click="$router.push('/profile')">View Profile</button>
+      <button @click="$router.push('/profile/Yonava')">View Profile</button>
     </div>
 
     <!-- Navigation Panel -->

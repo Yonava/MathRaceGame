@@ -16,9 +16,14 @@ const routes = [
     component: () => import('../views/Play.vue')
   },
   {
-    path: '/profile',
+    path: '/profile/:username',
     name: 'Profile',
     component: () => import('../views/Profile.vue')
+  },
+  {
+    path: '/go/:roomid',
+    name: 'InviteRoute',
+    component: () => import('../views/InviteRoute.vue')
   }
 ]
 

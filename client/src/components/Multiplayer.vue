@@ -12,7 +12,7 @@
                 <button @click="joinRoom()">Join Room</button>
                 <button @click="createRoom()">Create Room</button>
                 <br>
-                <h1 class="error" style="color: red">{{ errorMessage }}</h1>
+                <h1 class="error">{{ errorMessage }}</h1>
             </div>
         </div>
 
@@ -94,5 +94,6 @@ input[type=number] {
 h1.error {
     font-size: x-small;
     font-weight: bolder;
+    color: red;
 }
 </style>
