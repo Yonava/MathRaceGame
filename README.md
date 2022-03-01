@@ -1,7 +1,6 @@
 # MathRacePuzzleGame
 
 ```
-
 Math race is designed to be a mobile first, 
 puzzle game experience. 
 The core of the game is simple, players that 
