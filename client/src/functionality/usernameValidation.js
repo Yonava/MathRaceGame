@@ -21,14 +21,14 @@ export default function validateUsername(username) {
   }
 
   for (let i in bannedWords) {
-    if (username.toLowerCase().includes(bannedWords[i])) return errorMessage = `Username That Violates Our Community Guidelines Detected: '${bannedWords[i]}'`;
+    if (username.toLowerCase().includes(bannedWords[i])) return errorMessage = `Username Violates Our Community Guidelines Detected: '${bannedWords[i]}'`;
   }
 
-  let dreamStan = ['innit', 'dream', 'dream smp',
+  const dreamStan = ['innit', 'dream', 'dream smp',
   'notfound', 'georgenotfound', 'badboyhalo'];
   
   for (let i in dreamStan) {
-    if (username.toLowerCase().includes(dreamStan[i])) return errorMessage = 'Get Out You Filthy Dream Stan';
+    if (username.toLowerCase().includes(dreamStan[i])) return errorMessage = 'Get Out You Filthy Dream Stan!';
   }
 
   return errorMessage;
