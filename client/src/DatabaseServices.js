@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const sessions_url = 'api/sessions/';
-const users_url = 'api/users/'
+const sessions_url = 'api/sessions';
+const users_url = 'api/users/';
 
 class ArticleService {
 

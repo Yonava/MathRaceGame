@@ -1,12 +1,18 @@
 
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
 const server = require('http').Server(app);
 const io = module.exports.io = require('socket.io')(server, {
     cors: {
         origin: "*"
     }
 })
+
+app.use(bodyParser.json());
+app.use(cors());
 
 const PORT = process.env.PORT || 1010
 
@@ -35,6 +41,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public/'));
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
+
+mongoose.connect("mongodb+srv://math-race-user:mathracer@cluster0.n5hn0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", () => console.log('Connected'))
 
 server.listen(PORT, () => {
     console.log(`Listening on localhost:${PORT}`)
