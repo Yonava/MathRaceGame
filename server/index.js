@@ -14,8 +14,10 @@ const io = module.exports.io = require('socket.io')(server, {
 app.use(bodyParser.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 1010
+const sessions = require('./api/sessions')
+app.use('/api/sessions', sessions)
 
+const PORT = process.env.PORT || 1010
 
 io.on('connection', socket => {
     console.log(`user ${socket.id} is connected.`)
