@@ -3,21 +3,35 @@
     <br><br><br><br>
     <center>
 
-      <!-- Input Username -->
-      <div v-if="displayUsernamePromp">
-        <p>You have been invited to Room #{{ $route.params.roomid }}!</p>
-        <h1>Enter A Username:</h1>
-        <input v-model="username" type="text" placeholder="Enter Username" />
-        <button @click="joinRoom()">Join Room</button>
-        <h1 class="error">{{ errorMessage }}</h1>
+      <div v-if="wasSessionFound">
+        <h1>
+          Session #{{ $route.params.roomid }} Was Not Found,
+          Double Check You Got The Correct Invite Link
+        </h1>
       </div>
 
-      <!-- Session Room -->
       <div v-else>
-        <Room 
-        :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
-        :room="$route.params.roomid" 
-        :host="false" />
+
+        <!-- Input Username -->
+        <div v-if="displayUsernamePromp">
+          <p>You have been invited to Room #{{ $route.params.roomid }}!</p>
+          <h1>Enter A Username:</h1>
+          <input v-model="username" type="text" placeholder="Enter Username" />
+          <button @click="joinRoom()">Join Room</button>
+          <h1 class="error">{{ errorMessage }}</h1>
+          <p>
+            {{ sessionInfo }}
+          </p>
+        </div>
+
+        <!-- Session Room -->
+        <div v-else>
+          <Room 
+          :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
+          :room="$route.params.roomid" 
+          :host="false" />
+        </div>
+
       </div>
 
     </center>
@@ -29,6 +43,7 @@
 
 import validateUsername from '../functionality/usernameValidation.js'
 import Room from '../components/Room.vue'
+import DatabaseServices from '../DatabaseServices.js'
 
 export default {
   components: {
@@ -39,6 +54,16 @@ export default {
       username: '',
       displayUsernamePromp: true,
       errorMessage: '',
+      sessionInfo: '',
+      wasSessionFound: true
+    }
+  },
+  async mounted() {
+    try {
+      this.sessionInfo = await DatabaseServices.findSessionByRoomID(this.$route.params.roomid);
+    } catch (error) {
+      this.wasSessionFound = false
+      console.warn(error)
     }
   },
   methods: {

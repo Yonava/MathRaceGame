@@ -8,7 +8,8 @@ const SessionSchema = mongoose.Schema({
     },
     questions: {
         type: String,
-        required: true
+        required: true,
+        default: ''
     },
     date: {
         type: Date,
