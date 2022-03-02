@@ -3,7 +3,7 @@
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
       <button @click="genQuestion()">Generate Question</button>
-      <p v-for="i in output" :key="i.id">{{ i }}</p>
+      <vue-mathjax :formula="formula"></vue-mathjax>
     </div>
 </template>
 
@@ -15,8 +15,7 @@ export default {
   name: 'app',
   data: () => {
     return {
-      output: [],
-      outstr: ""
+      formula: "$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"
     }
   },
   props: [
@@ -32,12 +31,11 @@ export default {
 
   },
   methods: {
+    // Create a new problem
     genQuestion() {
       let question = new Arithmetic();
-      for (let i = 0; i < 100; i++) {
-        this.output.push(question.generateProblem());
-      }
-      console.log(this.output)
+      this. formula = "$$" + question.generateProblem() + "$$";
+      console.log(this.formula);
     }
   },
   watch: {
