@@ -3,7 +3,7 @@
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
       <button @click="genQuestion()">Generate Question</button>
-      <p>Output: {{ output }}</p>
+      <p v-for="i in output" :key="i.id">{{ i }}</p>
     </div>
 </template>
 
@@ -16,7 +16,8 @@ export default {
   name: 'app',
   data: () => {
     return {
-      output: ""
+      output: [],
+      outstr: ""
     }
   },
   props: [
@@ -34,7 +35,10 @@ export default {
   methods: {
     genQuestion() {
       let question = new Arithmetic();
-      this.output = question.generateProblem();
+      for (let i = 0; i < 100; i++) {
+        this.output.push(question.generateProblem());
+      }
+      console.log(this.output)
     }
   },
   watch: {

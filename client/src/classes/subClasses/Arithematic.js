@@ -1,7 +1,6 @@
 import Equations from '../Equations'
 
 export default class Arithmetic extends Equations {
-    symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '^', '.'];
     output = "";
 
     constructor() {
@@ -9,15 +8,31 @@ export default class Arithmetic extends Equations {
     }
 
     generateProblem() {
-        let len = Math.round((Math.random() * 10) + 1);
+        this.output = "";
+        this.output += this.numbers[this.randNum(10)];
         
-        for (let i = 0; i < len; i++) {
-            let index = Math.round((Math.random() * 14) + 1);
-            console.log(index);
+        let loop = true;
+        do {
+            let index = 1;
+            this.output += this.symbols[this.randNum(6)];
 
-            this.output += this.symbols[index];
-        }
+            if (this.output[index] == "^") this.output += "2";
+            else this.output += this.numbers[this.randNum(10)];
+
+            index += 2;
+            
+            let test = Math.random(); // [0, 1)
+            if (test < 0.5) {
+                loop = false;
+            }
+
+        } while (loop);
 
         return this.output;
+    }
+
+    // Generate a random number between 1 and the target
+    randNum(amount) {
+        return Math.round(Math.random() * (amount - 1) + 1);
     }
 }

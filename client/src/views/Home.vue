@@ -11,13 +11,21 @@
     <!-- Session Room -->
     <div v-else>
       <div v-if="modeDisplay">
-        <button @click="modeDisplay = !modeDisplay, gametype = 1">Practice Mode</button> <!-- Singleplayer -->
+        <!-- Singleplayer -->
+        <button @click="modeDisplay = !modeDisplay, gametype = 1">Practice Mode</button>
         <br><br><br>
-        <button @click="modeDisplay = !modeDisplay, gametype = 2">Multiplayer Mode</button> <!-- Multiplayer -->
+        <!-- Multiplayer -->
+        <button @click="modeDisplay = !modeDisplay, gametype = 2">Multiplayer Mode</button>
       </div>
 
       <div v-else>
-        <component :is="computedComponent(gametype)" :username="username" /> <!-- Enable chosen component -->
+        <!-- Enable chosen component -->
+        <div v-if="gametype == 1">
+          <Practice :username="username" />
+        </div>
+        <div v-else>
+          <Room :username="username" />
+        </div>
       </div>
     </div>
 
@@ -53,15 +61,7 @@ export default {
 
   },
   methods: {
-    // Choose whether to enable practice mode or multiplayer mode
-    computedComponent(gametype) {
-      if(gametype == 1) {
-        return Practice;
-      }
-      else if(gametype == 2) {
-        return Room;
-      }
-    }
+
   },
   watch: {
 
