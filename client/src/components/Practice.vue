@@ -9,7 +9,6 @@
 
 <script>
 
-// import io from 'socket.io-client'
 import Arithmetic from '../classes/subClasses/Arithematic'
 
 export default {
@@ -21,7 +20,7 @@ export default {
     }
   },
   props: [
-    'username'
+
   ],
   mounted() {
 
