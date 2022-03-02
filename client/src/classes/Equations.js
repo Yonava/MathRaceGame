@@ -14,4 +14,25 @@ export default class Equations {
     randNum(amount) {
         return Math.round(Math.random() * amount);
     }
+
+    toMathjax(formula) {
+        // Make compatible with Mathjax
+        for (let i = 0; i < formula.length; i++) {
+            if (formula[i] == "*") formula = formula.replace(formula[i], "\\cdot");
+            else if (formula[i] == "/") {
+                // Get numbers to put on either side of division
+                let firstNum = formula[i - 1];
+                let secondNum = formula[i + 1];
+
+                // Piece to remove
+                let removeSlice = formula.slice(i - 1, i + 2);
+                let replaceSlice = "{" + firstNum + "\\over" + secondNum + "}";
+                formula = formula.replace(removeSlice, replaceSlice);
+
+                console.log("FOUND");
+            }
+        }
+
+        return formula;
+    }
 }
