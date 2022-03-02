@@ -1,23 +1,23 @@
 import Equations from '../Equations'
 
 export default class Arithmetic extends Equations {
-    output = "";
 
     constructor() {
         super();
     }
 
     generateProblem() {
-        this.output = "";
-        this.output += this.numbers[this.randNum(10)];
+        this.evalForm = "";
+        this.evalForm += this.numbers[this.randNum(9)];
         
         let loop = true;
+        let index = 1;
         do {
-            let index = 1;
-            this.output += this.symbols[this.randNum(6)];
-
-            if (this.output[index] == "^") this.output += "2";
-            else this.output += this.numbers[this.randNum(10)];
+            this.evalForm += this.symbols[this.randNum(4)];
+            
+            // For arithmetic, only powers of 2 are currently allowed (for speed and simplicity of the race questions)
+            if (this.evalForm[index] == "^") this.evalForm += "2";
+            else this.evalForm += this.numbers[this.randNum(9)];
 
             index += 2;
             
@@ -28,11 +28,9 @@ export default class Arithmetic extends Equations {
 
         } while (loop);
 
-        return this.output;
-    }
+        // Get display compatible form
+        this.output = this.toMathjax(this.evalForm);
 
-    // Generate a random number between 1 and the target
-    randNum(amount) {
-        return Math.round(Math.random() * (amount - 1) + 1);
+        return this.output;
     }
 }
