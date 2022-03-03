@@ -1,7 +1,7 @@
 <!-- Singleplayer Session Room -->
 <template>
     <div>
-      <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
+      <p>Welcome to practice mode, where you can hone your skills!</p>
       <button @click="genQuestion()">Generate Question</button>
       <p v-for="i in output" :key="i.id">{{ i }}</p>
     </div>
@@ -20,10 +20,10 @@ export default {
     }
   },
   props: [
-
+    "username"
   ],
   mounted() {
-
+    console.log(this.username)
   },
   created() {
 

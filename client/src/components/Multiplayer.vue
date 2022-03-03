@@ -18,7 +18,7 @@
 
         <!-- Session Room -->
         <div v-else>
-            <Room 
+            <Room
             :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
             :room="roomID" 
             :host="host" />

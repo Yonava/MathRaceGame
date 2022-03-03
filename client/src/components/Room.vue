@@ -4,15 +4,15 @@
   <div class="list-container">
     <button @click="disconnect()">Return to Menu</button>
     <button @click="questionAnswered()">Answer a question</button>
-    <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
-    <button @click="consolelog(scoreCard)">Console Log!</button>
+    <button @click="isUserReady = !isUserReady">Ready?</button>
+    <button @click="consolelog($parent.username)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
     <p>Invite Link: <a target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
     <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1>{{ player.isHost ? "host -":"" }} 
+      <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
         {{ player.user }} is on question 
-        {{ player.qnum }}. {{ player.isPlayerReady ? "R":"Not r" }}eady.
+        {{ player.qnum }}. {{ player.isUserReady ? "R":"Not r" }}eady.
       </h1>
     </div>
   </div>
@@ -27,7 +27,7 @@ export default {
   data: () => {
     return {
       gameStarted: false,
-      isPlayerReady: false,
+      isUserReady: false,
       isClientReady: false,
       players: [],
       qNumber: 1,
@@ -44,6 +44,8 @@ export default {
     
   },
   mounted() {
+
+    // instanciates new socket connection
     this.socketInstance = io('/');
     this.socketInstance.on(
       "scoreRecieved", (data) => {
@@ -60,7 +62,7 @@ export default {
   methods: {
     hasGameStarted() {
       for (let i in this.uniqueScoreCard) {
-        if (!this.uniqueScoreCard[i].isPlayerReady) {
+        if (!this.uniqueScoreCard[i].isUserReady) {
           return false;
         }
       }
@@ -74,7 +76,7 @@ export default {
       const newScore = {
         qnum: this.qNumber,
         user: this.username,
-        isPlayerReady: this.isPlayerReady,
+        isUserReady: this.isUserReady,
         isClientReady: this.isClientReady,
         isHost: this.host
       };
@@ -106,7 +108,7 @@ export default {
       
       this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
     },
-    isPlayerReady() {
+    isUserReady() {
       this.updateScore();
     }
   },

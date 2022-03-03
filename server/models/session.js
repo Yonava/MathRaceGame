@@ -14,7 +14,7 @@ const SessionSchema = mongoose.Schema({
     date: {
         type: Date,
         required: true,
-        default: new Date()
+        default: new Date.now()
     }
 });
 

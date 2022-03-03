@@ -1,9 +1,10 @@
 <template>
   <div>
 
+    <button @click="consolelog($parent.username)">Console Log!</button>
     <!-- Singleplayer Practice -->
     <div class="view-container" v-if="viewController[renderedView] === 'Practice'">
-      <Practice />
+      <Practice :username="$parent.username" />
     </div>
 
     <!-- Leaderboard -->
@@ -61,7 +62,7 @@ export default {
   data: () => {
     return {
       viewController: ['Home', 'Practice', 'Leaderboard', 'Multiplayer', 'Info'],
-      renderedView: 0
+      renderedView: 0,
     }
   },
   components: {
@@ -71,7 +72,7 @@ export default {
     Info
   },
   mounted() {
-
+    
   },
   created() {
 
@@ -82,6 +83,9 @@ export default {
   methods: {
     switchView(view) {
       this.renderedView = this.viewController.indexOf(view);
+    },
+    consolelog(x) {
+      console.log(x)
     }
   },
   watch: {

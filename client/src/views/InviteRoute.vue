@@ -51,7 +51,7 @@ export default {
   },
   data: () => {
     return {
-      username: '',
+      username: null ?? this.$parent.username,
       displayUsernamePromp: true,
       errorMessage: '',
       sessionInfo: '',
