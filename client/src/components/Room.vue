@@ -107,7 +107,7 @@ export default {
       this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
     },
     isUserReady() {
-      this.updateScore();
+      this.updateStandings();
     }
   },
 };
