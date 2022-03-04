@@ -14,8 +14,6 @@ router.get('/', async (req, res) => {
 
 router.get('/:roomid', async (req, res) => {
 
-    console.log('route hit')
-
     try {
         const getSession = await Session.findOne({ roomid: req.params.roomid });
         res.json(getSession);

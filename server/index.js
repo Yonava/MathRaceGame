@@ -1,15 +1,18 @@
 
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+
+const app = express();
+
 const server = require('http').Server(app);
 const io = module.exports.io = require('socket.io')(server, {
     cors: {
         origin: "*"
     }
 })
+
 
 app.use(bodyParser.json());
 app.use(cors());
