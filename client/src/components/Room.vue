@@ -3,6 +3,7 @@
 <div>
   <div class="list-container">
     <button @click="disconnect()">Return to Menu</button>
+    <button @click="reconnect()">Reconnect</button>
     <button @click="questionAnswered()">Answer a question</button>
     <button @click="isUserReady = !isUserReady">Ready?</button>
     <button @click="consolelog($parent.username)">Console Log!</button>
@@ -42,22 +43,31 @@ export default {
     'host'
   ],
   mounted() {
-
-    // instanciates new socket connection
-    this.socketInstance = io('/');
-    this.socketInstance.on(
-      "scoreRecieved", (data) => {
-        this.scoreCard.push(data);
-      }
-    );
-
-    this.socketInstance.emit(
-      "joinRoom", this.room
-    );
-
-    this.updateStandings();
+    this.connect();
   },
   methods: {
+    connect() {
+      
+      this.socketInstance = io('/');
+      this.socketInstance.on(
+        "scoreRecieved", (data) => {
+          this.scoreCard.push(data);
+        }
+      );
+
+      this.socketInstance.emit(
+        "joinRoom", this.room
+      );
+
+      this.updateStandings();
+
+    },
+    reconnect() {
+
+      this.socketInstance.disconnect();
+      this.connect();
+
+    },
     hasGameStarted() {
       for (let i in this.uniqueScoreCard) {
         if (!this.uniqueScoreCard[i].isUserReady) {
