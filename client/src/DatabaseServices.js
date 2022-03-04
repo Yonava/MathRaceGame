@@ -18,16 +18,17 @@ class DatabaseServices {
     // Find Session With Corrosponding Room ID
     static async findSessionByRoomID(roomid) {
         try {
-            const res = await axios.get(`${sessionUrl}${roomid}`)
-            return res.data
+            const res = await axios.get(`${sessionUrl}${roomid}`);
+            const data = res.data;
+            return data;
         } catch (error) {
-            console.warn(error)
+            console.warn(`${sessionUrl}${roomid}`);
         }
     }  
 
     // Post A Session to Sessions Database
     static createNewSession(session) {
-        return axios.post(sessionUrl, { session })
+        return axios.post(sessionUrl, session)
     }
 
     // Close Session

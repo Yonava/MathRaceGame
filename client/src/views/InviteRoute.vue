@@ -3,11 +3,18 @@
     <br><br><br><br>
     <center>
 
-      <div v-if="wasSessionFound">
+      <div v-if="loading">
+        <h1>Loading Session...</h1>
+      </div>
+
+      <!-- Session Found Error -->
+      <div v-else-if="!wasSessionFound">
         <h1>
-          Session #{{ $route.params.roomid }} Was Not Found,
+          Session Not Found,
           Double Check You Got The Correct Invite Link
         </h1>
+        <br>
+        <p><b>[Session #{{ $route.params.roomid }}]</b></p>
       </div>
 
       <div v-else>
@@ -19,7 +26,7 @@
           <input v-model="username" type="text" placeholder="Enter Username" />
           <button @click="joinRoom()">Join Room</button>
           <h1 class="error">{{ errorMessage }}</h1>
-          <p>
+          <p style="font-size: 10pt; margin-top: 20vh;">
             {{ sessionInfo }}
           </p>
         </div>
@@ -43,7 +50,6 @@
 
 import validateUsername from '../functionality/usernameValidation.js'
 import Room from '../components/Room.vue'
-import DatabaseServices from '../DatabaseServices.js'
 
 export default {
   components: {
@@ -51,24 +57,32 @@ export default {
   },
   data: () => {
     return {
+      loading: true,
       username: '',
       displayUsernamePromp: true,
       errorMessage: '',
-      sessionInfo: '',
-      wasSessionFound: true
+      sessionInfo: null,
+      wasSessionFound: false
     }
   },
-  async mounted() {
-    try {
-      this.sessionInfo = await DatabaseServices.findSessionByRoomID(this.$route.params.roomid);
-    } catch (error) {
-      this.wasSessionFound = false
-      console.warn(error)
-    }
+  mounted() {
+    setTimeout(() => {
+      this.loading = false
+      if (this.sessionInfo !== null) this.wasSessionFound = true 
+      console.log(this.sessionInfo)
+    }, 3000)
+  },
+  created() {
+    fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
+      .then(response => response.json())
+      .then(data => {
+        this.sessionInfo = data;
+      });
   },
   methods: {
     joinRoom() {
 
+      console.log(this.sessionInfo)
       this.errorMessage = validateUsername(this.username);
 
       if (this.errorMessage) return;

@@ -31,6 +31,7 @@
 
 import Room from '../components/Room.vue'
 import validateUsername from '../functionality/usernameValidation.js'
+import DatabaseServices from '../DatabaseServices.js'
 
 export default {
     components: {
@@ -46,7 +47,7 @@ export default {
         }
     },
     methods: {
-        createRoom() {
+        async createRoom() {
 
             this.errorMessage = validateUsername(this.username);
         
@@ -56,6 +57,17 @@ export default {
 
             while (this.roomID < 1000) {
                 this.roomID = Math.round(Math.random() * 10000);
+            }
+
+            try {
+                await DatabaseServices.createNewSession({
+                    "questions": "trial",
+                    "date": Date.now(),
+                    "roomid": String(this.roomID)
+                })
+            } catch (error) {
+                this.errorMessage = error;
+                return;
             }
 
             this.host = true;

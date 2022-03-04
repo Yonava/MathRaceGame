@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <button @click="consolelog($parent.username)">Console Log!</button>
+    <button @click="consolelog()">Console Log! {{ request }}</button>
     <!-- Singleplayer Practice -->
     <div class="view-container" v-if="viewController[renderedView] === 'Practice'">
       <Practice :username="$parent.username" />
@@ -53,6 +53,7 @@
 
 <script>
 
+import DatabaseServices from '../DatabaseServices.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import Multiplayer from '../components/Multiplayer.vue'
@@ -63,6 +64,7 @@ export default {
     return {
       viewController: ['Home', 'Practice', 'Leaderboard', 'Multiplayer', 'Info'],
       renderedView: 0,
+      request: ''
     }
   },
   components: {
@@ -84,8 +86,8 @@ export default {
     switchView(view) {
       this.renderedView = this.viewController.indexOf(view);
     },
-    consolelog(x) {
-      console.log(x)
+    async consolelog() {
+      this.request = await DatabaseServices.getAllSessions();
     }
   },
   watch: {
