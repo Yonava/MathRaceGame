@@ -3,7 +3,7 @@
 <div>
   <div class="list-container">
     <button @click="disconnect()">Return to Menu</button>
-    <button @click="reconnect()">Reconnect</button>
+    <button @click="reconnect()">{{ reconnectMsg }}</button>
     <button @click="questionAnswered()">Answer a question</button>
     <button @click="isUserReady = !isUserReady">Ready?</button>
     <button @click="consolelog($parent.username)">Console Log!</button>
@@ -28,9 +28,9 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
+      reconnectMsg: 'Reconnect',
       gameStarted: false,
       isUserReady: false,
-      isClientReady: false,
       players: [],
       qNumber: 1,
       scoreCard: [],
@@ -44,6 +44,15 @@ export default {
   ],
   mounted() {
     this.connect();
+  },
+  created() {
+    // forces a socket reconnect every 15 seconds
+    this.refreshConnection = setInterval(() => {
+      this.reconnect();
+    }, 15000)
+  },
+  destroyed() {
+    clearInterval(this.refreshConnection);
   },
   methods: {
     connect() {
@@ -63,6 +72,12 @@ export default {
 
     },
     reconnect() {
+
+      this.reconnectMsg = 'Reconnecting...';
+
+      setTimeout(() => {
+        this.reconnectMsg = 'Reconnect';
+      }, 1000);
 
       this.socketInstance.disconnect();
       this.connect();
@@ -85,7 +100,6 @@ export default {
         qnum: this.qNumber,
         user: this.username,
         isUserReady: this.isUserReady,
-        isClientReady: this.isClientReady,
         isHost: this.host
       };
       this.scoreCard.push(newScore);

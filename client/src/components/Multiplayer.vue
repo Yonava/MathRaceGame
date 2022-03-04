@@ -48,10 +48,8 @@ export default {
     },
     methods: {
         async createRoom() {
-
+            
             this.errorMessage = validateUsername(this.username);
-        
-            if (this.errorMessage) return;
 
             this.roomID = 0;
 
@@ -59,10 +57,17 @@ export default {
                 this.roomID = Math.round(Math.random() * 10000);
             }
 
+            const doesRoomExist = await DatabaseServices.findSessionByRoomID(String(this.roomID));
+        
+            if (doesRoomExist !== null) 
+                this.errorMessage = "Problem Encountered While Creating Room, Try One More Time!";
+
+            if (this.errorMessage) return;
+
             try {
                 await DatabaseServices.createNewSession({
                     "questions": "trial",
-                    "date": Date.now(),
+                    "date": Date.now().toString(),
                     "roomid": String(this.roomID)
                 });
             } catch (error) {
@@ -71,8 +76,8 @@ export default {
             }
 
             this.host = true;
-            this.menuDisplay = false;
             this.roomID = String(this.roomID);
+            this.menuDisplay = false;
 
         },
         async joinRoom() {
@@ -80,6 +85,7 @@ export default {
             this.errorMessage = validateUsername(this.username);
             const findSession = await DatabaseServices.findSessionByRoomID(this.roomID);
             console.table(findSession);
+
             if (findSession === null)
                 this.errorMessage = "Couldn't Find That Room..."
 

@@ -21,7 +21,7 @@ class DatabaseServices {
             const res = await axios.get(`${sessionUrl}${roomid}`);
             return res.data;
         } catch (error) {
-            console.warn(`${sessionUrl}${roomid}`);
+            console.warn(`${sessionUrl}${roomid}`, error);
         }
     }  
 

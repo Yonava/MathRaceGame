@@ -21,7 +21,7 @@
 
         <!-- Input Username -->
         <div v-if="displayUsernamePromp">
-          <p>You have been invited to Room #{{ $route.params.roomid }}!</p>
+          <p>You have been invited to Room #{{ $route.params.roomid }}, Created on {{ sessionInfo.date }}!</p>
           <h1>Enter A Username:</h1>
           <input v-model="username" type="text" placeholder="Enter Username" />
           <button @click="joinRoom()">Join Room</button>
