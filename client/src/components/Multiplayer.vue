@@ -64,7 +64,7 @@ export default {
                     "questions": "trial",
                     "date": Date.now(),
                     "roomid": String(this.roomID)
-                })
+                });
             } catch (error) {
                 this.errorMessage = error;
                 return;
@@ -75,9 +75,13 @@ export default {
             this.roomID = String(this.roomID);
 
         },
-        joinRoom() {
+        async joinRoom() {
 
             this.errorMessage = validateUsername(this.username);
+            const findSession = await DatabaseServices.findSessionByRoomID(this.roomID);
+            console.table(findSession);
+            if (findSession === null)
+                this.errorMessage = "Couldn't Find That Room..."
 
             if (this.errorMessage) return;
 

@@ -47,7 +47,7 @@ if (process.env.NODE_ENV === 'production') {
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
 
-mongoose.connect("mongodb+srv://math-race-user:mathpassword@cluster0.n5hn0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", () => console.log('Connected'))
+mongoose.connect("mongodb+srv://math-race-user:mathpassword@cluster0.n5hn0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", () => console.log('Database Connection Made'))
 
 server.listen(PORT, () => {
     console.log(`Listening on localhost:${PORT}`)

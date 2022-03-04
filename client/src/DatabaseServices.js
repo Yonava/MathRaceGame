@@ -19,8 +19,7 @@ class DatabaseServices {
     static async findSessionByRoomID(roomid) {
         try {
             const res = await axios.get(`${sessionUrl}${roomid}`);
-            const data = res.data;
-            return data;
+            return res.data;
         } catch (error) {
             console.warn(`${sessionUrl}${roomid}`);
         }
