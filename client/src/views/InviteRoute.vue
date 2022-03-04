@@ -88,7 +88,7 @@ export default {
       if (this.errorMessage) return;
 
       this.host = false;
-      this.displayUsernamePromp = !this.displayUsernamePromp;
+      this.displayUsernamePromp = false;
     }
   }
 }

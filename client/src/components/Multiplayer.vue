@@ -71,7 +71,7 @@ export default {
             }
 
             this.host = true;
-            this.menuDisplay = !this.menuDisplay;
+            this.menuDisplay = false;
             this.roomID = String(this.roomID);
 
         },
@@ -86,7 +86,7 @@ export default {
             if (this.errorMessage) return;
 
             this.host = false;
-            this.menuDisplay = !this.menuDisplay;
+            this.menuDisplay = false;
         },
     }
 }

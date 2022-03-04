@@ -15,6 +15,7 @@
         {{ player.qnum }}. {{ player.isUserReady ? "R":"Not r" }}eady.
       </h1>
     </div>
+    <br><br><br><br><br><br>
   </div>
 </div>
 </template>
@@ -40,9 +41,6 @@ export default {
     'room',
     'host'
   ],
-  components: {
-    
-  },
   mounted() {
 
     // instanciates new socket connection
@@ -57,7 +55,7 @@ export default {
       "joinRoom", this.room
     );
 
-    this.updateScore();
+    this.updateStandings();
   },
   methods: {
     hasGameStarted() {
@@ -70,9 +68,9 @@ export default {
     },
     questionAnswered() {
       this.qNumber++;
-      this.updateScore();
+      this.updateStandings();
     },
-    updateScore() {
+    updateStandings() {
       const newScore = {
         qnum: this.qNumber,
         user: this.username,
