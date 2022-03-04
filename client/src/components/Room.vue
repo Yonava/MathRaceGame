@@ -3,12 +3,12 @@
 <div>
   <div class="list-container">
     <button @click="disconnect()">Return to Menu</button>
-    <button @click="reconnect()">{{ reconnectMsg }}</button>
+    <button @click="reconnect(true)">{{ reconnectMsg }}</button>
     <button @click="questionAnswered()">Answer a question</button>
     <button @click="isUserReady = !isUserReady">Ready?</button>
     <button @click="consolelog($parent.username)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
-    <p>Invite Link: <a target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
+    <p>Invite Link: <a :href="inviteLink" target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
     <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
       <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
@@ -28,6 +28,7 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
+      inviteLink: '',
       reconnectMsg: 'Reconnect',
       gameStarted: false,
       isUserReady: false,
@@ -44,12 +45,13 @@ export default {
   ],
   mounted() {
     this.connect();
+    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
   },
   created() {
     // forces a socket reconnect every 15 seconds
     this.refreshConnection = setInterval(() => {
-      this.reconnect();
-    }, 15000)
+      this.reconnect(false);
+    }, 2500)
   },
   destroyed() {
     clearInterval(this.refreshConnection);
@@ -71,13 +73,16 @@ export default {
       this.updateStandings();
 
     },
-    reconnect() {
+    reconnect(showReconnectMsg) {
 
-      this.reconnectMsg = 'Reconnecting...';
+      if (showReconnectMsg) {
+        this.reconnectMsg = 'Reconnecting...';
 
-      setTimeout(() => {
-        this.reconnectMsg = 'Reconnect';
-      }, 1000);
+        setTimeout(() => {
+          this.reconnectMsg = 'Reconnect';
+        }, 1000);
+
+      }
 
       this.socketInstance.disconnect();
       this.connect();
