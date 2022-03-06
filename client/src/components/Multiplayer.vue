@@ -51,6 +51,7 @@ export default {
             
             this.username = this.username.trim();
             this.errorMessage = validateUsername(this.username);
+            if (this.errorMessage) return;
 
             this.roomID = 0;
 
@@ -61,9 +62,7 @@ export default {
             const doesRoomExist = await DatabaseServices.findSessionByRoomID(String(this.roomID));
         
             if (doesRoomExist !== null) 
-                this.errorMessage = "Problem Encountered While Creating Room, Try One More Time!";
-
-            if (this.errorMessage) return;
+                return this.errorMessage = "Problem Encountered While Creating Room, Try One More Time!";  
 
             try {
                 await DatabaseServices.createNewSession({
@@ -89,7 +88,7 @@ export default {
             console.table(findSession);
 
             if (findSession === null)
-                this.errorMessage = "Couldn't Find That Room..."
+                return this.errorMessage = "Couldn't Find That Room..."
 
             if (this.errorMessage) return;
 
