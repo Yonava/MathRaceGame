@@ -49,6 +49,7 @@ export default {
     methods: {
         async createRoom() {
             
+            this.username = this.username.trim();
             this.errorMessage = validateUsername(this.username);
 
             this.roomID = 0;
@@ -82,6 +83,7 @@ export default {
         },
         async joinRoom() {
 
+            this.username = this.username.trim();
             this.errorMessage = validateUsername(this.username);
             const findSession = await DatabaseServices.findSessionByRoomID(this.roomID);
             console.table(findSession);

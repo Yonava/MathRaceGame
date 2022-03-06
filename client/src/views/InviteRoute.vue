@@ -82,7 +82,7 @@ export default {
   methods: {
     joinRoom() {
 
-      console.log(this.sessionInfo)
+      this.username = this.username.trim();
       this.errorMessage = validateUsername(this.username);
 
       if (this.errorMessage) return;

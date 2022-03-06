@@ -48,7 +48,7 @@ export default {
     this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
   },
   created() {
-    // forces a socket reconnect every 15 seconds
+    // forces a socket reconnect every 2.5 seconds
     this.refreshConnection = setInterval(() => {
       this.reconnect(false);
     }, 2500)
