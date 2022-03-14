@@ -10,8 +10,14 @@ export default class Equations {
         throw new Error("Error! Derived class must implement problem generation!");
     }
 
-    // Generate a random number between 0 and the target
-    randNum(amount) {
+    // Generate a random number between 'min' and 'max'
+    randNum(min, max, precision=0) {
+        // [0,1) * (size of range) + min -> scales [0,1) to proper range
+        let output = (Math.random() * (max - min)) + min;
+        return output.toFixed(precision); // Decimal places
+    }
+    //Generate a random number between 0 and the target
+    randTo(amount) {
         return Math.round(Math.random() * amount);
     }
 
@@ -30,8 +36,6 @@ export default class Equations {
                 let removeSlice = formula.slice(i - 1, i + 2);
                 let replaceSlice = "{" + firstNum + "\\over" + secondNum + "}";
                 formula = formula.replace(removeSlice, replaceSlice);
-
-                console.log("FOUND");
             }
         }
 
