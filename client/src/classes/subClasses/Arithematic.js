@@ -14,7 +14,7 @@ export default class Arithmetic extends Equations {
         let index = 1;
         do {
             this.evalForm += this.symbols[this.randNum(4)];
-            
+
             // For arithmetic, only powers of 2 are currently allowed (for speed and simplicity of the race questions)
             if (this.evalForm[index] == "^") this.evalForm += "2";
             else this.evalForm += this.numbers[this.randNum(9)];

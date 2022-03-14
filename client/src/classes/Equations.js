@@ -18,7 +18,9 @@ export default class Equations {
     toMathjax(formula) {
         // Make compatible with Mathjax
         for (let i = 0; i < formula.length; i++) {
+            //Multiplication
             if (formula[i] == "*") formula = formula.replace(formula[i], "\\cdot");
+            //Division
             else if (formula[i] == "/") {
                 // Get numbers to put on either side of division
                 let firstNum = formula[i - 1];
@@ -32,6 +34,8 @@ export default class Equations {
                 console.log("FOUND");
             }
         }
+
+        formula = "$$" + formula + "$$";
 
         return formula;
     }

@@ -5,7 +5,7 @@ export default class Algebra extends Equations {
     output = "";
 
     constructor() {
-        super()
+        super();
     }
 
     generateProblem() {}

@@ -15,7 +15,7 @@ export default {
   name: 'app',
   data: () => {
     return {
-      formula: "$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"
+      formula: ""
     }
   },
   props: [
@@ -34,7 +34,7 @@ export default {
     // Create a new problem
     genQuestion() {
       let question = new Arithmetic();
-      this. formula = "$$" + question.generateProblem() + "$$";
+      this. formula = question.generateProblem();
       console.log(this.formula);
     }
   },
