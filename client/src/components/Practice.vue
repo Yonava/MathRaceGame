@@ -1,7 +1,7 @@
 <!-- Singleplayer Session Room -->
 <template>
     <div>
-      <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
+      <p>Welcome to practice mode, where you can hone your skills!</p>
       <button @click="genQuestion()">Generate Question</button>
       <vue-mathjax :formula="formula"></vue-mathjax>
     </div>
@@ -19,10 +19,10 @@ export default {
     }
   },
   props: [
-
+    "username"
   ],
   mounted() {
-
+    console.log(this.username)
   },
   created() {
 
