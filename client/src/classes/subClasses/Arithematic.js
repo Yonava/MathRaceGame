@@ -1,36 +1,58 @@
-import Equations from '../Equations'
+import Equations from "../Equations"
 
 export default class Arithmetic extends Equations {
 
-    constructor() {
-        super();
+    constructor() { super(); }
+
+    static BaseEq(operator, minOperand = null, maxOperand = null, precision = 0) {
+        if (!this.operators.includes(operator)) throw new Error("Invalid Operator");
+
+        // Set min and max if not given
+        if (minOperand === null && maxOperand === null) {
+            switch (operator) {
+                case '+':
+                    minOperand = 1;
+                    maxOperand = 20;
+                    break;
+                case '-':
+                    minOperand = 1;
+                    maxOperand = 20;
+                    break;
+                case '*':
+                    minOperand = 2;
+                    maxOperand = 12;
+                    break;
+                case '/':
+                    minOperand = 2;
+                    maxOperand = 10;
+                    break;
+            }
+        }
+        else if (minOperand === null || maxOperand === null) {
+            throw new Error("If Min or Max is passed in, both must be passed in")
+        }
+
+        return `${this.randNum(minOperand, maxOperand, precision)}${operator}${this.randNum(minOperand, maxOperand, precision)}`;
     }
 
-    generateProblem() {
-        this.evalForm = "";
-        this.evalForm += this.numbers[this.randTo(9)];
-        
-        let loop = true;
-        let index = 1;
-        do {
-            this.evalForm += this.symbols[this.randTo(4)];
+    // a^b -- get a random a and random b in their respective ranges
+    static ExpoEq(min, max, minExp = 0, maxExp = 2, precision = 0) {
+        return `${this.randNum(min, max, precision)}**${this.randNum(minExp, maxExp)}`;
+    }
 
-            // For arithmetic, only powers of 2 are currently allowed (for speed and simplicity of the race questions)
-            if (this.evalForm[index] == "^") this.evalForm += "2";
-            else this.evalForm += this.numbers[this.randTo(9)];
+    // (expr)^b i.e. (12+7)^2
+    static ExpoExpr(expr, minExp = 0, maxExp = 2) {
+        return `${expr}**${this.randNum(minExp, maxExp)}`;
+    }
 
-            index += 2;
-            
-            let test = Math.random(); // [0, 1)
-            if (test < 0.5) {
-                loop = false;
-            }
+    // Sqrt eq -- get a random num in range [min, max]
+    static SqrtEq(min, max, precision = 0) {
+        const number = this.randNum(min, max, precision);
 
-        } while (loop);
+        // Catch negative numbers
+        if(min < 0 || max < 0) throw new Error("Invalid sqrt argument: cannot be a negative number.");
 
-        // Get display compatible form
-        this.output = this.toMathjax(this.evalForm);
-
-        return this.output;
+        // Capital S signifies a 'S'qrt
+        return `S${number};`
     }
 }
