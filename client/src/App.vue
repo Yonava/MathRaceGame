@@ -26,9 +26,6 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0px;
 }
-a {
-  user-select: all;
-}
 button {
   margin: 2.5%;
   background-color: white;

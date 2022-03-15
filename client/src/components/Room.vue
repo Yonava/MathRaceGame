@@ -89,6 +89,7 @@ export default {
 
     },
     hasGameStarted() {
+      // replace with 'every' function
       for (let i in this.uniqueScoreCard) {
         if (!this.uniqueScoreCard[i].isUserReady) {
           return false;
