@@ -1,9 +1,10 @@
-import '@babel/polyfill'
-import 'mutationobserver-shim'
-import Vue from 'vue'
-import './plugins/bootstrap-vue'
-import App from './App.vue'
-import router from './router'
+import '@babel/polyfill';
+import 'mutationobserver-shim';
+import Vue from 'vue';
+import './plugins/bootstrap-vue';
+import App from './App.vue';
+import router from './router';
+import VueMathJax from 'vue-mathjax';
 import firebase from 'firebase/app';
 
 const firebaseConfig = {
@@ -18,7 +19,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-Vue.config.productionTip = false
+
+Vue.config.productionTip = false;
+Vue.use(VueMathJax);
 
 new Vue({
   router,
