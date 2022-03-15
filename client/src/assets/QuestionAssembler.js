@@ -1,6 +1,9 @@
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
 
+// Each entry i in numQuestions is a different level.
+// The value of i is how many questions of that level to make
+// numOptions specifies how many choices to create (for multiple choice)
 export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOptions = 4) {
     let questionObj;
     let output = [];
