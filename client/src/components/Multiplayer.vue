@@ -29,6 +29,7 @@
 
 <script>
 
+import GenerateQuestions from '../assets/QuestionAssembler'
 import Room from '../components/Room.vue'
 import validateUsername from '../functionality/usernameValidation.js'
 import DatabaseServices from '../DatabaseServices.js'
@@ -66,7 +67,7 @@ export default {
 
             try {
                 await DatabaseServices.createNewSession({
-                    "questions": "trial",
+                    "questions": GenerateQuestions(),
                     "date": Date.now().toString(),
                     "roomid": String(this.roomID)
                 });
