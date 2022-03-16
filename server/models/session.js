@@ -7,7 +7,7 @@ const SessionSchema = mongoose.Schema({
         default: '0000'
     },
     questions: {
-        type: String,
+        type: Array,
         required: true,
         default: ''
     },
