@@ -4,7 +4,10 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
-import firebase from 'firebase/app';
+import firebase from 'firebase/app'
+import VueMathJax from 'vue-mathjax'
+
+Vue.use(VueMathJax);
 
 const firebaseConfig = {
   apiKey: "AIzaSyBfxKeiWX5qHzRevmE6nDMfDYeszitT_6s",
