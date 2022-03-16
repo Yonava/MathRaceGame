@@ -1,3 +1,4 @@
+import Equations from "../classes/Equations";
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
 
@@ -43,20 +44,21 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                 let mixIn = 0;
                 if (options[0] % 1 === 0) {
                     do {
-                        newOption = Math.round((options[0] + mixIn) * this.randNum(0.5, 1.5, 2));
+                        newOption = Math.round((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2));
                         Math.random() < .5 ? mixIn++:mixIn--;
                     } while (options.includes(newOption))
                     options.push(newOption);
                 } else {
-                    newOption = ((options[0] + mixIn) * this.randNum(0.5, 1.5, 2)).toFixed(2);
+                    newOption = ((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2)).toFixed(2);
                     Math.random() < .5 ? mixIn++:mixIn--;
                     options.push(Number(newOption));
                 }
             }
 
+            console.log(question.equation);
             // The data for the question, including answers
             questionObj = {
-                equation: `${this.toMathjax(question.equation)}`,
+                equation: `${Equations.toMathjax(question.equation)}`,
                 task: question.task,
                 answer: options[0],
                 options

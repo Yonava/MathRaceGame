@@ -40,7 +40,7 @@ export default class Levels extends Equations {
                 equation: `${Arithmetic.ExpoEq(3, 9, 3, 3)}`
             },
             {
-                equation: `${Arithmetic.SqrtEq(root, root)} + ${Arithmetic.BaseEq("-", 2, 20)}`
+                equation: `${Arithmetic.SqrtEq(root, root)} + ${Arithmetic.BaseEq("-", 2, 20)}`,
             }
         ];
         
@@ -49,12 +49,13 @@ export default class Levels extends Equations {
 
     // Introduce Algebra and more complex expressions, such as nested equations w exponents
     static levelThree() {
-        // Choose which perfect square to use for sqrt eq
-        let root = this.randItem(this.squares);
+        // Uses random power in [0, 2]
+        let eqObj = Arithmetic.ExpoExpr(Arithmetic.BaseEq('+', 1, 9), 0, 2);
 
         const template = [
             {
-                equation: `${Arithmetic.ExpoEq(Arithmetic.BaseEq('+', 1, 9), root, root)}`
+                equation: `${eqObj.equation}`,
+                evaluation: `${eqObj.evaluation}`
             },
         ];
 

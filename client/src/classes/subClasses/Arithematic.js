@@ -40,9 +40,14 @@ export default class Arithmetic extends Equations {
         return `${this.randNum(min, max, precision)}**${this.randNum(minExp, maxExp)}`;
     }
 
+    // TODO: Finish method
     // (expr)^b i.e. (12+7)^2
     static ExpoExpr(expr, minExp = 0, maxExp = 2) {
-        return `${expr}**${this.randNum(minExp, maxExp)}`;
+        let pow = this.randNum(minExp, maxExp);
+        return {
+            equation: `(${expr})**${pow}`,
+            evaluation: `${eval(expr)**pow}`
+        }
     }
 
     // Sqrt eq -- get a random num in range [min, max]
@@ -52,7 +57,6 @@ export default class Arithmetic extends Equations {
         // Catch negative numbers
         if(min < 0 || max < 0) throw new Error("Invalid sqrt argument: cannot be a negative number.");
 
-        // Capital S signifies a 'S'qrt
-        return `S${number};`
+        return `Math.sqrt(${number})`;
     }
 }
