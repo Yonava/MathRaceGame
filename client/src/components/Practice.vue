@@ -1,22 +1,23 @@
 <!-- Singleplayer Session Room -->
 <template>
     <div>
-      <p>Welcome to practice mode, where you can hone your skills!</p>
-      <button @click="genQuestion()">Generate Question</button>
-      <p v-for="i in output" :key="i.id">{{ i }}</p>
+      <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
+      <button @click="genQuestions()">Generate Questions</button>
+      <input type="range" min="2" max="15" v-model="max">{{max}}
+      <h1 v-for="i in output" :key="i.id">{{i}} : <vue-mathjax :formula="i.equation"></vue-mathjax></h1>
     </div>
 </template>
 
 <script>
 
-import Arithmetic from '../classes/subClasses/Arithematic'
+import GenerateQuestions from '../assets/QuestionAssembler'
 
 export default {
   name: 'app',
   data: () => {
     return {
-      output: [],
-      outstr: ""
+      max: 0,
+      output: []
     }
   },
   props: [
@@ -32,12 +33,9 @@ export default {
 
   },
   methods: {
-    genQuestion() {
-      let question = new Arithmetic();
-      for (let i = 0; i < 100; i++) {
-        this.output.push(question.generateProblem());
-      }
-      console.log(this.output)
+    // Create the set of problems
+    genQuestions() {
+      this.output = GenerateQuestions();
     }
   },
   watch: {
