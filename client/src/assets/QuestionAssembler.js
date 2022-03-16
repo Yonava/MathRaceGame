@@ -1,0 +1,72 @@
+import Equations from "../classes/Equations";
+import Levels from "../classes/Levels"
+import Algebra from "../classes/subClasses/Algebra"
+
+// Each entry i in numQuestions is a different level.
+// The value of i is how many questions of that level to make
+// numOptions specifies how many choices to create (for multiple choice)
+export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOptions = 4) {
+    let questionObj;
+    let output = [];
+
+    for (let i = 0; i < numQuestions.length; i++) {
+        // numQuestions[i] value specifies how many to create at level i
+        for (let j = 0; j < numQuestions[i]; j++) {
+            let options = [];
+            let question;
+
+            switch(i) {
+                case 0:
+                    question = Levels.levelOne();
+                    break;
+                case 1:
+                    question = Levels.levelTwo();
+                    break;
+                case 2:
+                    question = Levels.levelThree();
+                    break;
+                case 3:
+                    question = Algebra.Problem();
+                    break;
+                default:
+                    throw new Error("Invalid question level.");
+            }
+
+            question.evaluation = question.evaluation ?? question.equation;
+            question.task = question.task ?? "Evaluate";
+            options.push(eval(question.evaluation));
+
+            if (parseFloat(options[0]) % 1 != 0) options[0] = Number(parseFloat(options).toFixed(2));
+
+            // Continue generating wrong answers for multiple choice up to numOptions
+            for (let k = 0; k < (numOptions - 1); k++) {
+                let newOption;
+                let mixIn = 0;
+                if (options[0] % 1 === 0) {
+                    do {
+                        newOption = Math.round((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2));
+                        Math.random() < .5 ? mixIn++:mixIn--;
+                    } while (options.includes(newOption))
+                    options.push(newOption);
+                } else {
+                    newOption = ((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2)).toFixed(2);
+                    Math.random() < .5 ? mixIn++:mixIn--;
+                    options.push(Number(newOption));
+                }
+            }
+
+            console.log(question.equation);
+            // The data for the question, including answers
+            questionObj = {
+                equation: `${Equations.toMathjax(question.equation)}`,
+                task: question.task,
+                answer: options[0],
+                options
+            };
+
+            output.push(questionObj);
+        }
+    }
+
+    return output;
+}

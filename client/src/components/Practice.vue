@@ -1,21 +1,23 @@
 <!-- Singleplayer Session Room -->
 <template>
     <div>
-      <p>Welcome to practice mode, where you can hone your skills!</p>
-      <button @click="genQuestion()">Generate Question</button>
-      <vue-mathjax :formula="formula"></vue-mathjax>
+      <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
+      <button @click="genQuestions()">Generate Questions</button>
+      <input type="range" min="2" max="15" v-model="max">{{max}}
+      <h1 v-for="i in output" :key="i.id">{{i}} : <vue-mathjax :formula="i.equation"></vue-mathjax></h1>
     </div>
 </template>
 
 <script>
 
-import Arithmetic from '../classes/subClasses/Arithematic'
+import GenerateQuestions from '../assets/QuestionAssembler'
 
 export default {
   name: 'app',
   data: () => {
     return {
-      formula: "$$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"
+      max: 0,
+      output: []
     }
   },
   props: [
@@ -31,11 +33,9 @@ export default {
 
   },
   methods: {
-    // Create a new problem
-    genQuestion() {
-      let question = new Arithmetic();
-      this. formula = "$$" + question.generateProblem() + "$$";
-      console.log(this.formula);
+    // Create the set of problems
+    genQuestions() {
+      this.output = GenerateQuestions();
     }
   },
   watch: {
