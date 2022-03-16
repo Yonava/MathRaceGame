@@ -12,13 +12,13 @@
                 <button @click="joinRoom()">Join Room</button>
                 <button @click="createRoom()">Create Room</button>
                 <br>
-                <h1 class="error" style="color: red">{{ errorMessage }}</h1>
+                <h1 class="error">{{ errorMessage }}</h1>
             </div>
         </div>
 
         <!-- Session Room -->
         <div v-else>
-            <Room 
+            <Room
             :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
             :room="roomID" 
             :host="host" />
@@ -31,6 +31,7 @@
 
 import Room from '../components/Room.vue'
 import validateUsername from '../functionality/usernameValidation.js'
+import DatabaseServices from '../DatabaseServices.js'
 
 export default {
     components: {
@@ -46,10 +47,10 @@ export default {
         }
     },
     methods: {
-        createRoom() {
-
+        async createRoom() {
+            
+            this.username = this.username.trim();
             this.errorMessage = validateUsername(this.username);
-        
             if (this.errorMessage) return;
 
             this.roomID = 0;
@@ -58,19 +59,41 @@ export default {
                 this.roomID = Math.round(Math.random() * 10000);
             }
 
+            const doesRoomExist = await DatabaseServices.findSessionByRoomID(String(this.roomID));
+        
+            if (doesRoomExist !== null) 
+                return this.errorMessage = "Problem Encountered While Creating Room, Try One More Time!";  
+
+            try {
+                await DatabaseServices.createNewSession({
+                    "questions": "trial",
+                    "date": Date.now().toString(),
+                    "roomid": String(this.roomID)
+                });
+            } catch (error) {
+                this.errorMessage = error;
+                return;
+            }
+
             this.host = true;
-            this.menuDisplay = !this.menuDisplay;
             this.roomID = String(this.roomID);
+            this.menuDisplay = false;
 
         },
-        joinRoom() {
+        async joinRoom() {
 
+            this.username = this.username.trim();
             this.errorMessage = validateUsername(this.username);
+            const findSession = await DatabaseServices.findSessionByRoomID(this.roomID);
+            console.table(findSession);
+
+            if (findSession === null)
+                return this.errorMessage = "Couldn't Find That Room..."
 
             if (this.errorMessage) return;
 
             this.host = false;
-            this.menuDisplay = !this.menuDisplay;
+            this.menuDisplay = false;
         },
     }
 }
@@ -94,5 +117,6 @@ input[type=number] {
 h1.error {
     font-size: x-small;
     font-weight: bolder;
+    color: red;
 }
 </style>

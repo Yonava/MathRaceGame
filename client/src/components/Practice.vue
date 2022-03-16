@@ -16,15 +16,15 @@ export default {
   name: 'app',
   data: () => {
     return {
-    username: "",
       max: 0,
       output: []
     }
   },
   props: [
+    "username"
   ],
   mounted() {
-
+    console.log(this.username)
   },
   created() {
 

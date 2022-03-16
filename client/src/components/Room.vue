@@ -3,17 +3,20 @@
 <div>
   <div class="list-container">
     <button @click="disconnect()">Return to Menu</button>
+    <button @click="reconnect(true)">{{ reconnectMsg }}</button>
     <button @click="questionAnswered()">Answer a question</button>
-    <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
-    <button @click="consolelog(scoreCard)">Console Log!</button>
+    <button @click="isUserReady = !isUserReady">Ready?</button>
+    <button @click="consolelog($parent.username)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
+    <p>Invite Link: <a :href="inviteLink" target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
     <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1>{{ player.isHost ? "host -":"" }} 
+      <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
         {{ player.user }} is on question 
-        {{ player.qnum }}. {{ player.isPlayerReady ? "R":"Not r" }}eady.
+        {{ player.qnum }}. {{ player.isUserReady ? "R":"Not r" }}eady.
       </h1>
     </div>
+    <br><br><br><br><br><br>
   </div>
 </div>
 </template>
@@ -25,9 +28,10 @@ import io from "socket.io-client"
 export default {
   data: () => {
     return {
+      inviteLink: '',
+      reconnectMsg: 'Reconnect',
       gameStarted: false,
-      isPlayerReady: false,
-      isClientReady: false,
+      isUserReady: false,
       players: [],
       qNumber: 1,
       scoreCard: [],
@@ -39,27 +43,55 @@ export default {
     'room',
     'host'
   ],
-  components: {
-    
-  },
   mounted() {
-    this.socketInstance = io('/');
-    this.socketInstance.on(
-      "scoreRecieved", (data) => {
-        this.scoreCard.push(data);
-      }
-    );
-
-    this.socketInstance.emit(
-      "joinRoom", this.room
-    );
-
-    this.updateScore();
+    this.connect();
+    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
+  },
+  created() {
+    // forces a socket reconnect every 2.5 seconds
+    this.refreshConnection = setInterval(() => {
+      this.reconnect(false);
+    }, 2500)
+  },
+  destroyed() {
+    clearInterval(this.refreshConnection);
   },
   methods: {
+    connect() {
+      
+      this.socketInstance = io('/');
+      this.socketInstance.on(
+        "scoreRecieved", (data) => {
+          this.scoreCard.push(data);
+        }
+      );
+
+      this.socketInstance.emit(
+        "joinRoom", this.room
+      );
+
+      this.updateStandings();
+
+    },
+    reconnect(showReconnectMsg) {
+
+      if (showReconnectMsg) {
+        this.reconnectMsg = 'Reconnecting...';
+
+        setTimeout(() => {
+          this.reconnectMsg = 'Reconnect';
+        }, 1000);
+
+      }
+
+      this.socketInstance.disconnect();
+      this.connect();
+
+    },
     hasGameStarted() {
+      // replace with 'every' function
       for (let i in this.uniqueScoreCard) {
-        if (!this.uniqueScoreCard[i].isPlayerReady) {
+        if (!this.uniqueScoreCard[i].isUserReady) {
           return false;
         }
       }
@@ -67,14 +99,13 @@ export default {
     },
     questionAnswered() {
       this.qNumber++;
-      this.updateScore();
+      this.updateStandings();
     },
-    updateScore() {
+    updateStandings() {
       const newScore = {
         qnum: this.qNumber,
         user: this.username,
-        isPlayerReady: this.isPlayerReady,
-        isClientReady: this.isClientReady,
+        isUserReady: this.isUserReady,
         isHost: this.host
       };
       this.scoreCard.push(newScore);
@@ -103,10 +134,10 @@ export default {
 
       this.gameStarted = this.hasGameStarted();
       
-      this.uniqueScoreCard.sort((a, b) => b.score - a.score);
+      this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
     },
-    isPlayerReady() {
-      this.updateScore();
+    isUserReady() {
+      this.updateStandings();
     }
   },
 };
