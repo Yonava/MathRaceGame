@@ -7,7 +7,7 @@
     <button @click="isPlayerReady = !isPlayerReady">Ready?</button>
     <button @click="consolelog(scoreCard)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
-    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
+    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not" }} begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
       <h1>{{ player.isHost ? "host -":"" }} 
         {{ player.user }} is on question 

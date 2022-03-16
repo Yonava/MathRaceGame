@@ -55,7 +55,6 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                 }
             }
 
-            console.log(question.equation);
             // The data for the question, including answers
             questionObj = {
                 equation: `${Equations.toMathjax(question.equation)}`,
