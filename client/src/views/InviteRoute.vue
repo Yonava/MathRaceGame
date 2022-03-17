@@ -65,18 +65,13 @@ export default {
       wasSessionFound: false
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.loading = false
-      if (this.sessionInfo !== null) this.wasSessionFound = true 
-      console.log(this.sessionInfo)
-    }, 1250)
-  },
   created() {
     fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
       .then(response => response.json())
       .then(data => {
         this.sessionInfo = data;
+        this.loading = false
+        if (this.sessionInfo !== null) this.wasSessionFound = true
       });
   },
   methods: {
