@@ -1,7 +1,18 @@
+### For Mr. Cressey
+
+#### Open server directory and run the command:
+```
+npm run dev
+```
+#### In another terminal, run this command from the client directory:
+```
+npm run serve
+```
+
 # MathRacePuzzleGame
 
 ```
-Math race is designed to be a mobile first, 
+Math race is designed to be a mobile first 
 puzzle game experience on the web. 
 The core of the game is simple, players that 
 participate in a race go head 
