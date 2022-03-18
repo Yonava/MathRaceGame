@@ -23,5 +23,4 @@ answer every question wins.
 #### Yona Voss-Andreae (Lead Backend)
 #### Joshua Burdick (Lead Frontend)
 #### Isaac Libis
-#### Michael Cornelison
 
