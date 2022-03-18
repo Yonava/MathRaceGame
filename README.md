@@ -1,6 +1,6 @@
 ### For Mr. Cressey
 
-#### Open server directory and run the command:
+#### Open a terminal in server directory and run the command:
 ```
 npm run dev
 ```
@@ -8,6 +8,11 @@ npm run dev
 ```
 npm run serve
 ```
+#### Inside of both directories, run this command to automatically install all project dependencies:
+```
+npm install
+```
+
 
 # MathRacePuzzleGame
 
