@@ -43,7 +43,7 @@
           <img class="icon" src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png" alt="singleplayer">
         </div>
         <div @click="switchView('Info')" class="nav-container">
-          <img class="icon" src="https://www.pngitem.com/pimgs/m/195-1951784_info-icon-svg-transparent-background-information-icon-hd.png" alt="info">
+          <i class="bi bi-info-circle"></i>
         </div>
       </div>
     </footer> 
