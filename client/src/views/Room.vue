@@ -1,56 +1,64 @@
-<!-- Multiplayer Session Room -->
 <template>
-<div>
-  <div class="list-container">
-    <button @click="disconnect()">Return to Menu</button>
-    <button @click="reconnect(true)">{{ reconnectMsg }}</button>
-    <button @click="questionAnswered()">Answer a question</button>
-    <button @click="isUserReady = !isUserReady">Ready?</button>
-    <button @click="consolelog($parent.username)">Console Log!</button>
-    <button v-show="host && gameStarted">Start Game</button>
-    <p>Invite Link: <a :href="inviteLink" target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
-    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
-    <div v-for="player in uniqueScoreCard" :key="player.id">
-      <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
-        {{ player.user }} is on question 
-        {{ player.qnum }}. {{ player.isUserReady ? "R":"Not r" }}eady.
-      </h1>
+  <div>
+    <button v-on:click="gameStarted = !gameStarted">toggle game</button>
+    <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
+    <p>Session Details: {{ $route.params.sessionObject }}</p>
+
+    <!-- Waiting Area -->
+    <div v-if="!gameStarted">
+      <WaitingArea
+      :playerData="uniqueScoreCard"
+      />
     </div>
-    <br><br><br><br><br><br>
+
+    <!-- Race Area -->
+    <div v-else>
+      <RaceArea
+      :playerData="uniqueScoreCard"
+      />
+    </div>
+
   </div>
-</div>
 </template>
 
 <script>
 
 import io from "socket.io-client"
+import WaitingArea from "../components/WaitingArea.vue"
+import RaceArea from "../components/RaceArea.vue"
 
 export default {
   data: () => {
     return {
       inviteLink: '',
-      reconnectMsg: 'Reconnect',
       gameStarted: false,
-      isUserReady: false,
       players: [],
       qNumber: 1,
       scoreCard: [],
       uniqueScoreCard: []
     };
   },
-  props: [
-    'username',
-    'room',
-    'host'
-  ],
+  components: {
+    WaitingArea,
+    RaceArea
+  },
   mounted() {
+
+    /* --parsing database object-- */
+
+    console.log(this.$route.params.sessionObject)
+
+
+    /* --parsing database object-- */
+
     this.connect();
     this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
   },
   created() {
     // forces a socket reconnect every 2.5 seconds
     this.refreshConnection = setInterval(() => {
-      this.reconnect(false);
+      this.socketInstance.disconnect();
+      this.connect();
     }, 2500)
   },
   destroyed() {
@@ -65,28 +73,10 @@ export default {
           this.scoreCard.push(data);
         }
       );
-
       this.socketInstance.emit(
         "joinRoom", this.room
       );
-
       this.updateStandings();
-
-    },
-    reconnect(showReconnectMsg) {
-
-      if (showReconnectMsg) {
-        this.reconnectMsg = 'Reconnecting...';
-
-        setTimeout(() => {
-          this.reconnectMsg = 'Reconnect';
-        }, 1000);
-
-      }
-
-      this.socketInstance.disconnect();
-      this.connect();
-
     },
     hasGameStarted() {
       // replace with 'every' function
@@ -111,9 +101,6 @@ export default {
       this.scoreCard.push(newScore);
       this.socketInstance.emit('score', newScore, this.room);
     },
-    consolelog(x) {
-      console.log(x);
-    },
     disconnect() {
       this.socketInstance.emit('disconnectMsg', this.username)
       this.socketInstance.disconnect();
@@ -134,11 +121,8 @@ export default {
 
       this.gameStarted = this.hasGameStarted();
       
-      this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
+      // this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
     },
-    isUserReady() {
-      this.updateStandings();
-    }
   },
 };
 </script>

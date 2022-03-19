@@ -3,7 +3,7 @@
         <div>
             <h1>This is The Profile Page of {{ $route.params.username }}</h1>
             <button @click="$router.push('/')">Back</button>
-            <button type="button" @click="toggle" class="btn btn-outline-primary btn-lg">Primary</button>
+            <button type="button" @click="copyToClipboard" class="btn btn-outline-primary btn-lg">Primary</button>
             <div>
                 <b-card
                 :title="$route.params.username"

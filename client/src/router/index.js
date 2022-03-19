@@ -24,6 +24,11 @@ const routes = [
     path: '/go/:roomid',
     name: 'InviteRoute',
     component: () => import('../views/InviteRoute.vue')
+  },
+  {
+    path: '/session/:sessionObject',
+    name: 'Room',
+    component: () => import('../views/Room.vue')
   }
 ]
 
