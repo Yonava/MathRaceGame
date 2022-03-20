@@ -3,7 +3,6 @@
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
       <button @click="genQuestions()">Generate Questions</button>
-      <!-- Test question printing -->
       <input type="range" min="2" max="15" v-model="max">{{max}}
       <h1 v-for="i in output" :key="i.id"> 
         <vue-mathjax :formula="i.equation"></vue-mathjax>
