@@ -1,54 +1,183 @@
+<!-- Multiplayer Session Room -->
 <template>
-  <div>
-    <p>this is the room, your username is {{ username }}</p>
-    <input type="number" v-model="number1">
-    <input type="number" v-model="number2">
-    <p>Output = {{ output }}</p>
+<div>
+  <div class="list-container">
+    <button @click="disconnect()">Return to Menu</button>
+    <button @click="reconnect(true)">{{ reconnectMsg }}</button>
+    <button @click="questionAnswered()">Answer a question</button>
+    <button @click="isUserReady = !isUserReady">Ready?</button>
+    <button @click="consolelog($parent.username)">Console Log!</button>
+    <button v-show="host && gameStarted">Start Game</button>
+    <p>Invite Link: <a :href="inviteLink" target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
+    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not" }} begin.</p>
+    <div v-for="player in uniqueScoreCard" :key="player.id">
+      <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
+        {{ player.user }} is on question 
+        {{ player.qnum }}. {{ player.isUserReady ? "R":"Not r" }}eady.
+      </h1>
+    </div>
+    <br><br><br><br><br><br>
   </div>
+</div>
 </template>
 
 <script>
 
-// import io from 'socket.io-client'
+import io from "socket.io-client"
 
 export default {
-  name: 'app',
   data: () => {
     return {
-      number1: 0,
-      number2: 0,
-      output: 0
-    }
+      inviteLink: '',
+      reconnectMsg: 'Reconnect',
+      gameStarted: false,
+      isUserReady: false,
+      players: [],
+      qNumber: 1,
+      scoreCard: [],
+      uniqueScoreCard: []
+    };
   },
   props: [
-    'username'
+    'username',
+    'room',
+    'host'
   ],
   mounted() {
-
+    this.connect();
+    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
   },
   created() {
-
+    // forces a socket reconnect every 2.5 seconds
+    this.refreshConnection = setInterval(() => {
+      this.reconnect(false);
+    }, 2500)
   },
   destroyed() {
-
+    clearInterval(this.refreshConnection);
   },
   methods: {
-    addthenums() {
-      this.output = parseInt(this.number1) + parseInt(this.number2);
+    connect() {
+      
+      this.socketInstance = io('/');
+      this.socketInstance.on(
+        "scoreRecieved", (data) => {
+          this.scoreCard.push(data);
+        }
+      );
+
+      this.socketInstance.emit(
+        "joinRoom", this.room
+      );
+
+      this.updateStandings();
+
+    },
+    reconnect(showReconnectMsg) {
+
+      if (showReconnectMsg) {
+        this.reconnectMsg = 'Reconnecting...';
+
+        setTimeout(() => {
+          this.reconnectMsg = 'Reconnect';
+        }, 1000);
+
+      }
+
+      this.socketInstance.disconnect();
+      this.connect();
+
+    },
+    hasGameStarted() {
+      // replace with 'every' function
+      for (let i in this.uniqueScoreCard) {
+        if (!this.uniqueScoreCard[i].isUserReady) {
+          return false;
+        }
+      }
+      return true;
+    },
+    questionAnswered() {
+      this.qNumber++;
+      this.updateStandings();
+    },
+    updateStandings() {
+      const newScore = {
+        qnum: this.qNumber,
+        user: this.username,
+        isUserReady: this.isUserReady,
+        isHost: this.host
+      };
+      this.scoreCard.push(newScore);
+      this.socketInstance.emit('score', newScore, this.room);
+    },
+    consolelog(x) {
+      console.log(x);
+    },
+    disconnect() {
+      this.socketInstance.emit('disconnectMsg', this.username)
+      this.socketInstance.disconnect();
+      this.$parent.menuDisplay = true;
     }
   },
   watch: {
-    number1() {
-      this.addthenums();
-    },
-    number2() {
-      this.addthenums();
-    }
-  }
+    scoreCard() {
 
-}
+      this.players = [];
+      this.uniqueScoreCard = [];
+      for (let i = this.scoreCard.length - 1; i >= 0; i--) {
+        if (!this.players.includes(this.scoreCard[i].user)) {
+          this.players.push(this.scoreCard[i].user);
+          this.uniqueScoreCard.push(this.scoreCard[i]);
+        }
+      }
+
+      this.gameStarted = this.hasGameStarted();
+      
+      this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
+    },
+    isUserReady() {
+      this.updateStandings();
+    }
+  },
+};
 </script>
 
 <style scoped>
-
+.parent-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  padding-top: 150px;
+}
+.name-container {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+.user-name {
+  height: 30px;
+  font-size: 20px;
+  padding: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+.join-button {
+  height: 30px;
+  font-size: 20px;
+}
+.text-input-container {
+  height: 100vh;
+}
+.text-message {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  height: 70px;
+  padding: 10px;
+  box-sizing: border-box;
+}
 </style>
