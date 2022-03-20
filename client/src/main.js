@@ -4,6 +4,10 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
+import VueMathJax from 'vue-mathjax'
+
+Vue.use(VueMathJax);
+
 // import firebase from 'firebase/app';
 
 // const firebaseConfig = {
