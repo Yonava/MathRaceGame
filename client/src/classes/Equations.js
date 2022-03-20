@@ -39,7 +39,11 @@ export default class Equations {
             formula = formula.replace(")", "}");
         }
         // Exponents
-        if (formula.includes("**")) formula = formula.replace("**", "^");
+        if (formula.includes("**")) {
+            do {
+                formula = formula.replace("**", "^");
+            } while (formula.includes("**"));
+        }
         // Multiplication
         for (let i = 0; i < formula.length; i++) {
             if (formula[i] == "*" && formula[i + 1] != "*") formula = formula.replace(formula[i], "\\cdot");

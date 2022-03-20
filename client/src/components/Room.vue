@@ -9,7 +9,7 @@
     <button @click="consolelog($parent.username)">Console Log!</button>
     <button v-show="host && gameStarted">Start Game</button>
     <p>Invite Link: <a :href="inviteLink" target="_blank">math-race-game.herokuapp.com/go/{{ room }}</a></p>
-    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not " }}begin.</p>
+    <p>{{ players.length }} player(s) are in room #{{ room }}. This game can {{ gameStarted ? "":"not" }} begin.</p>
     <div v-for="player in uniqueScoreCard" :key="player.id">
       <h1><b>{{ player.isHost ? "[HOST]":"" }}</b>
         {{ player.user }} is on question 
