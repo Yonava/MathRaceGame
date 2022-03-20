@@ -6,12 +6,12 @@
 
     <!-- Create New Room -->
     <div class="view-container" v-if="viewController === 'CreatingSession'">
-      <CreateNewRoom />
+      <CreateNewRoom :username="username" />
     </div>
 
     <!-- Singleplayer Practice -->
     <div class="view-container" v-else-if="viewController === 'Practice'">
-      <Practice :username="$parent.username" />
+      <Practice />
     </div>
 
     <!-- Leaderboard -->
@@ -33,7 +33,11 @@
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
       <button @click="$router.push('/profile/Yonava')">View Profile</button>
       <button @click="consolelog()">Console Log!</button>
-      <button v-on:click="switchView('CreatingSession')">Create New Session</button>
+      <input type="text" v-model="username" placeholder="enter username">
+      <h3 style="color:red">{{ errorMsg }}</h3>
+      <b-button variant="primary" @click="switchView('CreatingSession')">Create Session</b-button>
+      <b-button variant="secondary" @click="joinSession()">Join Session</b-button>
+      <input v-show="joiningRoom" placeholder="enter room id" type="text">
     </div>
 
     <!-- End of Main Menu Content -->
@@ -63,6 +67,7 @@
 
 <script>
 
+import validateUsername from '../functionality/usernameValidation.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import CreateNewRoom from '../components/CreateNewRoom.vue'
@@ -72,6 +77,9 @@ export default {
   data: () => {
     return {
       viewController: '',
+      joiningRoom: false,
+      username: '',
+      errorMsg: ''
     }
   },
   components: {
@@ -81,7 +89,10 @@ export default {
     Info
   },
   mounted() {
-    
+    // checks if username is on file, and if so, sets username data to it
+    if (localStorage?.username !== undefined) {
+      this.username = localStorage.username;
+    }
   },
   created() {
 
@@ -98,6 +109,13 @@ export default {
     }
   },
   watch: {
+    username() {
+
+      this.errorMsg = validateUsername(this.username.trim());
+
+      if (!this.errorMsg)
+        localStorage.username = this.username;
+    }
   }
 
 }

@@ -2,8 +2,10 @@
   <div>
     <button v-on:click="gameStarted = !gameStarted">toggle game</button>
     <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
-    <p><b>Session Details: Host</b> = {{ sessionData.host }} <br>
+    <p><b>Session Details: <br> Host Name</b>= {{ sessionData.host }} <br>
+    <b>My Name</b> = {{ sessionData.clientName }} <br>
     <b>Time Created</b> = {{ sessionData.date }} <br>
+    <b>Room ID</b> = {{ sessionData.roomid }} <br>
     <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
     <b>Questions</b> = {{ sessionData.questions }} <br>
     </p>
@@ -79,7 +81,7 @@ export default {
         }
       );
       this.socketInstance.emit(
-        "joinRoom", this.room
+        "joinRoom", this.sessionData.roomid
       );
       this.updateStandings();
     },
@@ -99,12 +101,11 @@ export default {
     updateStandings() {
       const newScore = {
         qnum: this.qNumber,
-        user: this.username,
-        isUserReady: this.isUserReady,
-        isHost: this.host
+        user: this.sessionData.clientName,
+        isUserReady: this.isUserReady
       };
       this.scoreCard.push(newScore);
-      this.socketInstance.emit('score', newScore, this.room);
+      this.socketInstance.emit('score', newScore, this.sessionData.roomid);
     },
     disconnect() {
       this.socketInstance.emit('disconnectMsg', this.username)

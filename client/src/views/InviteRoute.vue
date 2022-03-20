@@ -48,6 +48,12 @@ export default {
       sessionInfo: undefined,
     }
   },
+  mounted() {
+    // checks if username is on file, and if so, sets username data to it
+    if (localStorage?.username !== undefined) {
+      this.username = localStorage.username;
+    }
+  },
   created() {
     fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
       .then(response => response.json())
@@ -68,7 +74,14 @@ export default {
 
       if (this.errorMessage) return;
 
-      this.$router.push(this.$router.push({ name: 'Room', params: { sessionObject: this.sessionInfo }}));
+      this.$router.push({ name: 'Room', params: { sessionObject: {
+        questions: this.sessionInfo.questions,
+        date: this.sessionInfo.date,
+        roomid: this.sessionInfo.roomid,
+        host: this.sessionInfo.host,
+        difficulty: this.sessionInfo.difficulty,
+        clientName: this.username
+      }}});
     }
   }
 }
