@@ -21,7 +21,7 @@ export default function validateUsername(username) {
   }
 
   for (let i in bannedWords) {
-    if (username.toLowerCase().includes(bannedWords[i])) return errorMessage = `Username Violates Our Community Guidelines Detected: '${bannedWords[i]}'`;
+    if (username.toLowerCase().includes(bannedWords[i])) return errorMessage = `Username Violates Our Community Guidelines: '${bannedWords[i]}'`;
   }
 
   const dreamStan = ['innit', 'dream', 'dream smp',

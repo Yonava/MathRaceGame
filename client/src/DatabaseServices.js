@@ -1,29 +1,39 @@
 import axios from 'axios';
 
-const sessions_url = 'api/sessions/';
-const users_url = 'api/users/'
+const sessionUrl = 'api/sessions/';
+// const userUrl = 'api/users/';
 
-class ArticleService {
+class DatabaseServices {
 
-    static async firstFunction() {
-       
+    // Get All Sessions
+    static async getAllSessions() {
+        try {
+            const res = await axios.get(sessionUrl);
+            return res.data;
+        } catch (error) {
+            console.warn(error)
+        }
     }
- 
-    static async secondFunction() {
-        
+
+    // Find Session With Corrosponding Room ID
+    static async findSessionByRoomID(roomid) {
+        try {
+            const res = await axios.get(`${sessionUrl}${roomid}`);
+            return res.data;
+        } catch (error) {
+            console.warn(`${sessionUrl}${roomid}`, error);
+        }
     }  
 
-    static thirdFuction() {
-        
+    // Post A Session to Sessions Database
+    static createNewSession(session) {
+        return axios.post(sessionUrl, session)
     }
 
-    static forthFunction() {
-
-    }
-
-    static fifthFunction() {
-
+    // Close Session
+    static deleteSessionByRoomID(roomid) {
+        return axios.delete(`${sessionUrl}${roomid}`)
     }
 }
 
-export default ArticleService;
+export default DatabaseServices;

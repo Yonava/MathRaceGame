@@ -1,9 +1,10 @@
 <template>
   <div>
 
+    <button @click="consolelog()">Console Log! {{ request }}</button>
     <!-- Singleplayer Practice -->
     <div class="view-container" v-if="viewController[renderedView] === 'Practice'">
-      <Practice />
+      <Practice :username="$parent.username" />
     </div>
 
     <!-- Leaderboard -->
@@ -23,11 +24,11 @@
 
     <div class="view-container" v-else>
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
-      <button @click="$router.push('/profile')">View Profile</button>
+      <button @click="$router.push('/profile/Yonava')">View Profile</button>
     </div>
 
     <!-- Navigation Panel -->
-    <footer class="bottom">
+    <footer v-show="!$parent.inGame" class="bottom">
       <div class="bottom-container">
         <div @click="switchView('Home')" class="nav-container">
           <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
@@ -52,6 +53,7 @@
 
 <script>
 
+import DatabaseServices from '../DatabaseServices.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import Multiplayer from '../components/Multiplayer.vue'
@@ -61,7 +63,8 @@ export default {
   data: () => {
     return {
       viewController: ['Home', 'Practice', 'Leaderboard', 'Multiplayer', 'Info'],
-      renderedView: 0
+      renderedView: 0,
+      request: ''
     }
   },
   components: {
@@ -71,7 +74,7 @@ export default {
     Info
   },
   mounted() {
-
+    
   },
   created() {
 
@@ -82,6 +85,9 @@ export default {
   methods: {
     switchView(view) {
       this.renderedView = this.viewController.indexOf(view);
+    },
+    async consolelog() {
+      this.request = await DatabaseServices.getAllSessions();
     }
   },
   watch: {
@@ -108,8 +114,8 @@ div.view-container {
     height: 5vh;
     width: 5vh;
     margin-top: .5vh;
-    margin-right: 7.5vw;
-    margin-left: 7.5vw;
+    margin-right: 5vw;
+    margin-left: 5vw;
     margin-bottom: 0px;
 }
 .bottom-container {

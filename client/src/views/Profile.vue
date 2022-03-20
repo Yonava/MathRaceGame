@@ -1,7 +1,7 @@
 <template>
     <center>
         <div>
-            <h1>Profile Page</h1>
+            <h1>This is The Profile Page of {{ $route.params.username }}</h1>
             <button @click="$router.push('/')">Back</button>
         </div>
     </center>
