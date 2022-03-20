@@ -51,12 +51,18 @@ export default class Levels extends Equations {
     static levelThree() {
         // Uses random power in [0, 2]
         let eqObj = Arithmetic.ExpoExpr(Arithmetic.BaseEq('+', 1, 9), 0, 2);
+        // Power to a power, both powers are 1 or 2
+        let expoObj = Arithmetic.ExpoExpr(Arithmetic.ExpoEq(1, 3, 1, 2), 1, 2);
 
         const template = [
             {
                 equation: `${eqObj.equation}`,
                 evaluation: `${eqObj.evaluation}`
             },
+            {
+                equation: `${expoObj.equation}`,
+                evaluation: `${expoObj.evaluation}`
+            }
         ];
 
         return this.randItem(template);
