@@ -7,7 +7,7 @@
     <br>
     <h1 class="error">{{ errorMessage }}</h1>
     <br>
-    <button v-on:click="$parent.creatingSession = false">Back</button>
+    <button v-on:click="$parent.viewController = ''">Back</button>
   </div>
 </template>
 

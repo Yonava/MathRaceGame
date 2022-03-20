@@ -5,7 +5,7 @@
     <!-- View Controller -->
 
     <!-- Create New Room -->
-    <div class="view-container" v-if="creatingSession">
+    <div class="view-container" v-if="viewController === 'CreatingSession'">
       <CreateNewRoom />
     </div>
 
@@ -33,9 +33,9 @@
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
       <button @click="$router.push('/profile/Yonava')">View Profile</button>
       <button @click="consolelog()">Console Log!</button>
-      <button v-on:click="creatingSession = true">Create New Session</button>
+      <button v-on:click="switchView('CreatingSession')">Create New Session</button>
     </div>
-    
+
     <!-- End of Main Menu Content -->
 
 
@@ -72,7 +72,6 @@ export default {
   data: () => {
     return {
       viewController: '',
-      creatingSession: false
     }
   },
   components: {
