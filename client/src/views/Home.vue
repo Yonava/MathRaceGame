@@ -28,12 +28,14 @@
 
 
     <!-- Main Menu Content -->
+
     <div class="view-container" v-else>
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
       <button @click="$router.push('/profile/Yonava')">View Profile</button>
       <button @click="consolelog()">Console Log!</button>
       <button v-on:click="creatingSession = true">Create New Session</button>
     </div>
+    
     <!-- End of Main Menu Content -->
 
 

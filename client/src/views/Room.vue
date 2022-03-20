@@ -2,7 +2,11 @@
   <div>
     <button v-on:click="gameStarted = !gameStarted">toggle game</button>
     <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
-    <p>Session Details: {{ $route.params.sessionObject }}</p>
+    <p><b>Session Details: Host</b> = {{ sessionData.host }} <br>
+    <b>Time Created</b> = {{ sessionData.date }} <br>
+    <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
+    <b>Questions</b> = {{ sessionData.questions }} <br>
+    </p>
 
     <!-- Waiting Area -->
     <div v-if="!gameStarted">
@@ -30,6 +34,7 @@ import RaceArea from "../components/RaceArea.vue"
 export default {
   data: () => {
     return {
+      sessionData: undefined,
       inviteLink: '',
       gameStarted: false,
       players: [],
@@ -46,13 +51,13 @@ export default {
 
     /* --parsing database object-- */
 
-    console.log(this.$route.params.sessionObject)
+    this.sessionData = this.$route.params.sessionObject;
 
 
     /* --parsing database object-- */
 
     this.connect();
-    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.room}`
+    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.sessionData.roomid}`
   },
   created() {
     // forces a socket reconnect every 2.5 seconds

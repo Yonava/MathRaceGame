@@ -59,9 +59,16 @@ export default {
     joinRoom() {
       this.errorMessage = validateUsername(this.username.trim());
 
+      // checks if the session specifies a host, and if so, is player username the same as the hosts username
+      if (this.sessionInfo?.host !== undefined) {
+        if (this.username.trim().toLowerCase() === this.sessionInfo.host.toLowerCase()) {
+          this.errorMessage =  'bRuh, U cant be the Smae Name as the Host :/';
+        }
+      }
+
       if (this.errorMessage) return;
 
-      this.$router.push(this.$router.push({ name: 'Room', params: { sessionObject: this.sessionInfo }}))
+      this.$router.push(this.$router.push({ name: 'Room', params: { sessionObject: this.sessionInfo }}));
     }
   }
 }

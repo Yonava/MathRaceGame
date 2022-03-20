@@ -41,12 +41,13 @@ export default {
             return this.errorMessage = "Problem Encountered While Creating Room, Try One More Time.";  
 
           try {
+              console.log(this.username)
               await DatabaseServices.createNewSession({
-                "questions": GenerateQuestions(),
-                "date": Date.now().toString(),
-                "roomid": String(this.roomID),
-                "host": this.username,
-                "difficulty": "Impossible" // replace with custom values
+                questions: GenerateQuestions(),
+                date: Date.now(),
+                roomid: String(this.roomID),
+                host: this.username,
+                difficulty: "Impossible" // customize later
               });
           } catch (error) {
               this.errorMessage = error;
