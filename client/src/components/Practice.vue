@@ -45,7 +45,7 @@ export default {
     "username"
   ],
   mounted() {
-
+    console.log(this.username)
   },
   created() {
 

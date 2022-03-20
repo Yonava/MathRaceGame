@@ -8,7 +8,7 @@ let bannedWords =
 'chink', 'gook', 'retard', 'rape', 'rapist', 'porn', 'incest', 'queer', 'blowjob',
 'redskin', 'spic', 'beaner', 'midget', 'osama', 'raghead', 'jizz', 'cum',
 'masturbate', 'std', 'condom', 'dildo', 'vibrator', 'wap', 'boob', 'breast',
-'tits', 'titty', 'bdsm', 'fetish', 'swastika', 'whore', 'stripper', 'slut',
-'prostitute', 'prozzy', 'kink', 'orgasm', 'hentai'];
+'tits', 'titty', 'titties', 'bdsm', 'fetish', 'swastika', 'whore', 'stripper', 'slut',
+'prostitute', 'prozzy', 'kink', 'orgasm', 'gasm', 'hentai'];
 
 export default bannedWords;
