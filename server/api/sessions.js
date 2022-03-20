@@ -27,7 +27,9 @@ router.post('/', async (req, res) => {
     const createdSession = new Session({
         roomid: req.body.roomid,
         questions: req.body.questions,
-        date: req.body.date
+        date: req.body.date,
+        host: req.body.host,
+        difficulty: req.body.difficulty
     });
 
     try {

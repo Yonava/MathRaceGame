@@ -1,40 +1,50 @@
 <template>
   <div>
 
-    <button @click="consolelog()">Console Log! {{ request }}</button>
+
+    <!-- View Controller -->
+
+    <!-- Create New Room -->
+    <div class="view-container" v-if="viewController === 'CreatingSession'">
+      <CreateNewRoom />
+    </div>
+
     <!-- Singleplayer Practice -->
-    <div class="view-container" v-if="viewController[renderedView] === 'Practice'">
+    <div class="view-container" v-else-if="viewController === 'Practice'">
       <Practice :username="$parent.username" />
     </div>
 
     <!-- Leaderboard -->
-    <div class="view-container" v-else-if="viewController[renderedView] === 'Leaderboard'">
+    <div class="view-container" v-else-if="viewController === 'Leaderboard'">
       <Leaderboard />
     </div>
 
-    <!-- Multiplayer -->
-    <div class="view-container" v-else-if="viewController[renderedView] === 'Multiplayer'">
-      <Multiplayer />
-    </div>
-
     <!-- Info Page -->
-    <div class="view-container" v-else-if="viewController[renderedView] === 'Info'">
+    <div class="view-container" v-else-if="viewController === 'Info'">
       <Info />
     </div>
+
+    <!-- End of View Controller -->
+
+
+    <!-- Main Menu Content -->
 
     <div class="view-container" v-else>
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
       <button @click="$router.push('/profile/Yonava')">View Profile</button>
+      <button @click="consolelog()">Console Log!</button>
+      <button v-on:click="switchView('CreatingSession')">Create New Session</button>
     </div>
 
-    <!-- Navigation Panel -->
+    <!-- End of Main Menu Content -->
+
+
+
+    <!-- Bottom Nav Bar -->
     <footer v-show="!$parent.inGame" class="bottom">
       <div class="bottom-container">
-        <div @click="switchView('Home')" class="nav-container">
+        <div @click="switchView('')" class="nav-container">
           <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
-        </div>
-        <div @click="switchView('Multiplayer')" class="nav-container">
-          <img class="icon" src="https://www.pngitem.com/pimgs/m/391-3911003_multiplayer-visitor-icon-hd-png-download.png" alt="multiplayer">
         </div>
         <div @click="switchView('Practice')" class="nav-container">
           <img class="icon" src="https://previews.123rf.com/images/sarahdesign/sarahdesign1706/sarahdesign170600477/80760345-target-practice-icon.jpg" alt="singleplayer">
@@ -43,7 +53,7 @@
           <img class="icon" src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png" alt="singleplayer">
         </div>
         <div @click="switchView('Info')" class="nav-container">
-          <img class="icon" src="https://www.pngitem.com/pimgs/m/195-1951784_info-icon-svg-transparent-background-information-icon-hd.png" alt="info">
+          <img class="icon" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg" alt="singleplayer">
         </div>
       </div>
     </footer> 
@@ -53,24 +63,21 @@
 
 <script>
 
-import DatabaseServices from '../DatabaseServices.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
-import Multiplayer from '../components/Multiplayer.vue'
+import CreateNewRoom from '../components/CreateNewRoom.vue'
 import Info from '../components/Info.vue'
 
 export default {
   data: () => {
     return {
-      viewController: ['Home', 'Practice', 'Leaderboard', 'Multiplayer', 'Info'],
-      renderedView: 0,
-      request: ''
+      viewController: '',
     }
   },
   components: {
     Practice,
     Leaderboard,
-    Multiplayer,
+    CreateNewRoom,
     Info
   },
   mounted() {
@@ -84,10 +91,10 @@ export default {
   },
   methods: {
     switchView(view) {
-      this.renderedView = this.viewController.indexOf(view);
+      this.viewController = view;
     },
-    async consolelog() {
-      this.request = await DatabaseServices.getAllSessions();
+    consolelog() {
+      this.$router.push({ name: 'Room', params: { sessionObject: { myname: 'yona' }}})
     }
   },
   watch: {

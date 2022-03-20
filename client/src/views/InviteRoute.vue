@@ -3,43 +3,33 @@
     <br><br><br><br>
     <center>
 
-      <div v-if="loading">
+      <div v-if="sessionInfo === undefined">
         <h1>Loading Session...</h1>
       </div>
 
       <!-- Session Found Error -->
-      <div v-else-if="!wasSessionFound">
+      <div v-else-if="sessionInfo === null">
         <h1>
-          Session Not Found,
-          Double Check You Got The Correct Invite Link
+          Session Not Found!
         </h1>
         <br>
-        <p><b>[Session #{{ $route.params.roomid }}]</b></p>
+        <p><b>[Unable To Retrieve Session {{ $route.params.roomid }}]</b></p>
       </div>
 
+      <!-- Input Username -->
       <div v-else>
-
-        <!-- Input Username -->
-        <div v-if="displayUsernamePromp">
-          <p>You have been invited to Room #{{ $route.params.roomid }}, Created on {{ sessionInfo.date }}!</p>
-          <h1>Enter A Username:</h1>
-          <input v-model="username" type="text" placeholder="Enter Username" />
-          <button @click="joinRoom()">Join Room</button>
-          <h1 class="error">{{ errorMessage }}</h1>
-          <p style="font-size: 10pt; margin-top: 20vh;">
-            {{ sessionInfo }}
-          </p>
-        </div>
-
-        <!-- Session Room -->
-        <div v-else>
-          <Room 
-          :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
-          :room="$route.params.roomid" 
-          :host="false" />
-        </div>
-
+        <p>Join Room <b>{{ sessionInfo.roomid }}</b>, Created on <b>{{ sessionInfo.date }}</b></p>
+        <h1>Enter A Username:</h1>
+        <input v-model="username" type="text" placeholder="Enter Username" />
+        <button @click="joinRoom()">Join Room</button>
+        <h1 class="error">{{ errorMessage }}</h1>
+        <h4 style="margin-top: 5vh;">Session Details:</h4>
+        <p>
+          {{ sessionInfo }}
+        </p>
       </div>
+
+      <button @click="$router.push('/')">Back</button>
 
     </center>
 
@@ -49,28 +39,14 @@
 <script>
 
 import validateUsername from '../functionality/usernameValidation.js'
-import Room from '../components/Room.vue'
 
 export default {
-  components: {
-    Room
-  },
   data: () => {
     return {
-      loading: true,
       username: '',
-      displayUsernamePromp: true,
       errorMessage: '',
-      sessionInfo: null,
-      wasSessionFound: false
+      sessionInfo: undefined,
     }
-  },
-  mounted() {
-    setTimeout(() => {
-      this.loading = false
-      if (this.sessionInfo !== null) this.wasSessionFound = true 
-      console.log(this.sessionInfo)
-    }, 1250)
   },
   created() {
     fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
@@ -81,14 +57,18 @@ export default {
   },
   methods: {
     joinRoom() {
+      this.errorMessage = validateUsername(this.username.trim());
 
-      this.username = this.username.trim();
-      this.errorMessage = validateUsername(this.username);
+      // checks if the session specifies a host, and if so, is player username the same as the hosts username
+      if (this.sessionInfo?.host !== undefined) {
+        if (this.username.trim().toLowerCase() === this.sessionInfo.host.toLowerCase()) {
+          this.errorMessage =  'bRuh, U cant be the Smae Name as the Host :/';
+        }
+      }
 
       if (this.errorMessage) return;
 
-      this.host = false;
-      this.displayUsernamePromp = false;
+      this.$router.push(this.$router.push({ name: 'Room', params: { sessionObject: this.sessionInfo }}));
     }
   }
 }
