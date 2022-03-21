@@ -2,27 +2,20 @@
 <template>
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
-      <button @click="genQuestions()">Generate Questions</button>
-      <input type="range" min="2" max="15" v-model="max">{{max}}
-      <h1 v-for="i in output" :key="i.id"> 
-        <vue-mathjax :formula="i.equation"></vue-mathjax>
-        
-        <input type="radio" id="choiceOne" :name="i.equation" :value="i.answer" @click="choice[output.indexOf(i)]=i.answer">
-        <label for="choiceOne">{{i.answer}}</label><br>
+      <button @click="start=true">Start Practice</button>
+   
+      <div v-if="start">
 
-        <input type="radio" id="choiceTwo" :name="i.equation" :value="i.options[1]" @click="choice[output.indexOf(i)]=i.options[1]">
-        <label for="choiceOne">{{i.options[1]}}</label><br>
+        <!-- Display question -->
+        <vue-mathjax :formula="itemized.equation"></vue-mathjax>
+        <!-- Display possible answers -->
+        <p class="task"><strong>{{ itemized.task }}</strong></p>
+        <b-form-group v-slot="{ ariaDescribedby }" v-for="i in itemized.options" :key="i.id">
+          <b-form-radio v-model="selected" :aria-describedby="ariaDescribedby" :name="itemized.equation" :value="i" :disabled="answered">{{i}}</b-form-radio>
+        </b-form-group>
 
-        <input type="radio" id="choiceThree" :name="i.equation" :value="i.options[2]">
-        <label for="choiceTwo" @click="choice[output.indexOf(i)]=i.options[2]">{{i.options[2]}}</label><br>
-
-        <input type="radio" id="choiceFour" :name="i.equation" :value="i.options[3]">
-        <label for="choiceThree" @click="choice[output.indexOf(i)]=i.options[3]">{{i.options[3]}}</label><br><br>
-
-        <button @click="checkAnswer(output.indexOf(i), i.answer), qAnswered[output.indexOf(i)]=true">Submit</button>
-
-        <p v-show="qAnswered[output.indexOf(i)]">{{correct[output.indexOf(i)] ? "Correct!":"Incorrect!"}}</p>
-      </h1>
+        <p v-if="answered"> {{ isCorrect ? "Correct!":"Incorrect!" }} </p>
+      </div>
     </div>
 </template>
 
@@ -34,18 +27,22 @@ export default {
   name: 'app',
   data: () => {
     return {
-      max: 0,
-      choice: [],
-      correct: [],
-      qAnswered: [],
-      output: []
+      start: false,
+      selected: '',
+      currentPage: 1,
+      answered: false,
+      isCorrect: false,
+      output: [],
+      itemized: [],
     }
   },
   props: [
     "username"
   ],
   mounted() {
-    console.log(this.username)
+    // Create the set of problems
+    this.output = GenerateQuestions();
+    this.itemized = this.output[0];
   },
   created() {
 
@@ -54,23 +51,23 @@ export default {
 
   },
   methods: {
-    // Create the set of problems
-    genQuestions() {
-      this.output = GenerateQuestions();
-      for (let i = 0; i < this.output.length; i++) {
-        this.qAnswered.push(false);
-        this.correct.push(false);
-        this.choice.push("null");
-      }
-    },
-    // Check submission
-    checkAnswer(index, answer) {
-      if (this.choice[index] == answer) this.correct[index] = true;
-      else this.correct[index] = false;
-    }
+
   },
   watch: {
+    selected() {
+      if (this.selected === this.itemized.answer) this.isCorrect = true;
+      else this.isCorrect = false;
 
+      if (this.selected != '') {
+        this.answered = true;
+        this.currentPage++;
+        setTimeout(() => {
+          this.itemized = this.output[this.currentPage- 1];
+          this.selected = '';
+          this.answered = false;
+        }, 2000);
+      }
+    }
   }
 }
 </script>
