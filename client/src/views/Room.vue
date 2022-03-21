@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <button v-on:click="gameStarted = !gameStarted">toggle game</button>
+  <div class="center-container">
+    <b-button variant="info" v-on:click="gameStarted = !gameStarted">toggle game</b-button>
     <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
     <p>
       <b>Session Details: <br> Host Name</b> = {{ sessionData.host }} <br>
@@ -14,14 +14,14 @@
     <!-- Waiting Area -->
     <div v-if="!gameStarted">
       <WaitingArea
-      :playerData="uniqueScoreCard"
+      :playerData="playerInfo"
       />
     </div>
 
     <!-- Race Area -->
     <div v-else>
       <RaceArea
-      :playerData="uniqueScoreCard"
+      :playerData="playerInfo"
       />
     </div>
 
@@ -37,13 +37,18 @@ import RaceArea from "../components/RaceArea.vue"
 export default {
   data: () => {
     return {
+
+      playerList: [],
+      playerInfo: [],
+      refreshTimer: 3000,
+
       sessionData: undefined,
       inviteLink: '',
       gameStarted: false,
-      players: [],
+      /* Waiting Area Data */
+      isUserReady: false,
+      /* Race Area Data */
       qNumber: 1,
-      scoreCard: [],
-      uniqueScoreCard: []
     };
   },
   components: {
@@ -56,7 +61,6 @@ export default {
 
     this.sessionData = this.$route.params.sessionObject;
 
-
     /* --parsing database object-- */
 
     this.connect();
@@ -68,101 +72,74 @@ export default {
       this.socketInstance.disconnect();
       this.connect();
     }, 2500)
+    this.timeKeeper = setInterval(() => {
+      for (let i = 0; i < this.playerInfo.length; i++) {
+        this.playerInfo[i].refreshTimer -= 1000;
+        if (this.playerInfo[i].refreshTimer < 0) {
+          this.playerInfo.splice(i, 1);
+          this.playerList.splice(i, 1);
+        }
+      }
+    }, 1000);
   },
   destroyed() {
     clearInterval(this.refreshConnection);
+    clearInterval(this.timeKeeper);
   },
   methods: {
+    updatePlayerInfo(data) {
+      if (!this.playerList.includes(data.user)) {
+        this.playerInfo.push(data);
+        this.playerList.push(data.user);
+      } else {
+        for (let i = 0; i < this.playerInfo.length; i++) {
+          if (this.playerInfo[i].user === data.user) {
+            this.playerInfo[i] = data;
+            this.playerInfo[i].refreshTimer = 3000;
+          }
+        }
+      }
+    },
     connect() {
-      
       this.socketInstance = io('/');
       this.socketInstance.on(
         "scoreRecieved", (data) => {
-          this.scoreCard.push(data);
-        }
-      );
+          this.updatePlayerInfo(data)
+        });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
       );
       this.updateStandings();
     },
     questionAnswered() {
+      console.table(this.playerList)
       this.qNumber++;
       this.updateStandings();
     },
     updateStandings() {
-      const newScore = {
+      const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
-        isUserReady: this.isUserReady
+        isUserReady: this.isUserReady,
+        refreshTimer: this.refreshTimer
       };
-      this.scoreCard.push(newScore);
-      this.socketInstance.emit('score', newScore, this.sessionData.roomid);
-    },
-    disconnect() {
-      this.socketInstance.emit('disconnectMsg', this.username)
-      this.socketInstance.disconnect();
-      this.$parent.menuDisplay = true;
+      this.updatePlayerInfo(data)
+      this.socketInstance.emit('score', data, this.sessionData.roomid);
     }
   },
   watch: {
     isUserReady() {
       this.updateStandings();
-    },
-    scoreCard() {
-
-      this.players = [];
-      this.uniqueScoreCard = [];
-      for (let i = this.scoreCard.length - 1; i >= 0; i--) {
-        if (!this.players.includes(this.scoreCard[i].user)) {
-          this.players.push(this.scoreCard[i].user);
-          this.uniqueScoreCard.push(this.scoreCard[i]);
-        }
-      }
-
-      this.gameStarted = this.hasGameStarted();
-      
-      // this.uniqueScoreCard.sort((a, b) => b.qnum - a.qnum);
-    },
+    }
   },
 };
 </script>
 
 <style scoped>
-.parent-container {
-  width: 100%;
-  height: 100%;
+.center-container {
   display: flex;
   justify-content: center;
-  position: fixed;
-  padding-top: 150px;
-}
-.name-container {
-  display: flex;
+  align-items: center;
   flex-direction: column;
-  width: 200px;
-}
-.user-name {
-  height: 30px;
-  font-size: 20px;
-  padding: 5px;
-  margin-bottom: 5px;
-  text-align: center;
-  font-weight: bold;
-}
-.join-button {
-  height: 30px;
-  font-size: 20px;
-}
-.text-input-container {
-  height: 100vh;
-}
-.text-message {
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  height: 70px;
-  padding: 10px;
-  box-sizing: border-box;
 }
 </style>

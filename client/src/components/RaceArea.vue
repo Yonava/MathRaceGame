@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="questionAnswered()">Answer a question</button>
+    <b-button variant="primary" @click="$parent.questionAnswered()">Answer a question</b-button>
     <div v-for="player in playerData" :key="player.id">
       <h1>
         {{ player.user }} is on question {{ player.qnum }}
