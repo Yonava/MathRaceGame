@@ -1,6 +1,7 @@
-import Equations from "../classes/Equations";
+import Equations from "../classes/Equations"
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
+import shuffle from "../functionality/shuffleArray"
 
 // Each entry i in numQuestions is a different level.
 // The value of i is how many questions of that level to make
@@ -46,16 +47,17 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                     do {
                         newOption = Math.round((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2));
                         Math.random() < .5 ? mixIn++:mixIn--;
-                    } while (options.includes(newOption))
+                    } while (options.includes(newOption));
                     options.push(newOption);
                 } else {
-                    newOption = ((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2)).toFixed(2);
-                    Math.random() < .5 ? mixIn++:mixIn--;
+                    do {
+                        newOption = ((options[0] + mixIn) * Equations.randNum(0.5, 1.5, 2)).toFixed(2);
+                        Math.random() < .5 ? mixIn++:mixIn--;
+                    } while (options.includes(newOption));
                     options.push(Number(newOption));
                 }
             }
 
-            console.log(question.equation);
             // The data for the question, including answers
             questionObj = {
                 equation: `${Equations.toMathjax(question.equation)}`,
@@ -63,6 +65,8 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                 answer: options[0],
                 options
             };
+
+            shuffle(questionObj.options);
 
             output.push(questionObj);
         }
