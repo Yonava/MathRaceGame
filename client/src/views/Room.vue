@@ -42,6 +42,9 @@ export default {
       playerInfo: [],
       refreshTimer: 5000,
 
+      /* false if user is on another tab or minimizes window */
+      visibilityState: true,
+
       sessionData: undefined,
       inviteLink: '',
       gameStarted: false,
@@ -56,22 +59,28 @@ export default {
     RaceArea
   },
   mounted() {
-
-    /* --parsing database object-- */
-
-    this.sessionData = this.$route.params.sessionObject;
-
-    /* --parsing database object-- */
-
     this.connect();
     this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.sessionData.roomid}`
   },
   created() {
+
+    this.sessionData = this.$route.params.sessionObject;
+
+    // listens to see if user tabs out or minimizes our game
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.visibilityState = true
+      } else {
+        this.visibilityState = false
+      }});
+
     // forces a socket reconnect every 2.5 seconds
     this.refreshConnection = setInterval(() => {
-      this.socketInstance.disconnect();
-      this.connect();
-    }, 2500)
+      if (this.visibilityState) {
+        this.socketInstance.disconnect();
+        this.connect();
+      }
+    }, 2500);
     this.timeKeeper = setInterval(() => {
       for (let i = 0; i < this.playerInfo.length; i++) {
         this.playerInfo[i].refreshTimer -= 1000;

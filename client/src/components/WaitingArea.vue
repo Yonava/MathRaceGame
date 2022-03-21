@@ -25,10 +25,12 @@ export default {
     
   },
   created() {
-    
+    this.refresh = setInterval(() => {
+      this.$forceUpdate();
+    }, 100)
   },
   destroyed() {
-
+    clearInterval(this.refresh);
   },
   methods: {
     toggleReadiness() {
