@@ -30,13 +30,7 @@ export default {
   },
   destroyed() {
     clearInterval(this.refresh);
-  },
-  methods: {
-   
-  },
-  watch: {
-    
-  },
+  }
 }
 </script>
 

@@ -21,9 +21,6 @@ export default {
   props: [
     'playerData'
   ],
-  mounted() {
-    
-  },
   created() {
     this.refresh = setInterval(() => {
       this.$forceUpdate();
@@ -39,10 +36,7 @@ export default {
         this.toggleButtonVariant = 'success';
       else this.toggleButtonVariant = 'danger';
     }
-  },
-  watch: {
-
-  },
+  }
 };
 </script>
 
