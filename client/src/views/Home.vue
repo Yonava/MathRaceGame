@@ -6,12 +6,12 @@
 
     <!-- Create New Room -->
     <div class="view-container" v-if="viewController === 'CreatingSession'">
-      <CreateNewRoom />
+      <CreateNewRoom :username="username" />
     </div>
 
     <!-- Singleplayer Practice -->
     <div class="view-container" v-else-if="viewController === 'Practice'">
-      <Practice :username="$parent.username" />
+      <Practice />
     </div>
 
     <!-- Leaderboard -->
@@ -30,14 +30,33 @@
     <!-- Main Menu Content -->
 
     <div class="view-container" v-else>
-      <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
-      <button @click="$router.push('/profile/Yonava')">View Profile</button>
-      <button @click="consolelog()">Console Log!</button>
-      <button v-on:click="switchView('CreatingSession')">Create New Session</button>
+
+      <!-- Session Details -->
+      <p style="font-size: 9pt;">Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
+
+      <!-- Sign In Form -->
+      <input type="text" v-model="username" placeholder="Enter A Username!">
+      <p v-show="username" style="color:red; font-weight:bold;">{{ errorMsg }}</p>
+
+      <p v-show="errorMsg || !username" style="font-weight:bold; margin-top: 5vh;">Enter A Valid Username To Unlock</p>
+
+      <b-button variant="info" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
+
+      <!-- Connect to Multiplayer Sessions -->
+      <b-button :disabled="errorMsg || !username" variant="primary" @click="switchView('CreatingSession')">Create Session</b-button>
+      <b-button :disabled="errorMsg || !username" variant="secondary" @click="joinSession()">Join Session</b-button>
+      <input v-show="joiningRoom" v-model="roomidInput" placeholder="Enter Room ID" type="number">
+      <b-button v-show="roomidInput.length === 4 && joiningRoom" v-on:click="$router.push(`/go/${roomidInput}`)" variant="success">Go!</b-button>
+      <b-button v-show="roomidInput.length === 4 && joiningRoom" variant="danger" v-on:click="deleteSession()">Delete Session</b-button>
+      <p v-show="sessionDeletedMsg" style="color:red; font-weight:bold;">Session {{ roomidInput }} has been yeeted!</p>
+
+      <b-button variant="outline-danger" v-on:click="deleteSession('all')">Delete All Sessions</b-button>
+
     </div>
 
     <!-- End of Main Menu Content -->
 
+    <br><br><br><br><br>
 
 
     <!-- Bottom Nav Bar -->
@@ -63,15 +82,23 @@
 
 <script>
 
+import validateUsername from '../functionality/usernameValidation.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import CreateNewRoom from '../components/CreateNewRoom.vue'
 import Info from '../components/Info.vue'
+import DatabaseServices from '../DatabaseServices.js'
 
 export default {
   data: () => {
     return {
       viewController: '',
+      joiningRoom: false,
+      username: '',
+      errorMsg: '',
+      roomidInput: '',
+
+      sessionDeletedMsg: false
     }
   },
   components: {
@@ -81,7 +108,10 @@ export default {
     Info
   },
   mounted() {
-    
+    // checks if username is on file, and if so, sets username data to it
+    if (localStorage?.username !== undefined) {
+      this.username = localStorage.username;
+    }
   },
   created() {
 
@@ -93,11 +123,36 @@ export default {
     switchView(view) {
       this.viewController = view;
     },
-    consolelog() {
-      this.$router.push({ name: 'Room', params: { sessionObject: { myname: 'yona' }}})
+    joinSession() {
+      this.joiningRoom = !this.joiningRoom;
+    },
+    async deleteSession(session) {
+
+      if (session === 'all') {
+        const sessions = await DatabaseServices.getAllSessions();
+        for (let i in sessions) DatabaseServices.deleteSessionByRoomID(sessions[i].roomid);
+        return;
+      }
+      
+      DatabaseServices.deleteSessionByRoomID(session)
+
+      this.sessionDeletedMsg = true;
+      setTimeout(() => {
+        this.sessionDeletedMsg = false
+      }, 3000);
     }
   },
   watch: {
+    username() {
+
+      this.errorMsg = validateUsername(this.username.trim());
+
+      if (!this.errorMsg)
+        localStorage.username = this.username;
+      
+      if (this.errorMsg || !this.username)
+        this.joiningRoom = false;
+    },
   }
 
 }

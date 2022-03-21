@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="questionAnswered()">Answer a question</button>
+    <b-button variant="primary" @click="$parent.questionAnswered()">Answer a question</b-button>
     <div v-for="player in playerData" :key="player.id">
       <h1>
         {{ player.user }} is on question {{ player.qnum }}
@@ -24,17 +24,13 @@ export default {
     
   },
   created() {
-    
+    this.refresh = setInterval(() => {
+      this.$forceUpdate();
+    }, 100)
   },
   destroyed() {
-
-  },
-  methods: {
-   
-  },
-  watch: {
-    
-  },
+    clearInterval(this.refresh);
+  }
 }
 </script>
 
