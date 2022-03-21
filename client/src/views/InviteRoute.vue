@@ -48,21 +48,21 @@ export default {
       sessionInfo: undefined,
     }
   },
-  mounted() {
-    // checks if username is on file, and if so, sets username data to it
-    if (localStorage?.username !== undefined) {
-      this.username = localStorage.username;
-    }
-  },
   created() {
     fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
       .then(response => response.json())
       .then(data => {
         this.sessionInfo = data;
+        // attempts to automatically join room with cached username
+        if (localStorage?.username !== undefined) {
+          this.username = localStorage.username;
+          this.joinRoom();
+        }
       });
   },
   methods: {
     joinRoom() {
+      console.log('tripped')
       this.errorMessage = validateUsername(this.username.trim());
 
       // checks if the session specifies a host, and if so, is player username the same as the hosts username
