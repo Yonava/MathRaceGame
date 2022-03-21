@@ -35,10 +35,15 @@
       <p style="font-size: 9pt;">Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
 
       <!-- Sign In Form -->
-      <input type="text" v-model="username" placeholder="Enter A Username!">
-      <p v-show="username" style="color:red; font-weight:bold;">{{ errorMsg }}</p>
+      <b-input-group prepend="Username" class="mt-3">
+        <b-form-input v-model="username"></b-form-input>
+        <b-input-group-append>
+          <b-button :variant="searchColor"></b-button>
+      </b-input-group-append>
+      </b-input-group>
+      <p :style="errorMsg ? 'color:red;font-weight:bold;':'color:white;'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
 
-      <p v-show="errorMsg || !username" style="font-weight:bold; margin-top: 5vh;">Enter A Valid Username To Unlock</p>
+      <p style="font-weight:bold; margin-top: 2.5vh;">Enter A Valid Username To Unlock</p>
 
       <b-button variant="info" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
 
@@ -98,7 +103,8 @@ export default {
       errorMsg: '',
       roomidInput: '',
 
-      sessionDeletedMsg: false
+      sessionDeletedMsg: false,
+      searchColor: 'warning',
     }
   },
   components: {
@@ -150,15 +156,23 @@ export default {
       if (!this.errorMsg)
         localStorage.username = this.username;
       
-      if (this.errorMsg || !this.username)
+      if (this.errorMsg || !this.username) {
+        this.searchColor = 'danger'
         this.joiningRoom = false;
-    },
+      } else {
+        this.searchColor = 'success'
+      }
+    }
   }
 
 }
 </script>
 
 <style scoped>
+
+
+
+
 div.view-container {
   padding: 2.5%;
   display: flex;
@@ -166,6 +180,9 @@ div.view-container {
   align-items: center;
   flex-direction: column;
 }
+/* New CSS Elements */
+
+
 /* NAVIGATION DISPLAY */
 .icon {
     height: 5vh;
