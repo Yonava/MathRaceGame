@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="toggleReadiness()">Ready?</button>
+    <b-button :variant="toggleButtonVariant" v-on:click="toggleReadiness()">Toggle Readiness</b-button>
     <div v-for="player in playerData" :key="player.id">
       <h1>
         {{ player.user }} is {{ player.isUserReady ? "R":"Not r" }}eady.
@@ -15,6 +15,7 @@ export default {
   data: () => {
     return {
       isUserReady: false,
+      toggleButtonVariant: 'danger'
     };
   },
   props: [
@@ -31,11 +32,14 @@ export default {
   },
   methods: {
     toggleReadiness() {
-      this.isUserReady = !this.isUserReady;
+      this.$parent.isUserReady = !this.$parent.isUserReady;
+      if (this.toggleButtonVariant === 'success')
+        this.toggleButtonVariant = 'danger';
+      else this.toggleButtonVariant = 'success';
     }
   },
   watch: {
-    
+
   },
 };
 </script>

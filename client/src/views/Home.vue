@@ -31,13 +31,17 @@
 
     <div class="view-container" v-else>
       <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
-      <button @click="$router.push('/profile/Yonava')">View Profile</button>
+      <button @click="$router.push(`/profile/${username}`)">View Profile</button>
       <button @click="consolelog()">Console Log!</button>
       <input type="text" v-model="username" placeholder="enter username">
-      <h3 style="color:red">{{ errorMsg }}</h3>
-      <b-button variant="primary" @click="switchView('CreatingSession')">Create Session</b-button>
-      <b-button variant="secondary" @click="joinSession()">Join Session</b-button>
-      <input v-show="joiningRoom" placeholder="enter room id" type="text">
+      <p style="color:red;font-weight:bold;">{{ errorMsg }}</p>
+
+      <!-- Connect to Multiplayer Sessions -->
+      <b-button :disabled="errorMsg || !username" variant="primary" @click="switchView('CreatingSession')">Create Session</b-button>
+      <b-button :disabled="errorMsg || !username" variant="secondary" @click="joinSession()">Join Session</b-button>
+      <input v-show="joiningRoom" v-model="roomidInput" placeholder="enter room id" type="number">
+      <b-button v-show="roomidInput.length === 4" v-on:click="$router.push(`/go/${roomidInput}`)" variant="success">Go!</b-button>
+
     </div>
 
     <!-- End of Main Menu Content -->
@@ -79,7 +83,8 @@ export default {
       viewController: '',
       joiningRoom: false,
       username: '',
-      errorMsg: ''
+      errorMsg: '',
+      roomidInput: ''
     }
   },
   components: {
@@ -106,6 +111,9 @@ export default {
     },
     consolelog() {
       this.$router.push({ name: 'Room', params: { sessionObject: { myname: 'yona' }}})
+    },
+    joinSession() {
+      this.joiningRoom = !this.joiningRoom;
     }
   },
   watch: {

@@ -2,12 +2,13 @@
   <div>
     <button v-on:click="gameStarted = !gameStarted">toggle game</button>
     <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
-    <p><b>Session Details: <br> Host Name</b>= {{ sessionData.host }} <br>
-    <b>My Name</b> = {{ sessionData.clientName }} <br>
-    <b>Time Created</b> = {{ sessionData.date }} <br>
-    <b>Room ID</b> = {{ sessionData.roomid }} <br>
-    <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
-    <b>Questions</b> = {{ sessionData.questions }} <br>
+    <p>
+      <b>Session Details: <br> Host Name</b> = {{ sessionData.host }} <br>
+      <b>My Name</b> = {{ sessionData.clientName }} <br>
+      <b>Time Created</b> = {{ sessionData.date }} <br>
+      <b>Room ID</b> = {{ sessionData.roomid }} <br>
+      <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
+      <b>Questions</b> = {{ sessionData.questions }} <br>
     </p>
 
     <!-- Waiting Area -->
@@ -85,15 +86,6 @@ export default {
       );
       this.updateStandings();
     },
-    hasGameStarted() {
-      // replace with 'every' function
-      for (let i in this.uniqueScoreCard) {
-        if (!this.uniqueScoreCard[i].isUserReady) {
-          return false;
-        }
-      }
-      return true;
-    },
     questionAnswered() {
       this.qNumber++;
       this.updateStandings();
@@ -114,6 +106,9 @@ export default {
     }
   },
   watch: {
+    isUserReady() {
+      this.updateStandings();
+    },
     scoreCard() {
 
       this.players = [];
