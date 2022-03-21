@@ -40,7 +40,7 @@ export default {
 
       playerList: [],
       playerInfo: [],
-      refreshTimer: 3000,
+      refreshTimer: 5000,
 
       sessionData: undefined,
       inviteLink: '',
@@ -95,7 +95,7 @@ export default {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
             this.playerInfo[i] = data;
-            this.playerInfo[i].refreshTimer = 3000;
+            this.playerInfo[i].refreshTimer = 5000;
           }
         }
       }
@@ -112,7 +112,6 @@ export default {
       this.updateStandings();
     },
     questionAnswered() {
-      console.table(this.playerList)
       this.qNumber++;
       this.updateStandings();
     },
