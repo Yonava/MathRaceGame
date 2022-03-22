@@ -10,8 +10,7 @@
 export default {
   data: () => {
     return {
-      throughApp: false,
-      inGame: false,
+      throughApp: false
     }
   }
 }
@@ -23,7 +22,7 @@ export default {
 body {
     -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
     user-select: none; /* disabled ability to highlight text & iconography */
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
 }
 </style>
