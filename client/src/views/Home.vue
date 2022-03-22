@@ -5,14 +5,14 @@
 
     <!-- Join Room -->
     <transition name="slide">
-      <div class="view-container" v-if="(viewController  || viewSelected) === 'JoinSession'">
+      <div class="view-container" v-if="(viewController || viewSelected) === 'JoinSession'">
         <JoinSession />
       </div>
     </transition>
 
     <!-- Create New Room -->
     <transition name="slide">
-      <div class="view-container" v-if="(viewController  || viewSelected) === 'CreatingSession'">
+      <div class="view-container" v-if="(viewController || viewSelected) === 'CreatingSession'">
         <CreateNewRoom :username="username" /> 
       </div>
     </transition>
@@ -54,20 +54,20 @@
 
       <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>
 
-      <b-button variant="info" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
+      <b-button class="btn btn-info btn-lg main-menu-button" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
 
       <!-- Connect to Multiplayer Sessions -->
-      <b-button :disabled="errorMsg || !username" variant="primary" @click="switchView('JoinSession', true)">
+      <button class="btn btn-secondary btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
         Join Session
-      </b-button>
+      </button>
 
-      <b-button :disabled="errorMsg || !username" variant="secondary" @click="switchView('CreatingSession', true)">
+      <button type="button" class="btn btn-primary btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
         Create Session
-      </b-button>
+      </button>
 
-      <p v-show="sessionDeletedMsg" style="color:red; font-weight:bold;">Session {{ roomidInput }} has been yeeted!</p>
-
-      <b-button variant="outline-danger" v-on:click="deleteSession('all')">Delete All Sessions</b-button>
+      <button class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+        Delete All Sessions
+      </button>
 
     </div>
 
@@ -228,6 +228,12 @@ div.home-container {
   align-items: center;
   justify-content: center;
   padding: 2.5%;
+}
+
+/* Main Menu Buttons */
+.main-menu-button {
+  width: 50vw;
+  margin: 2%;
 }
 
 /* NAVIGATION DISPLAY */
