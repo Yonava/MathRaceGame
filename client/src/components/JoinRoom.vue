@@ -1,7 +1,7 @@
 <template>
 
     <!-- Join Room -->
-    <div>
+    <div class="join-room-container">
 
       <b-button variant="outline-danger" v-on:click="$parent.switchView('', false)">Back</b-button>
 
@@ -40,3 +40,26 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.join-room-container {
+  background-color: rgb(255, 255, 255); 
+  height: 100vh;
+  width: 100vw;
+  padding: 2.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* gets rid of up and down arrows in input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>

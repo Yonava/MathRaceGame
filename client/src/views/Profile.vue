@@ -28,15 +28,15 @@
 <script>
 export default {
     methods: {
-        copyToClipboard() {
-            navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
-                // runs if successful
-                console.log('yay')
-            }, () => {
-                // runs if unsuccessful
-                console.log('not yay')
-            });
-        }
+      copyToClipboard() {
+        navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
+          // runs if successful
+          console.log('yay')
+        }, () => {
+          // runs if unsuccessful
+          console.log('not yay')
+        });
+      }
     }
 }
 </script>

@@ -5,14 +5,14 @@
 
     <!-- Join Room -->
     <transition name="slide">
-      <div class="view-container" v-if="(viewController || viewSelected) === 'JoinSession'">
+      <div style="position:fixed; z-index: 3;" class="view-container" v-if="(viewController || viewSelected) === 'JoinSession'">
         <JoinSession />
       </div>
     </transition>
 
     <!-- Create New Room -->
     <transition name="slide">
-      <div class="view-container" v-if="(viewController || viewSelected) === 'CreatingSession'">
+      <div style="position:fixed; z-index: 3;" class="view-container" v-if="(viewController || viewSelected) === 'CreatingSession'">
         <CreateNewRoom :username="username" /> 
       </div>
     </transition>
@@ -54,16 +54,19 @@
 
       <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>
 
-      <b-button class="btn btn-info btn-lg main-menu-button" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
+      <button class="btn btn-info btn-lg main-menu-button" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</button>
 
       <!-- Connect to Multiplayer Sessions -->
-      <button class="btn btn-secondary btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
-        Join Session
-      </button>
 
-      <button type="button" class="btn btn-primary btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
+      <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
+        Join Session
+      </b-button>
+
+      <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
         Create Session
-      </button>
+      </b-button>
+
+      <!-- End Connect to Multiplayer Sessions -->
 
       <button class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
         Delete All Sessions
@@ -208,18 +211,6 @@ export default {
 
 .slide-enter, .slide-leave-to {
   transform: translateX(100%);
-}
-
-div.view-container {
-  position: fixed; 
-  z-index: 3; 
-  background-color: rgb(255, 255, 255); 
-  height: 100vh;
-  width:100vw;
-  padding: 2.5%;
-  display: flex;
-  flex-direction: column;
-  border-left: 3px solid black;
 }
 
 div.home-container {
