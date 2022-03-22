@@ -3,17 +3,17 @@
 
     <!-- View Controller -->
 
-    <!-- Create New Room -->
-    <transition name="slide">
-      <div class="view-container" v-if="(viewController  || viewSelected) === 'CreatingSession'">
-        <CreateNewRoom :joiningRoom="false" :username="username" />
-      </div>
-    </transition>
-
     <!-- Join Room -->
     <transition name="slide">
       <div class="view-container" v-if="(viewController  || viewSelected) === 'JoinSession'">
-        <CreateNewRoom :joiningRoom="true" :username="username" />
+        <JoinSession />
+      </div>
+    </transition>
+
+    <!-- Create New Room -->
+    <transition name="slide">
+      <div class="view-container" v-if="(viewController  || viewSelected) === 'CreatingSession'">
+        <CreateNewRoom :username="username" /> 
       </div>
     </transition>
 
@@ -37,7 +37,7 @@
 
     <!-- Main Menu Content -->
 
-    <div class="home-container" v-else-if="!viewController || !viewSelected">
+    <div class="home-container" v-if="!viewController || !viewSelected">
 
       <!-- Session Details -->
       <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
@@ -47,7 +47,7 @@
         <b-form-input v-model="username"></b-form-input>
         <b-input-group-append>
           <b-button :variant="searchColor"></b-button>
-      </b-input-group-append>
+        </b-input-group-append>
       </b-input-group>
 
       <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
@@ -57,12 +57,12 @@
       <b-button variant="info" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</b-button>
 
       <!-- Connect to Multiplayer Sessions -->
-      <b-button :disabled="errorMsg || !username" variant="primary" @click="switchView('CreatingSession', true)">
-        Create Session
+      <b-button :disabled="errorMsg || !username" variant="primary" @click="switchView('JoinSession', true)">
+        Join Session
       </b-button>
 
-      <b-button :disabled="errorMsg || !username" variant="secondary" @click="switchView('JoinSession', true)">
-        Join Session
+      <b-button :disabled="errorMsg || !username" variant="secondary" @click="switchView('CreatingSession', true)">
+        Create Session
       </b-button>
 
       <p v-show="sessionDeletedMsg" style="color:red; font-weight:bold;">Session {{ roomidInput }} has been yeeted!</p>
@@ -103,6 +103,7 @@ import validateUsername from '../functionality/usernameValidation.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import CreateNewRoom from '../components/CreateNewRoom.vue'
+import JoinSession from '../components/JoinRoom.vue'
 import Info from '../components/Info.vue'
 import DatabaseServices from '../DatabaseServices.js'
 
@@ -125,7 +126,8 @@ export default {
     Practice,
     Leaderboard,
     CreateNewRoom,
-    Info
+    Info,
+    JoinSession
   },
   mounted() {
     // checks if username is on file, and if so, sets username data to it
@@ -211,14 +213,13 @@ export default {
 div.view-container {
   position: fixed; 
   z-index: 3; 
-  background-color: rgb(255,255,255); 
+  background-color: rgb(255, 255, 255); 
   height: 100vh;
+  width:100vw;
   padding: 2.5%;
   display: flex;
-  /* justify-content: center;
-  align-items: center; */
   flex-direction: column;
-  border-left: 1vw solid black;
+  border-left: 3px solid black;
 }
 
 div.home-container {

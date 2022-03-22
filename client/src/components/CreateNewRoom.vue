@@ -1,28 +1,26 @@
 <template>
   <div>
 
-    <!-- Join Room -->
-    <div v-if="joiningRoom">
-      <input v-model="roomidInput" placeholder="Enter Room ID" type="number">
-      <div v-show="roomidInput.length === 4">
-        <b-button v-on:click="$router.push(`/go/${roomidInput}`)" variant="success">Go!</b-button>
-        <b-button variant="danger" v-on:click="$parent.deleteSession()">Delete Session</b-button>
-      </div>
-    </div>
+    <h1>Create Group Session</h1>
 
     <!-- Create Rxoom -->
-    <div v-show="!joiningRoom">
-      <h1>Create Group Session</h1>
+    <div>
       <input type="text" v-model="difficulty" placeholder="enter difficulty">
       <br>
       <button @click="createRoom()">Create Room</button>
       <br>
       <h1 class="error">{{ errorMessage }}</h1>
-      <br>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto officia voluptatum neque adipisci perspiciatis dolorem ipsum totam labore, delectus accusantium aliquam necessitatibus voluptate sed iusto facere dolores! Saepe beatae, sequi, asperiores odit eos eaque, obcaecati modi fugit officia labore molestiae? Ullam cumque architecto minus fugit dolor non, fugiat necessitatibus, accusamus porro recusandae unde? Placeat ab, porro hic beatae enim quos at pariatur tempore reiciendis nihil. Aperiam perferendis voluptate ducimus tempore? Error omnis non rerum doloremque expedita animi exercitationem impedit officia nesciunt architecto ipsa recusandae in, quod culpa velit inventore, nulla, laboriosam sequi consectetur repellendus. Tempore eos dolorem repudiandae quasi velit!</p>
     </div>
 
-    <b-button variant="outline-danger" v-on:click="$parent.switchView('', false)">Back</b-button>
+    <center>
+      <b-button variant="outline-danger" v-on:click="$parent.switchView('', false)">Back</b-button>
+    </center>
+
+      <!-- Allows Transition To Render Properly -->
+      <p style="opacity:0">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error, iste, fugit tempora aliquam nisi inventore vero officia voluptate consequatur earum nesciunt rerum blanditiis perferendis molestiae, 
+        reprehenderit fugiat delectus quod tempore soluta quo? Modi officiis architecto harum aut enim eaque doloremque ipsum tenetur quidem et corporis quos quas ex error dolor quisquam esse, officia maiores asperiores earum! Rem perferendis, dolore iste qui architecto cum facilis tempora vitae minima, numquam quisquam ullam dignissimos mollitia a culpa ipsum cupiditate maxime, unde quis reprehenderit molestias fugit ad magnam. Molestias quod accusantium consequuntur enim! Veritatis ducimus in vel cumque eligendi officiis aspernatur doloremque voluptatem molestias.
+      </p>
 
   </div>
 </template>
@@ -35,8 +33,7 @@ import DatabaseServices from '../DatabaseServices.js'
 export default {
     data: () => {
       return {
-        sessionDeletedMsg: false,
-        roomidInput: '',
+        
         roomID: 0,
         errorMessage: '',
         difficulty: 'Impossible'
