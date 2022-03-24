@@ -39,6 +39,10 @@
 
     <div class="home-container" v-if="!viewController || !viewSelected">
 
+      <div>
+        <b-icon-person style="width: 5ch; height: 5ch; border: 1.5px solid black; border-radius: 25px; padding: 8%;"></b-icon-person>
+      </div>
+
       <!-- Session Details -->
       <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
 
@@ -59,11 +63,17 @@
       <!-- Connect to Multiplayer Sessions -->
 
       <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
-        Join Session
+        <div style="position: relative">
+          <span>Join Session</span>
+          <b-icon-chevron-right style="position: absolute; left: 90%; margin-top: 0.5vh;"></b-icon-chevron-right>
+        </div>
       </b-button>
 
       <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
-        Create Session
+        <div style="position: relative">
+          <span>Create Session</span>
+          <b-icon-chevron-right style="position: absolute; left: 90%; margin-top: 0.5vh;"></b-icon-chevron-right>
+        </div>
       </b-button>
 
       <!-- End Connect to Multiplayer Sessions -->

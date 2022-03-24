@@ -5,23 +5,22 @@
 
     <!-- Create Rxoom -->
     <div>
-      
-      <center>
-          <div class="mt-3">
-            <b-button-group size="lg">
-              <b-button v-on:click="difficulty = 'Easy'" variant="success">Easy</b-button>
-              <b-button v-on:click="difficulty = 'Intermediate'" style="color:white;" variant="warning">Intermediate</b-button>
-              <b-button v-on:click="difficulty = 'Hard'" variant="danger">Hard</b-button>
-            </b-button-group>
-          </div>
 
-          <div class="small-buffer"></div>
+        <div class="mt-3">
+          <b-button-group size="lg">
+            <b-button v-on:click="difficulty = 'Easy'" variant="success">Easy</b-button>
+            <b-button v-on:click="difficulty = 'Intermediate'" style="color:white;" variant="warning">Intermediate</b-button>
+            <b-button v-on:click="difficulty = 'Hard'" variant="danger">Hard</b-button>
+          </b-button-group>
+        </div>
 
-          <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
-          <span :style="difficultyStyle" class="difficulty-display">{{ difficulty }}</span>
+        <div class="small-buffer"></div>
+
+        <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
+        <span :style="difficultyStyle" class="difficulty-display">{{ difficulty }}</span>
 
         <div class="large-buffer"></div>
-
+      <center>
         <b-button pill size="lg" variant="outline-success" @click="createRoom()">Create Room</b-button>
         <h1 class="error-message">{{ errorMessage }}</h1>
       </center>

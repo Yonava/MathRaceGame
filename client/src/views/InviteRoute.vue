@@ -62,13 +62,13 @@ export default {
   },
   methods: {
     joinRoom() {
-      console.log('tripped')
+      
       this.errorMessage = validateUsername(this.username.trim());
 
       // checks if the session specifies a host, and if so, is player username the same as the hosts username
       if (this.sessionInfo?.host !== undefined) {
         if (this.username.trim().toLowerCase() === this.sessionInfo.host.toLowerCase()) {
-          this.errorMessage =  'bRuh, U cant be the Smae Name as the Host :/';
+          this.errorMessage =  'Oop, We Notice That Your Username Is The Same As The Host of This Session. Please Enter A New Username.';
         }
       }
 
