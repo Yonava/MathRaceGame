@@ -37,50 +37,51 @@
 
     <!-- Main Menu Content -->
 
-    <div class="home-container" v-if="!viewController || !viewSelected">
+    <div v-if="!viewController || !viewSelected">
 
-      <div>
-        <b-icon-person style="width: 5ch; height: 5ch; border: 1.5px solid black; border-radius: 25px; padding: 8%;"></b-icon-person>
+      <div @click="$router.push(`/profile/${username}`)">
+        <b-icon-person class="profile-icon"></b-icon-person>
       </div>
 
       <!-- Session Details -->
-      <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
+      <!-- <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p> -->
 
-      <!-- Sign In Form -->
-      <b-input-group prepend="Username" class="mt-3">
-        <b-form-input v-model="username"></b-form-input>
-        <b-input-group-append>
-          <b-button :variant="searchColor"></b-button>
-        </b-input-group-append>
-      </b-input-group>
+      <div class="center">
 
-      <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
+        <!-- Sign In Form -->
+        <b-input-group style="padding: 2.5%" prepend="Username" class="mt-3">
+          <b-form-input v-model="username"></b-form-input>
+          <b-input-group-append>
+            <b-button :variant="searchColor"></b-button>
+          </b-input-group-append>
+        </b-input-group>
 
-      <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>
+        <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
 
-      <button class="btn btn-info btn-lg main-menu-button" :disabled="errorMsg || !username" @click="$router.push(`/profile/${username}`)">View Profile</button>
+        <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>  
 
-      <!-- Connect to Multiplayer Sessions -->
+        <!-- Connect to Multiplayer Sessions -->
 
-      <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
-        <div style="position: relative">
-          <span>Join Session</span>
-          <b-icon-chevron-right style="position: absolute; left: 90%; margin-top: 0.5vh;"></b-icon-chevron-right>
-        </div>
-      </b-button>
+        <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
+          <div style="position: relative">
+            <span>Join Session</span>
+            <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
+          </div>
+        </b-button>
 
-      <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
-        <div style="position: relative">
-          <span>Create Session</span>
-          <b-icon-chevron-right style="position: absolute; left: 90%; margin-top: 0.5vh;"></b-icon-chevron-right>
-        </div>
-      </b-button>
+        <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
+          <div style="position: relative">
+            <span>Create Session</span>
+            <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
+          </div>
+        </b-button>
 
-      <!-- End Connect to Multiplayer Sessions -->
+        <!-- End Connect to Multiplayer Sessions -->
 
-      <button class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
-        Delete All Sessions
-      </button>
+        <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+          Delete All Sessions
+        </button>
+      </div>
 
     </div>
 
@@ -204,9 +205,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 /* New CSS Elements */
+
+.profile-icon {
+  padding: 0.5%;
+  margin: 5% 5% 0% 85%;
+  width: 9%;
+  height: 9%;
+  border: 1.5px solid black;
+  border-radius: 25px;
+}
 
 /* Component Transitions! */
 .error-msg-transition {
@@ -223,17 +233,16 @@ export default {
   transform: translateX(100%);
 }
 
-div.home-container {
+div.center {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2.5%;
 }
 
 /* Main Menu Buttons */
 .main-menu-button {
-  width: 50vw;
+  width: 65vw;
   margin: 2%;
 }
 
