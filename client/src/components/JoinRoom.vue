@@ -3,9 +3,16 @@
     <!-- Join Room -->
     <div class="join-room-container">
 
-      <b-button variant="outline-danger" v-on:click="$parent.switchView('', false)">Back</b-button>
+      <b-button pill style="width: 35vw;" variant="outline-danger" v-on:click="$parent.switchView('', false)">
+        <div>
+          <span>Back</span>
+          <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.5vh;"></b-icon-chevron-left>
+        </div>
+      </b-button>
 
-      <h3>Enter a 4 Digit Room ID</h3>
+      <div class="large-buffer"></div>
+
+      <p style="font-size: 15pt; font-weight: bold;">Enter a 4 Digit Room ID</p>
 
       <b-input-group prepend="Room ID" class="mt-3">
         <b-form-input v-model="roomidInput" type="number"></b-form-input>

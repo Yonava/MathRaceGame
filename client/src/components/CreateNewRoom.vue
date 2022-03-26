@@ -1,7 +1,12 @@
 <template>
   <div class="create-room-container">
 
-    <button class="btn btn-outline-danger" v-on:click="$parent.switchView('', false)">Back</button>
+    <b-button pill style="width: 35vw;" variant="outline-danger" v-on:click="$parent.switchView('', false)">
+      <div>
+        <span>Back</span>
+        <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.5vh;"></b-icon-chevron-left>
+      </div>
+    </b-button>
 
     <!-- Create Rxoom -->
     <div>
@@ -21,7 +26,7 @@
 
         <div class="large-buffer"></div>
       <center>
-        <b-button pill size="lg" variant="outline-success" @click="createRoom()">Create Room</b-button>
+        <b-button size="lg" variant="info" @click="createRoom()">Create Room</b-button>
         <h1 class="error-message">{{ errorMessage }}</h1>
       </center>
 
@@ -81,7 +86,7 @@ export default {
           console.log(this.username)
           await DatabaseServices.createNewSession({
             questions: GenerateQuestions(),
-            date: Date.now(),
+            date: new Date,
             roomid: String(this.roomID),
             host: this.username,
             difficulty: this.difficulty
@@ -135,16 +140,6 @@ export default {
   padding: 2.5%;
   display: flex;
   flex-direction: column;
-}
-
-div.small-buffer {
-  width: 100vw;
-  height: 1vh;
-}
-
-div.large-buffer {
-  width: 100vw;
-  height: 3vh;
 }
 
 .difficulty-display {

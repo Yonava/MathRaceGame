@@ -207,6 +207,18 @@ export default {
 
 <style>
 
+/* Buffers */
+
+div.small-buffer {
+  width: 100vw;
+  height: 1vh;
+}
+
+div.large-buffer {
+  width: 100vw;
+  height: 3vh;
+}
+
 /* New CSS Elements */
 
 .profile-icon {

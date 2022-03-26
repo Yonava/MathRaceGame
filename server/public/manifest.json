@@ -1,9 +1,0 @@
-{
-    "name": "Math Race",
-    "short_name": "Math Race",
-    "start_url": "http://math-race-game.herokuapp.com/play",
-    "display": "standalone",
-    "background_color": "#FFA500",
-    "theme_color": "#FFA500",
-    "orientation": "portrait"
-}

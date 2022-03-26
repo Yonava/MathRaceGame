@@ -1,37 +1,31 @@
 <template>
   <div>
-    <br><br><br><br>
-    <center>
 
-      <div v-if="sessionInfo === undefined">
-        <h1>Loading Session...</h1>
-      </div>
+    <div v-if="sessionInfo === undefined">
+      <p style="font-size: 14pt; font-weight: bold;">Loading Session...</p>
+      <b-icon-arrow-clockwise style="width: 10%; height: 10%;" animation="spin"></b-icon-arrow-clockwise>
+    </div>
 
-      <!-- Session Found Error -->
-      <div v-else-if="sessionInfo === null">
-        <h1>
-          Session Not Found!
-        </h1>
-        <br>
-        <p><b>[Unable To Retrieve Session {{ $route.params.roomid }}]</b></p>
-      </div>
+    <!-- Session Found Error -->
+    <div v-else-if="sessionInfo === null">
+      <h3>Session Not Found 🙁</h3>
+      <br>
+      <p><b>[Unable To Retrieve Session {{ $route.params.roomid }}]</b></p>
+    </div>
 
-      <!-- Input Username -->
-      <div v-else>
-        <p>Join Room <b>{{ sessionInfo.roomid }}</b>, Created on <b>{{ sessionInfo.date }}</b></p>
-        <h1>Enter A Username:</h1>
-        <input v-model="username" type="text" placeholder="Enter Username" />
-        <button @click="joinRoom()">Join Room</button>
-        <h1 class="error">{{ errorMessage }}</h1>
-        <h4 style="margin-top: 5vh;">Session Details:</h4>
-        <p>
-          {{ sessionInfo }}
-        </p>
-      </div>
+    <!-- Input Username -->
+    <div v-else>
+      <p>Join Room <b>{{ sessionInfo.roomid }}</b>, Created on <b>{{ sessionInfo.date }}</b></p>
+      <h1>Enter A Username:</h1>
+      <b-input-group style="padding: 2.5%" prepend="Username" class="mt-3">
+        <b-form-input v-model="username"></b-form-input>
+      </b-input-group>
+      <button @click="joinRoom()">Join Room</button>
+      <h1 class="error">{{ errorMessage }}</h1>
+    </div>
 
-      <button @click="$router.push('/')">Back</button>
+    <b-button variant="outline-danger" @click="$router.push('/')">Return to Main Menu</b-button>
 
-    </center>
 
   </div>
 </template>
@@ -58,6 +52,9 @@ export default {
           this.username = localStorage.username;
           this.joinRoom();
         }
+
+        this.sessionInfo.date = this.sessionInfo.date.getMonth()
+
       });
   },
   methods: {
