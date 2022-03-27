@@ -177,6 +177,17 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
+    playerList() {
+      for (let i in this.playerList) {
+        if (!this.opponentInfo.includes(this.playerList[i])) {
+          for (let j = 0; j < this.opponentInfo.length; i++) {
+            if (this.opponentInfo[j].user === this.playerList[i]) {
+              this.opponentInfo.splice(j, 1);
+            }
+          }
+        }
+      }
+    }
   },
 }
 </script>
