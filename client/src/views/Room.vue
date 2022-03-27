@@ -119,7 +119,6 @@ export default {
           this.playerInfo.splice(i, 1);
           this.playerList.splice(i, 1);
         }
-        this.$forceUpdate();
       }
     }, 1000);
   },
@@ -146,7 +145,13 @@ export default {
       this.socketInstance = io('/');
       this.socketInstance.on(
         "scoreRecieved", (data) => {
-          this.updatePlayerInfo(data)
+          this.updatePlayerInfo(data);
+          setTimeout(() => {
+            this.opponentInfo = [...this.playerInfo];
+            this.opponentInfo.splice(this.playerList.indexOf(this.sessionData.clientName), 1);
+            this.opponentInfo.sort((a, b) => b.qnum - a.qnum);
+            this.$forceUpdate();
+          }, 100)
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
@@ -172,23 +177,6 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
-    playerInfo() {
-
-      // sets number of opponent arrows to display, -1 accounts for client in playlist
-      const numOfOpponentsDisplayed = (this.playerList.length - 1) > 3 ? 3:(this.playerList.length - 1);
-
-      const players = [...this.playerInfo];
-      // gets rid of client in opponents
-      players.splice(this.playerList.indexOf(this.sessionData.clientName), 1);
-      // sorts opponents by highest score
-      players.sort((a, b) => b.qnum - a.qnum);
-      // resets opponent info array to repopulate with latest data
-      this.opponentInfo = [];
-      // repopulates
-      for (let i = 0; i < numOfOpponentsDisplayed; i++) {
-        this.opponentInfo.push(players[i]);
-      }
-    }
   },
 }
 </script>
