@@ -118,6 +118,7 @@ export default {
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
           this.playerList.splice(i, 1);
+          this.removeInactiveOpponent();
         }
       }
     }, 1000);
@@ -171,13 +172,8 @@ export default {
       };
       this.updatePlayerInfo(data)
       this.socketInstance.emit('score', data, this.sessionData.roomid);
-    }
-  },
-  watch: {
-    isUserReady() {
-      this.updateStandings();
     },
-    playerList() {
+    removeInactiveOpponent() {
       for (let i in this.playerList) {
         if (!this.opponentInfo.includes(this.playerList[i])) {
           for (let j = 0; j < this.opponentInfo.length; j++) {
@@ -188,6 +184,11 @@ export default {
         }
       }
     }
+  },
+  watch: {
+    isUserReady() {
+      this.updateStandings();
+    },
   },
 }
 </script>
