@@ -106,14 +106,12 @@ export default {
         this.visibilityState = false
       }});
 
-    // forces a socket reconnect every 500 milliseconds
+    // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) {
-        
-
         this.updateStandings();
       }
-    }, 500);
+    }, 250);
     this.checkRefreshTimers = setInterval(() => {
 
       // check timers on players
@@ -147,7 +145,7 @@ export default {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
             this.playerInfo[i] = data;
-            this.playerInfo[i].refreshTimer = 2000;
+            this.playerInfo[i].refreshTimer = 1000;
           }
         }
       }
