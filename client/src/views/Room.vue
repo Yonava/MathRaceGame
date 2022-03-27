@@ -139,7 +139,6 @@ export default {
           }
         }
       }
-      this.$forceUpdate();
     },
     connect() {
       this.socketInstance = io('/');
@@ -187,6 +186,7 @@ export default {
       for (let i = 0; i < numOfOpponentsDisplayed; i++) {
         this.opponentInfo.push(players[i]);
       }
+      this.$forceUpdate();
     }
   },
 }
