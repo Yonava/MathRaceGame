@@ -102,26 +102,26 @@ export default {
         this.visibilityState = false
       }});
 
-    // forces a socket reconnect every 2.5 seconds
+    // forces a socket reconnect every 500 milliseconds
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) {
         this.socketInstance.disconnect();
         this.connect();
       }
-    }, 2500);
-    this.timeKeeper = setInterval(() => {
+    }, 500);
+    this.checkRefreshTimers = setInterval(() => {
       for (let i = 0; i < this.playerInfo.length; i++) {
-        this.playerInfo[i].refreshTimer -= 1000;
+        this.playerInfo[i].refreshTimer -= 250;
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
           this.reArrangePlayerList();
         }
       }
-    }, 1000);
+    }, 250);
   },
   destroyed() {
     clearInterval(this.refreshConnection);
-    clearInterval(this.timeKeeper);
+    clearInterval(this.checkRefreshTimers);
   },
   methods: {
     updatePlayerInfo(data) {
@@ -131,11 +131,11 @@ export default {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
             this.playerInfo[i] = data;
-            this.playerInfo[i].refreshTimer = 5000;
+            this.playerInfo[i].refreshTimer = 2000;
           }
         }
       }
-      
+
       this.playerInfo.sort((a, b) => b.qnum - a.qnum)
       this.reArrangePlayerList();
       this.$forceUpdate();
