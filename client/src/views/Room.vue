@@ -23,15 +23,32 @@
     <div v-if="!gameStarted">
       <WaitingArea
       :playerData="playerInfo"
-      :clientIndex="clientIndex"
       />
     </div>
 
     <!-- Race Area -->
     <div v-else>
-      <RaceArea
-      :playerData="playerInfo"
-      />
+
+      <div>
+
+        <!-- <b-icon-award></b-icon-award> -->
+        <div :style="`height: ${playerInfo[playerList.indexOf(sessionData.clientName)].qnum}vh;`" class="display-pole"></div>
+        <div class="progress-pole"></div>
+        <div v-for="player in playerInfo" :key="player.id">
+          <div class="player-arrow"></div>
+        </div>
+        
+      </div>
+
+      <div class="display-questions">
+        <b-button variant="primary" @click="questionAnswered()">Answer a question</b-button>
+        <br><br>
+        <div v-for="player in playerInfo" :key="player.id">
+          <p>
+            <b>{{ player.user }} is on question {{ player.qnum }}</b>
+          </p>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -41,7 +58,6 @@
 
 import io from "socket.io-client"
 import WaitingArea from "../components/WaitingArea.vue"
-import RaceArea from "../components/RaceArea.vue"
 
 export default {
   data: () => {
@@ -65,14 +81,10 @@ export default {
       isUserReady: false,
       /* Race Area Data */
       qNumber: 1,
-
-      /* Stores the index of the client in PlayerData */
-      clientIndex: undefined
     };
   },
   components: {
-    WaitingArea,
-    RaceArea
+    WaitingArea
   },
   mounted() {
     this.connect();
@@ -124,6 +136,7 @@ export default {
           }
         }
       }
+      this.$forceUpdate();
     },
     connect() {
       this.socketInstance = io('/');
@@ -155,18 +168,41 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
-    playerInfo() {
-      for (let i in this.playerInfo) {
-        if (this.playerInfo[i].user === this.clientName)
-          this.clientIndex = i;
-      }
-      console.log(this.clientIndex)
-    }
   },
 };
 </script>
 
 <style scoped>
+
+.display-pole {
+  bottom: 15%;
+  right: 0%;
+  position: fixed;
+  width: 3vw;
+  background-color: rgb(145, 255, 126);
+  transition: 300ms ease-in-out;
+}
+
+.progress-pole {
+  bottom: 15%;
+  right: 0%;
+  position: fixed;
+  height: 70vh;
+  width: 3vw;
+  border: 1px solid black;
+  border-right: none;
+}
+
+.player-arrow {
+
+}
+
+.display-questions {
+  position: fixed;
+  padding: 2.5%;
+  max-width: 85vw;
+}
+
 .center-container {
   display: flex;
   justify-content: center;
