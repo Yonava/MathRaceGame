@@ -4,7 +4,7 @@
     <b-button pill style="width: 35vw;" variant="outline-danger" v-on:click="$parent.switchView('', false)">
       <div>
         <span>Back</span>
-        <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.5vh;"></b-icon-chevron-left>
+        <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.2vh;"></b-icon-chevron-left>
       </div>
     </b-button>
 
@@ -19,15 +19,20 @@
           </b-button-group>
         </div>
 
-        <div class="small-buffer"></div>
+      <div class="small-buffer"></div>
 
-        <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
-        <span :style="difficultyStyle" class="difficulty-display">{{ difficulty }}</span>
+      <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
+      <span :style="difficultyStyle" class="difficulty-display">{{ difficulty }}</span>
 
-        <div class="large-buffer"></div>
+      <div class="large-buffer"></div>
+      
       <center>
         <b-button size="lg" variant="info" @click="createRoom()">Create Room</b-button>
+        <br>
         <h1 class="error-message">{{ errorMessage }}</h1>
+        <div v-show="creatingRoom">
+          <b-icon-arrow-clockwise style="width: 10%; height: 10%;" animation="spin"></b-icon-arrow-clockwise>
+        </div>
       </center>
 
     </div>
@@ -55,11 +60,12 @@ export default {
 
         /* difficulty captures user input, difficultyStyle updates css style of display */
         difficulty: null,
-        difficultyStyle: ''
+        difficultyStyle: '',
+
+        creatingRoom: false
       }
     },
     props: [
-      'joiningRoom',
       'username',
     ],
     methods: {
@@ -67,8 +73,12 @@ export default {
         if (!this.difficulty) {
           return "Select A Difficulty"
         }
+
+        return ""
       },
       async createRoom() {
+
+        this.creatingRoom = true;
         
         this.errorMessage = this.canRoomBeCreated();
         if (this.errorMessage) return;
@@ -83,7 +93,6 @@ export default {
           return this.errorMessage = "Problem Encountered While Creating Room, Try One More Time.";
         
         try {
-          console.log(this.username)
           await DatabaseServices.createNewSession({
             questions: GenerateQuestions(),
             date: new Date,
@@ -126,6 +135,11 @@ export default {
         default:
           this.difficulty = '';
           break;
+      }
+    },
+    errorMessage() {
+      if (this.errorMessage) {
+        this.creatingRoom = false;
       }
     }
   }

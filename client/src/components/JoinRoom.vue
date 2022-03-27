@@ -6,7 +6,7 @@
       <b-button pill style="width: 35vw;" variant="outline-danger" v-on:click="$parent.switchView('', false)">
         <div>
           <span>Back</span>
-          <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.5vh;"></b-icon-chevron-left>
+          <b-icon-chevron-left style="position: absolute; right: 90%; margin-top: 0.2vh;"></b-icon-chevron-left>
         </div>
       </b-button>
 
