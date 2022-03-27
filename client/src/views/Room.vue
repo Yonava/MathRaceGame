@@ -172,12 +172,20 @@ export default {
       this.updateStandings();
     },
     playerInfo() {
-      this.playerInfo.sort((a, b) => b.qnum - a.qnum);
+
+      // sets number of opponent arrows to display, -1 accounts for client in playlist
+      const numOfOpponentsDisplayed = (this.playerList.length - 1) > 3 ? 3:(this.playerList.length - 1);
+
+      const players = [...this.playerInfo];
+      // gets rid of client in opponents
+      players.splice(this.playerList.indexOf(this.sessionData.clientName), 1);
+      // sorts opponents by highest score
+      players.sort((a, b) => b.qnum - a.qnum);
+      // resets opponent info array to repopulate with latest data
       this.opponentInfo = [];
-      for (let i = 0; (i < this.playerInfo.length - 1) || this.opponentInfo.length === 3; i++) {
-        if (this.playerInfo[i].user !== this.sessionData.clientName) {
-          this.opponentInfo.push(this.playerInfo[i]);
-        }
+      // repopulates
+      for (let i = 0; i < numOfOpponentsDisplayed; i++) {
+        this.opponentInfo.push(players[i]);
       }
     }
   },
