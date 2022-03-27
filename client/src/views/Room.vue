@@ -32,10 +32,10 @@
       <div>
 
         <!-- <b-icon-award></b-icon-award> -->
-        <div :style="`height: ${playerInfo[playerList.indexOf(sessionData.clientName)].qnum}vh;`" class="display-pole"></div>
+        <div :style="`height: ${(playerInfo[playerList.indexOf(sessionData.clientName)].qnum - 1) * 4}vh;`" class="display-pole"></div>
         <div class="progress-pole"></div>
-        <div v-for="player in playerInfo" :key="player.id">
-          <div class="player-arrow"></div>
+        <div v-for="player in opponentInfo" :key="player.id">
+          <div :style="`bottom: ${((player.qnum - 1) * 4) + 8.15}vh`" class="arrow-right"></div>
         </div>
         
       </div>
@@ -65,6 +65,9 @@ export default {
 
       debug: false,
       hideall: false,
+
+      /* used for displaying on side bar */
+      opponentInfo: [],
 
       playerList: [],
       playerInfo: [],
@@ -168,33 +171,49 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
+    playerInfo() {
+      this.playerInfo.sort((a, b) => b.qnum - a.qnum);
+      this.opponentInfo = [];
+      for (let i = 0; (i < this.playerInfo.length - 1) || this.opponentInfo.length === 3; i++) {
+        if (this.playerInfo[i].user !== this.sessionData.clientName) {
+          this.opponentInfo.push(this.playerInfo[i]);
+        }
+      }
+    }
   },
-};
+}
 </script>
 
 <style scoped>
 
 .display-pole {
-  bottom: 15%;
+  bottom: 10%;
   right: 0%;
   position: fixed;
-  width: 3vw;
-  background-color: rgb(145, 255, 126);
-  transition: 300ms ease-in-out;
+  width: 3.5vw;
+  background-color: rgb(55, 236, 85);
+  transition: 500ms ease-in-out;
 }
 
 .progress-pole {
-  bottom: 15%;
+  bottom: 10%;
   right: 0%;
   position: fixed;
-  height: 70vh;
-  width: 3vw;
-  border: 1px solid black;
+  height: 80vh;
+  width: 3.5vw;
+  border: 0.5px solid black;
   border-right: none;
 }
 
-.player-arrow {
-
+.arrow-right {
+  position: fixed;
+  right: 4%;
+  width: 0; 
+  height: 0; 
+  border-top: 2vh solid transparent;
+  border-bottom: 2vh solid transparent;
+  border-left: 2vh solid rgb(230, 41, 41);
+  transition: 500ms ease-in-out;
 }
 
 .display-questions {
