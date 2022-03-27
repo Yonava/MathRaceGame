@@ -34,8 +34,8 @@
         <!-- <b-icon-award></b-icon-award> -->
         <div :style="`height: ${(playerInfo[playerList.indexOf(sessionData.clientName)].qnum - 1) * 4}vh;`" class="display-pole"></div>
         <div class="progress-pole"></div>
-        <div v-for="player in opponentInfo" :key="player.id">
-          <div :style="`bottom: ${((player.qnum - 1) * 4) + 8.15}vh`" class="arrow-right"></div>
+        <div v-for="player in playerInfo" :key="player.id">
+          <div v-if="player.user !== sessionData.clientName" :style="`bottom: ${((player.qnum - 1) * 4) + 8.15}vh`" class="arrow-right"></div>
         </div>
         
       </div>
@@ -65,9 +65,6 @@ export default {
 
       debug: false,
       hideall: false,
-
-      /* used for displaying on side bar */
-      opponentInfo: [],
 
       playerList: [],
       playerInfo: [],
@@ -117,8 +114,7 @@ export default {
         this.playerInfo[i].refreshTimer -= 1000;
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
-          this.playerList.splice(i, 1);
-          this.removeInactiveOpponent();
+          this.reArrangePlayerList();
         }
       }
     }, 1000);
@@ -131,7 +127,6 @@ export default {
     updatePlayerInfo(data) {
       if (!this.playerList.includes(data.user)) {
         this.playerInfo.push(data);
-        this.playerList.push(data.user);
       } else {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
@@ -140,6 +135,9 @@ export default {
           }
         }
       }
+      
+      this.playerInfo.sort((a, b) => b.qnum - a.qnum)
+      this.reArrangePlayerList();
       this.$forceUpdate();
     },
     connect() {
@@ -147,12 +145,6 @@ export default {
       this.socketInstance.on(
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
-          setTimeout(() => {
-            this.opponentInfo = [...this.playerInfo];
-            this.opponentInfo.splice(this.playerList.indexOf(this.sessionData.clientName), 1);
-            this.opponentInfo.sort((a, b) => b.qnum - a.qnum);
-            this.$forceUpdate();
-          }, 100)
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
@@ -173,15 +165,10 @@ export default {
       this.updatePlayerInfo(data)
       this.socketInstance.emit('score', data, this.sessionData.roomid);
     },
-    removeInactiveOpponent() {
-      for (let i in this.playerList) {
-        if (!this.opponentInfo.includes(this.playerList[i])) {
-          for (let j = 0; j < this.opponentInfo.length; j++) {
-            if (this.opponentInfo[j].user === this.playerList[i]) {
-              this.opponentInfo.splice(j, 1);
-            }
-          }
-        }
+    reArrangePlayerList() {
+      this.playerList = [];
+      for (let i = 0; i < this.playerInfo.length; i++) {
+        this.playerList.push(this.playerInfo[i].user)
       }
     }
   },
