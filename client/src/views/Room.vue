@@ -1,20 +1,29 @@
 <template>
-  <div class="center-container">
-    <b-button variant="info" v-on:click="gameStarted = !gameStarted">toggle game</b-button>
-    <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
-    <p>
-      <b>Session Details: <br> Host Name</b> = {{ sessionData.host }} <br>
-      <b>My Name</b> = {{ sessionData.clientName }} <br>
-      <b>Time Created</b> = {{ sessionData.date }} <br>
-      <b>Room ID</b> = {{ sessionData.roomid }} <br>
-      <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
-      <b>Questions</b> = {{ sessionData.questions }} <br>
-    </p>
+  <div>
+    <div v-show="!hideall" class="center-container">
+      <br>
+      <b-button variant="info" v-on:click="gameStarted = !gameStarted">toggle game</b-button>
+      <br>
+      <b-button variant="outline-info" v-on:click="debug = !debug">toggle debug mode</b-button>
+
+      <p>Invite Link: <a :href="inviteLink" target="_blank">{{ inviteLink }}</a></p>
+
+      <p v-show="debug">
+        <b>Session Details: <br> Host Name</b> = {{ sessionData.host }} <br>
+        <b>My Name</b> = {{ sessionData.clientName }} <br>
+        <b>Time Created</b> = {{ sessionData.date }} <br>
+        <b>Room ID</b> = {{ sessionData.roomid }} <br>
+        <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
+        <b>Questions</b> = {{ sessionData.questions }} <br>
+        <button @click="hideall = true">Hide All</button>
+      </p>
+    </div>
 
     <!-- Waiting Area -->
     <div v-if="!gameStarted">
       <WaitingArea
       :playerData="playerInfo"
+      :clientIndex="clientIndex"
       />
     </div>
 
@@ -38,6 +47,9 @@ export default {
   data: () => {
     return {
 
+      debug: false,
+      hideall: false,
+
       playerList: [],
       playerInfo: [],
       refreshTimer: 5000,
@@ -47,11 +59,15 @@ export default {
 
       sessionData: undefined,
       inviteLink: '',
+
       gameStarted: false,
       /* Waiting Area Data */
       isUserReady: false,
       /* Race Area Data */
       qNumber: 1,
+
+      /* Stores the index of the client in PlayerData */
+      clientIndex: undefined
     };
   },
   components: {
@@ -138,6 +154,13 @@ export default {
   watch: {
     isUserReady() {
       this.updateStandings();
+    },
+    playerInfo() {
+      for (let i in this.playerInfo) {
+        if (this.playerInfo[i].user === this.clientName)
+          this.clientIndex = i;
+      }
+      console.log(this.clientIndex)
     }
   },
 };
