@@ -68,7 +68,11 @@ export default {
 
       playerList: [],
       playerInfo: [],
+
+      /* included in each player object to detect if they are still in game */
       refreshTimer: 5000,
+      /* reset on socket callback to detect if client socket has disconnected */
+      detectInboundConnection: 5000,
 
       /* false if user is on another tab or minimizes window */
       visibilityState: true,
@@ -105,11 +109,14 @@ export default {
     // forces a socket reconnect every 500 milliseconds
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) {
-        this.socketInstance.disconnect();
-        this.connect();
+        
+
+        this.updateStandings();
       }
     }, 500);
     this.checkRefreshTimers = setInterval(() => {
+
+      // check timers on players
       for (let i = 0; i < this.playerInfo.length; i++) {
         this.playerInfo[i].refreshTimer -= 250;
         if (this.playerInfo[i].refreshTimer < 0) {
@@ -117,6 +124,15 @@ export default {
           this.reArrangePlayerList();
         }
       }
+
+      // check timer on last inbound connection
+      this.detectInboundConnection -= 250;
+      if (this.detectInboundConnection < 0) {
+        this.detectInboundConnection = 2500;
+        this.socketInstance.disconnect();
+        this.$nextTick(this.connect());
+      }
+
     }, 250);
   },
   destroyed() {
@@ -145,6 +161,7 @@ export default {
       this.socketInstance.on(
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
+          this.detectInboundConnection = 2500;
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
