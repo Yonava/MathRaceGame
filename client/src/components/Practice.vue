@@ -2,47 +2,88 @@
 <template>
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
-      <button @click="start=true">Start Practice</button>
-   
-      <div v-if="start">
 
-        <!-- Display question -->
-        <vue-mathjax :formula="itemized.equation"></vue-mathjax>
-        <!-- Display possible answers -->
-        <p class="task"><strong>{{ itemized.task }}</strong></p>
-        <b-form-group v-slot="{ ariaDescribedby }" v-for="i in itemized.options" :key="i.id">
-          <b-form-radio v-model="selected" :aria-describedby="ariaDescribedby" :name="itemized.equation" :value="i" :disabled="answered">{{i}}</b-form-radio>
-        </b-form-group>
+      <!-- Mode customization -->
 
-        <p v-if="answered"> {{ isCorrect ? "Correct!":"Incorrect!" }} </p>
+      <div v-if="!freePractice && !timedPractice">
+        <!-- Specify number of questions -->
+        <div class="num-questions-slider">
+          <label for="num-questions">Number of Questions</label><br>
+          <input type="range" id="num-questions" name="num-questions" min="4" max="40" value="20" step="4" v-model="qNum">{{qNum}}
+          <br><br><br><br>
+        </div>
+        <!-- Adjust timer for timed practice -->
+        <div class="time-selector">
+          <label for="question-timer">Timer Duration (minutes)</label><br>
+          <input type="range" id="question-timer" name="question-timer" min="0" max="5" value="2" v-model="duration">{{duration}}
+          <br><br><br><br>
+        </div>
+        <!-- Difficulty Selection -->
+        <div class="difficulty-selection">
+          <b-form-select v-model="difficultyChoice" :options="difficultyOptions"></b-form-select>
+          <br><br><br><br>
+        </div>
+      </div>
+
+      <!-- Timed Practice -->
+      <div v-if="!freePractice">
+        <b-button v-if="!timedPractice" pill @click="timedPractice = true">Timed Practice</b-button>
+        <div v-if="timedPractice">
+          <TimedPractice :duration="duration" />
+          <!-- Return to practice menu -->
+          <b-button pill variant="outline-info" @click="timedPractice = false">End Practice</b-button>
+        </div>
+      </div>
+
+      <!-- Free-Form Practice -->
+      <div v-if="!timedPractice">
+        <b-button v-if="!freePractice" pill variant="outline-dark" @click="freePractice = true">Free-Form Practice</b-button>
+        <div v-if="freePractice">
+          <PracticeArea :chosenDifficulty="chosenDifficulty" />
+          <!-- Return to practice menu -->
+          <b-button pill variant="outline-info" @click="freePractice = false">End Practice</b-button>
+        </div>
       </div>
     </div>
 </template>
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import PracticeArea from './PracticeArea.vue'
+import TimedPractice from './TimedPractice.vue'
 
 export default {
   name: 'app',
   data: () => {
     return {
-      start: false,
-      selected: '',
-      currentPage: 1,
-      answered: false,
-      isCorrect: false,
-      output: [],
-      itemized: [],
+      // Whether or not to enable various practice modes
+      freePractice: false,
+      timedPractice: false,
+      //Number of questions to create (for timed practice)
+      qNum: 20,
+      // Length of timer in minutes (for timed practice)
+      duration: 2,
+      // Levels of difficulty and the types of questions to make for each
+      difficulty: {
+            easy: [500, 250, 250, 10],
+            normal: [250, 250, 250, 250],
+            hard: [50, 50, 50, 500],
+            impossible: [5, 5, 5, 1000]
+      },
+      difficultyOptions: ["Easy", "Normal", "Hard", "Impossible"],
+      difficultyChoice: "Normal",
+      chosenDifficulty: [250, 250, 250, 250]
     }
+  },
+  components: {
+    PracticeArea,
+    TimedPractice
   },
   props: [
     "username"
   ],
   mounted() {
-    // Create the set of problems
-    this.output = GenerateQuestions();
-    this.itemized = this.output[0];
+
   },
   created() {
 
@@ -51,21 +92,24 @@ export default {
 
   },
   methods: {
-
+    
   },
   watch: {
-    selected() {
-      if (this.selected === this.itemized.answer) this.isCorrect = true;
-      else this.isCorrect = false;
-
-      if (this.selected != '') {
-        this.answered = true;
-        this.currentPage++;
-        setTimeout(() => {
-          this.itemized = this.output[this.currentPage- 1];
-          this.selected = '';
-          this.answered = false;
-        }, 2000);
+    difficultyChoice() {
+      // Adjust questions based on difficulty choice
+      switch(this.difficultyChoice) {
+          case "Easy":
+            this.chosenDifficulty = this.difficulty.easy;
+            break;
+          case "Normal":
+            this.chosenDifficulty = this.difficulty.normal;
+            break;
+          case "Hard":
+            this.chosenDifficulty = this.difficulty.hard;
+            break;
+          case "Impossible":
+            this.chosenDifficulty = this.difficulty.impossible
+            break;
       }
     }
   }
