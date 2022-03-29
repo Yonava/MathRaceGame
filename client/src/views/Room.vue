@@ -126,7 +126,7 @@ export default {
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) {
         this.updateStandings();
-      };
+      }
     }, 250);
     this.checkRefreshTimers = setInterval(() => {
 
@@ -136,8 +136,8 @@ export default {
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
           this.reArrangePlayerList();
-        };
-      };
+        }
+      }
 
       // check timer on last inbound connection
       this.detectInboundConnection -= 250;
