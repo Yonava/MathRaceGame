@@ -15,7 +15,13 @@
         </b-form-group>
         <!-- Display if your answer is correct -->
         <p v-if="answered && !raceEnd"> {{ isCorrect ? "Correct!":"Incorrect!" }} </p>
-        <p v-if="raceEnd">Race Over!</p>
+        <p v-if="raceEnd">
+            {{ raceEnd && answered ? "Race Complete!":"Race Incomplete!" }}
+            <br>
+            Completed {{ numQuestions - output.length }} out of {{ numQuestions }} questions in {{ timeTaken() }} minutes!
+            <br>
+            Number of questions correct: {{ numCorrect }}
+        </p>
         <br><br><br>
     </div>
 </template>
@@ -31,6 +37,8 @@ export default {
             // Selection of answers and if question is answered
             selected: '',
             answered: false,
+            numQuestions: 0,
+            numCorrect: 0,
             // Determine if race is over
             raceEnd: false,
             // For changing questions
@@ -52,6 +60,7 @@ export default {
         this.output = GenerateQuestions();
         shuffle(this.output);
         this.itemized = this.output[0];
+        this.numQuestions = this.output.length;
     },
     created() {
         this.minutes = this.duration - 1;
@@ -73,10 +82,18 @@ export default {
     destroyed() {
         clearInterval(this.timeTracker);
     },
+    methods: {
+        timeTaken() {
+            return (this.duration - (this.minutes + (this.seconds / 60))).toFixed(2);
+        }
+    },
     watch: {
         // When an answer is selected, check if it is correct or not, switch questions
         selected() {
-            if (this.selected === this.itemized.answer) this.isCorrect = true;
+            if (this.selected === this.itemized.answer) {
+                this.isCorrect = true;
+                this.numCorrect++;
+            }
             else this.isCorrect = false;
 
             // Switch questions
@@ -86,18 +103,11 @@ export default {
 
                 setTimeout(() => {
                     this.output.splice(0, 1); // Remove used questions
-                    this.itemized = this.output[0];
+                    if (this.output.length == 0) this.raceEnd = true;
+                    else this.itemized = this.output[0];
                     this.selected = '';
                     this.answered = false;
                 }, 1000);
-            }
-        },
-        output() {
-            // Replenish and shuffle questions
-            if (this.output.length < 2) {
-                let temp = GenerateQuestions(this.chosenDifficulty);
-                this.output.concat(temp);
-                shuffle(this.output);
             }
         },
         seconds() {
@@ -115,6 +125,7 @@ export default {
         },
         raceEnd() {
             this.answered = true;
+            clearInterval(this.timeTracker);
         }
     }
 }
