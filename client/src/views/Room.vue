@@ -115,18 +115,18 @@ export default {
     // listens to see if user tabs out or minimizes our game
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        this.visibilityState = true
-        document.title = `Race ${this.sessionData.roomid}`
+        this.visibilityState = true;
+        document.title = `Race ${this.sessionData.roomid}`;
       } else {
-        this.visibilityState = false
-        document.title = 'Click Back!'
+        this.visibilityState = false;
+        document.title = 'Click Back!';
       }});
 
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) {
         this.updateStandings();
-      }
+      };
     }, 250);
     this.checkRefreshTimers = setInterval(() => {
 
@@ -136,8 +136,8 @@ export default {
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
           this.reArrangePlayerList();
-        }
-      }
+        };
+      };
 
       // check timer on last inbound connection
       this.detectInboundConnection -= 250;
@@ -201,7 +201,7 @@ export default {
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer
       };
-      this.updatePlayerInfo(data)
+      this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
     },
     reArrangePlayerList() {
