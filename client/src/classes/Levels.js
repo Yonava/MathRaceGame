@@ -16,7 +16,7 @@ export default class Levels extends Equations {
             },
             {
                 // Decimals
-                equation: `${Arithmetic.BaseEq(this.randItem(this.operators), 0.1, 2.5, 2)}`
+                equation: `${Arithmetic.BaseEq(this.randItem(["+", "-"]), 0.1, 2.5, 2)}`
             }
         ];
 
