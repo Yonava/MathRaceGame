@@ -8,7 +8,7 @@ export default class Equations {
 
     // Generate a random number between 'min' and 'max'
     static randNum(min, max, precision = 0) {
-        // [0,1) * (size of range) + min -> scales [0,1) to proper range
+        // [0,1) * (size of range) + min -> scales [0,1) to [min, max]
         let output = (Math.random() * (max - min)) + min;
         return Number.parseFloat(output).toFixed(precision); // Decimal places
     }
