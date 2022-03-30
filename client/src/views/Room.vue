@@ -35,6 +35,7 @@
 
       <!-- Progress Side Bar -->
       <div>
+        <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p>
         <!-- <b-icon-award></b-icon-award> -->
         <div :style="`height: ${(playerInfo[playerList.indexOf(sessionData.clientName)].qnum - 1) * 4}vh;`" class="display-pole"></div>
         <div class="progress-pole"></div>
@@ -85,6 +86,9 @@ export default {
       /* false if user is on another tab or minimizes window */
       visibilityState: true,
 
+      /* counts how many seconds have passed since game has begun */
+      secondsPassed: 0,
+
       sessionData: null,
       inviteLink: '',
 
@@ -121,6 +125,10 @@ export default {
         this.visibilityState = false;
         document.title = 'Click Back!';
       }});
+    
+    this.gameClock = setInterval(() => {
+      this.secondsPassed++;
+    }, 1000)
 
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
@@ -128,6 +136,8 @@ export default {
         this.updateStandings();
       }
     }, 250);
+
+
     this.checkRefreshTimers = setInterval(() => {
 
       // check timers on players
@@ -146,8 +156,8 @@ export default {
         this.socketInstance.disconnect();
         this.$nextTick(this.connect());
       }
-
     }, 250);
+
   },
   destroyed() {
     clearInterval(this.refreshConnection);
@@ -166,7 +176,7 @@ export default {
         }
       }
 
-      this.playerInfo.sort((a, b) => b.qnum - a.qnum)
+      this.playerInfo.sort((a, b) => b.qnum - a.qnum);
       this.reArrangePlayerList();
       this.$forceUpdate();
     },
@@ -207,7 +217,7 @@ export default {
     reArrangePlayerList() {
       this.playerList = [];
       for (let i = 0; i < this.playerInfo.length; i++) {
-        this.playerList.push(this.playerInfo[i].user)
+        this.playerList.push(this.playerInfo[i].user);
       }
     }
   },
