@@ -28,25 +28,11 @@ export default class Equations {
     // Make compatible with Mathjax
     static toMathjax(formula) {
         
-        //Divison
-        // EDGE CASES WILL BREAK (i.e. decimals, multi-digit numbers) - IN PROGRESS
-        if (formula.includes("/")) {
-            formula = formula.replace("/", "\\over ");
-        }
-        // Squareroots
-        if (formula.includes("Math.sqrt")) {
-            formula = formula.replace("Math.sqrt(", "\\sqrt{");
-            formula = formula.replace(")", "}");
-        }
-        // Exponents
-        if (formula.includes("**")) {
-            do {
-                formula = formula.replace("**", "^");
-            } while (formula.includes("**"));
-        }
-        // Multiplication
-        for (let i = 0; i < formula.length; i++) {
-            if (formula[i] == "*" && formula[i + 1] != "*") formula = formula.replace(formula[i], "\\cdot");
+        const regexes = [/\//g, /Math\.sqrt\[\[/g, /\]\]/g, /\*{2}/g, /\*/g];
+        const replacements = ["\\over", "\\sqrt{", "}", "^", "\\cdot"];
+
+        for(let i = 0; i < formula.length; i++) {
+            formula = formula.replace(regexes[i], replacements[i]);
         }
 
         formula = "$$" + formula + "$$";

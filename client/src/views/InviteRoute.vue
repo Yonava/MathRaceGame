@@ -1,47 +1,31 @@
 <template>
   <div>
-    <br><br><br><br>
-    <center>
 
-      <div v-if="loading">
-        <h1>Loading Session...</h1>
-      </div>
+    <div v-if="sessionInfo === undefined">
+      <p style="font-size: 14pt; font-weight: bold;">Loading Session...</p>
+      <b-icon-arrow-clockwise style="width: 10%; height: 10%;" animation="spin"></b-icon-arrow-clockwise>
+    </div>
 
-      <!-- Session Found Error -->
-      <div v-else-if="!wasSessionFound">
-        <h1>
-          Session Not Found,
-          Double Check You Got The Correct Invite Link
-        </h1>
-        <br>
-        <p><b>[Session #{{ $route.params.roomid }}]</b></p>
-      </div>
+    <!-- Session Found Error -->
+    <div v-else-if="sessionInfo === null">
+      <h3>Session Not Found 🙁</h3>
+      <br>
+      <p><b>[Unable To Retrieve Session {{ $route.params.roomid }}]</b></p>
+    </div>
 
-      <div v-else>
+    <!-- Input Username -->
+    <div v-else>
+      <p>Join Room <b>{{ sessionInfo.roomid }}</b>, Created on <b>{{ sessionInfo.date }}</b></p>
+      <h1>Enter A Username:</h1>
+      <b-input-group style="padding: 2.5%" prepend="Username" class="mt-3">
+        <b-form-input v-model="username"></b-form-input>
+      </b-input-group>
+      <button @click="joinRoom()">Join Room</button>
+      <h1 class="error">{{ errorMessage }}</h1>
+    </div>
 
-        <!-- Input Username -->
-        <div v-if="displayUsernamePromp">
-          <p>You have been invited to Room #{{ $route.params.roomid }}, Created on {{ sessionInfo.date }}!</p>
-          <h1>Enter A Username:</h1>
-          <input v-model="username" type="text" placeholder="Enter Username" />
-          <button @click="joinRoom()">Join Room</button>
-          <h1 class="error">{{ errorMessage }}</h1>
-          <p style="font-size: 10pt; margin-top: 20vh;">
-            {{ sessionInfo }}
-          </p>
-        </div>
+    <b-button variant="outline-danger" @click="$router.push('/')">Return to Main Menu</b-button>
 
-        <!-- Session Room -->
-        <div v-else>
-          <Room 
-          :username="`${username[0].toUpperCase() + username.substring(1)} (Guest#${Math.round(Math.random() * 10000)})`" 
-          :room="$route.params.roomid" 
-          :host="false" />
-        </div>
-
-      </div>
-
-    </center>
 
   </div>
 </template>
@@ -49,46 +33,52 @@
 <script>
 
 import validateUsername from '../functionality/usernameValidation.js'
-import Room from '../components/Room.vue'
 
 export default {
-  components: {
-    Room
-  },
   data: () => {
     return {
-      loading: true,
       username: '',
-      displayUsernamePromp: true,
       errorMessage: '',
-      sessionInfo: null,
-      wasSessionFound: false
+      sessionInfo: undefined,
     }
-  },
-  mounted() {
-    setTimeout(() => {
-      this.loading = false
-      if (this.sessionInfo !== null) this.wasSessionFound = true 
-      console.log(this.sessionInfo)
-    }, 1250)
   },
   created() {
     fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
       .then(response => response.json())
       .then(data => {
         this.sessionInfo = data;
+        // attempts to automatically join room with cached username
+        if (localStorage?.username !== undefined) {
+          this.username = localStorage.username;
+          this.joinRoom();
+        }
+
+        this.sessionInfo.date = this.sessionInfo.date.getMonth()
+
       });
   },
   methods: {
     joinRoom() {
+      
+      this.errorMessage = validateUsername(this.username.trim());
 
-      this.username = this.username.trim();
-      this.errorMessage = validateUsername(this.username);
+      // checks if the session specifies a host, and if so, is player username the same as the hosts username
+      if (this.sessionInfo?.host !== undefined) {
+        if (this.username.trim().toLowerCase() === this.sessionInfo.host.toLowerCase()) {
+          this.errorMessage =  'Oop, We Notice That Your Username Is The Same As The Host of This Session. Please Enter A New Username.';
+        }
+      }
 
       if (this.errorMessage) return;
 
-      this.host = false;
-      this.displayUsernamePromp = false;
+      this.$router.push({ name: 'Room', params: { sessionObject: {
+        questions: this.sessionInfo.questions,
+        date: this.sessionInfo.date,
+        roomid: this.sessionInfo.roomid,
+        host: this.sessionInfo.host,
+        difficulty: this.sessionInfo.difficulty,
+        clientName: this.username
+      }}});
     }
   }
 }
