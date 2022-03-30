@@ -94,7 +94,7 @@ export default {
         
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([5, 5, 5, 5]),
+            questions: GenerateQuestions([50, 0, 0, 0]),
             date: new Date,
             roomid: String(this.roomID),
             host: this.username,
