@@ -31,7 +31,7 @@
     </div>
 
     <!-- Race Area -->
-    <div v-else>
+    <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
 
       <!-- Progress Side Bar -->
       <div>
@@ -58,6 +58,11 @@
           <b-button pill :disabled="cooldownActive" variant="primary" @click="checkAnswer(option)" class="answer-button">{{ option }}</b-button>
         </div>
       </div>
+
+    </div>
+
+    <div v-if="qNumber === (sessionData.questions.length + 1)">
+      <Congrats />
     </div>
 
   </div>
@@ -67,6 +72,7 @@
 
 import io from "socket.io-client"
 import WaitingArea from "../components/WaitingArea.vue"
+import Congrats from "../components/Congrats.vue"
 
 export default {
   data: () => {
@@ -103,7 +109,8 @@ export default {
     };
   },
   components: {
-    WaitingArea
+    WaitingArea,
+    Congrats
   },
   mounted() {
     if (this.sessionData.roomid === undefined) {

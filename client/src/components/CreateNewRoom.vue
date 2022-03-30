@@ -19,6 +19,8 @@
           </b-button-group>
         </div>
 
+      <input type="number" v-model="numofoptions" placeholder="number of optins" />
+
       <div class="small-buffer"></div>
 
       <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
@@ -62,7 +64,8 @@ export default {
         difficulty: null,
         difficultyStyle: '',
 
-        creatingRoom: false
+        creatingRoom: false,
+        numofoptions: 4
       }
     },
     props: [
@@ -94,7 +97,7 @@ export default {
         
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([50, 0, 0, 0]),
+            questions: GenerateQuestions([10, 0, 10, 0], parseInt(this.numofoptions)),
             date: new Date,
             roomid: String(this.roomID),
             host: this.username,
