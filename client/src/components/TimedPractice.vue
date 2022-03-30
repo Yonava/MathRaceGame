@@ -30,6 +30,7 @@
 
 import GenerateQuestions from '../assets/QuestionAssembler'
 import shuffle from '../functionality/shuffleArray'
+import sumArray from '../functionality/sumArray'
 
 export default {
     data: () => {
@@ -41,6 +42,8 @@ export default {
             numCorrect: 0,
             // Determine if race is over
             raceEnd: false,
+            // For creating questions
+            chosenDifficulty: [],
             // For changing questions
             currentPage: 1,
             // Whether or not chosen answer is correct
@@ -54,10 +57,50 @@ export default {
         };
     },
     props: [
-        "duration"
+        "qNum",
+        "duration",
+        "difficultyChoice"
     ],
     mounted() {
-        this.output = GenerateQuestions();
+        let half = this.qNum / 2;
+        let quarter = this.qNum / 4;
+        let third = this.qNum / 3;
+        let sixth = this.qNum / 6;
+        let eigth = this.qNum / 8;
+        // Adjust questions based on difficulty choice
+        switch(this.difficultyChoice) {
+          case "Easy":
+            this.chosenDifficulty = [half, quarter, eigth, eigth];
+            break;
+          case "Normal":
+            this.chosenDifficulty = [quarter, quarter, quarter, quarter];
+            break;
+          case "Hard":
+            this.chosenDifficulty = [sixth, sixth, third, third];
+            break;
+          case "Extreme":
+            this.chosenDifficulty = [eigth, eigth, eigth, 5 * eigth];
+            break;
+        }
+
+        for (let i = 0; i < this.chosenDifficulty.length; i++) {
+            if (this.chosenDifficulty[i] % 1 != 0) {
+                this.chosenDifficulty[i] = Math.floor(this.chosenDifficulty[i]);
+            }
+        }
+
+        // Ensure correct number of elements
+        let sum = sumArray(this.chosenDifficulty);
+        // Take excess from Algebra questions
+        if (sum > this.qNum) {
+            this.chosenDifficulty[3] -= (sum - this.qNum);
+        }
+        // Add extra to level 3 questions
+        else if (sum < this.qNum) {
+            this.chosenDifficulty[2] += (this.qNum - sum);
+        }
+
+        this.output = GenerateQuestions(this.chosenDifficulty);
         shuffle(this.output);
         this.itemized = this.output[0];
         this.numQuestions = this.output.length;

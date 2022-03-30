@@ -1,8 +1,6 @@
 <!-- Singleplayer Session Room -->
 <template>
     <div>
-      <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
-
       <!-- Mode customization -->
 
       <div v-if="!freePractice && !timedPractice">
@@ -15,7 +13,7 @@
         <!-- Adjust timer for timed practice -->
         <div class="time-selector">
           <label for="question-timer">Timer Duration (minutes)</label><br>
-          <input type="range" id="question-timer" name="question-timer" min="0" max="5" value="2" v-model="duration">{{duration}}
+          <input type="range" id="question-timer" name="question-timer" min="1" max="30" value="5" v-model="duration">{{duration}}
           <br><br><br><br>
         </div>
         <!-- Difficulty Selection -->
@@ -29,7 +27,7 @@
       <div v-if="!freePractice">
         <b-button v-if="!timedPractice" pill @click="timedPractice = true">Timed Practice</b-button>
         <div v-if="timedPractice">
-          <TimedPractice :duration="duration" />
+          <TimedPractice :qNum="qNum" :duration="duration" :difficultyChoice="difficultyChoice" />
           <!-- Return to practice menu -->
           <b-button pill variant="outline-info" @click="timedPractice = false">End Practice</b-button>
         </div>
@@ -62,15 +60,15 @@ export default {
       //Number of questions to create (for timed practice)
       qNum: 20,
       // Length of timer in minutes (for timed practice)
-      duration: 2,
+      duration: 5,
       // Levels of difficulty and the types of questions to make for each
       difficulty: {
             easy: [500, 250, 250, 10],
             normal: [250, 250, 250, 250],
             hard: [50, 50, 50, 500],
-            impossible: [5, 5, 5, 1000]
+            extreme: [5, 5, 5, 1000]
       },
-      difficultyOptions: ["Easy", "Normal", "Hard", "Impossible"],
+      difficultyOptions: ["Easy", "Normal", "Hard", "Extreme"],
       difficultyChoice: "Normal",
       chosenDifficulty: [250, 250, 250, 250]
     }
@@ -107,8 +105,8 @@ export default {
           case "Hard":
             this.chosenDifficulty = this.difficulty.hard;
             break;
-          case "Impossible":
-            this.chosenDifficulty = this.difficulty.impossible
+          case "Extreme":
+            this.chosenDifficulty = this.difficulty.extreme;
             break;
       }
     }
