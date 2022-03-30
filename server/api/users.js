@@ -54,4 +54,19 @@ router.delete('/:username', async (req, res) => {
 
 });
 
+router.put('/:username', async (req, res) => {
+
+  try {
+    const updatedUserData = await UserBase.updateOne(
+      { username: req.params.username }, 
+      { $set: 
+      { gameData: req.body.gameData } }
+    );
+    res.json(updatedUserData);
+  } catch (error) {
+    res.json({ message: error })
+  }
+  
+});
+
 module.exports = router;
