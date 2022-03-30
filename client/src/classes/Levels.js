@@ -27,7 +27,6 @@ export default class Levels extends Equations {
     static levelTwo() {
         // Choose which perfect square to use for sqrt eq
         let root = this.randItem(this.squares);
-
         const template = [
             {
                 equation: `${this.randNum(5,15)} + ${Arithmetic.BaseEq('*', 2, 10)}`

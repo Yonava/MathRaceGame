@@ -28,12 +28,15 @@ export default class Equations {
     // Make compatible with Mathjax
     static toMathjax(formula) {
         
-        const regexes = [/\//g, /Math\.sqrt\[\[/g, /\]\]/g, /\*{2}/g, /\*/g];
+        const regexes = [/\//g, /Math\.sqrt\(/g, /\)/g, /\*{2}/g, /\*/g];
         const replacements = ["\\over", "\\sqrt{", "}", "^", "\\cdot"];
 
         for(let i = 0; i < formula.length; i++) {
             formula = formula.replace(regexes[i], replacements[i]);
         }
+
+        formula = formula.replace(/\[/g, "(");
+        formula = formula.replace(/\]/g, ")");
 
         formula = "$$" + formula + "$$";
 
