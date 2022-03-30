@@ -108,16 +108,17 @@ export default {
     created() {
         this.minutes = this.duration - 1;
         this.timeTracker = setInterval(() => {
-            let minStr = "";
-            let secStr = "";
+            let string = "";
 
-            if (this.minutes < 10) minStr = `0${this.minutes}`;
-            else minStr = `${this.minutes}`;
+            if (this.minutes < 10) string += `0${this.minutes}`;
+            else string += `${this.minutes}`;
 
-            if (this.seconds < 10) secStr = `0${this.seconds}`;
-            else secStr = `${this.seconds}`;
+            string += ":";
 
-            document.getElementById('Timer').innerHTML = `${minStr}:${secStr}`;
+            if (this.seconds < 10) string += `0${this.seconds}`;
+            else string += `${this.seconds}`;
+
+            document.getElementById('Timer').innerHTML = string;
             
             this.seconds--;
         }, 1000);

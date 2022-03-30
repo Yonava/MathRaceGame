@@ -4,7 +4,7 @@ import Equations from "../classes/Equations"
 export default function shuffle(list) {
     for (let i = list.length - 1; i > 1; i--) {
         let j = Equations.randNum(0, i);
-        swap(list, i, j)
+        swap(list, i, j);
     }
 }
 
