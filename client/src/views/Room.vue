@@ -115,11 +115,11 @@ export default {
     // listens to see if user tabs out or minimizes our game
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        this.visibilityState = true
-        document.title = `Race ${this.sessionData.roomid}`
+        this.visibilityState = true;
+        document.title = `Race ${this.sessionData.roomid}`;
       } else {
-        this.visibilityState = false
-        document.title = 'Click Back!'
+        this.visibilityState = false;
+        document.title = 'Click Back!';
       }});
 
     // ensures client pings the server every 250 milliseconds
@@ -201,7 +201,7 @@ export default {
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer
       };
-      this.updatePlayerInfo(data)
+      this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
     },
     reArrangePlayerList() {
