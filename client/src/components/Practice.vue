@@ -2,50 +2,88 @@
 <template>
     <div>
       <p>Hello {{ username }}! Welcome to practice mode, where you can hone your skills!</p>
-      <button @click="genQuestions()">Generate Questions</button>
-      <input type="range" min="2" max="15" v-model="max">{{max}}
-      <h1 v-for="i in output" :key="i.id"> 
-        <vue-mathjax :formula="i.equation"></vue-mathjax>
-        
-        <input type="radio" id="choiceOne" :name="i.equation" :value="i.answer" @click="choice[output.indexOf(i)]=i.answer">
-        <label for="choiceOne">{{i.answer}}</label><br>
 
-        <input type="radio" id="choiceTwo" :name="i.equation" :value="i.options[1]" @click="choice[output.indexOf(i)]=i.options[1]">
-        <label for="choiceOne">{{i.options[1]}}</label><br>
+      <!-- Mode customization -->
 
-        <input type="radio" id="choiceThree" :name="i.equation" :value="i.options[2]">
-        <label for="choiceTwo" @click="choice[output.indexOf(i)]=i.options[2]">{{i.options[2]}}</label><br>
+      <div v-if="!freePractice && !timedPractice">
+        <!-- Specify number of questions -->
+        <div class="num-questions-slider">
+          <label for="num-questions">Number of Questions</label><br>
+          <input type="range" id="num-questions" name="num-questions" min="4" max="40" value="20" step="4" v-model="qNum">{{qNum}}
+          <br><br><br><br>
+        </div>
+        <!-- Adjust timer for timed practice -->
+        <div class="time-selector">
+          <label for="question-timer">Timer Duration (minutes)</label><br>
+          <input type="range" id="question-timer" name="question-timer" min="0" max="5" value="2" v-model="duration">{{duration}}
+          <br><br><br><br>
+        </div>
+        <!-- Difficulty Selection -->
+        <div class="difficulty-selection">
+          <b-form-select v-model="difficultyChoice" :options="difficultyOptions"></b-form-select>
+          <br><br><br><br>
+        </div>
+      </div>
 
-        <input type="radio" id="choiceFour" :name="i.equation" :value="i.options[3]">
-        <label for="choiceThree" @click="choice[output.indexOf(i)]=i.options[3]">{{i.options[3]}}</label><br><br>
+      <!-- Timed Practice -->
+      <div v-if="!freePractice">
+        <b-button v-if="!timedPractice" pill @click="timedPractice = true">Timed Practice</b-button>
+        <div v-if="timedPractice">
+          <TimedPractice :duration="duration" />
+          <!-- Return to practice menu -->
+          <b-button pill variant="outline-info" @click="timedPractice = false">End Practice</b-button>
+        </div>
+      </div>
 
-        <button @click="checkAnswer(output.indexOf(i), i.answer), qAnswered[output.indexOf(i)]=true">Submit</button>
-
-        <p v-show="qAnswered[output.indexOf(i)]">{{correct[output.indexOf(i)] ? "Correct!":"Incorrect!"}}</p>
-      </h1>
+      <!-- Free-Form Practice -->
+      <div v-if="!timedPractice">
+        <b-button v-if="!freePractice" pill variant="outline-dark" @click="freePractice = true">Free-Form Practice</b-button>
+        <div v-if="freePractice">
+          <PracticeArea :chosenDifficulty="chosenDifficulty" />
+          <!-- Return to practice menu -->
+          <b-button pill variant="outline-info" @click="freePractice = false">End Practice</b-button>
+        </div>
+      </div>
     </div>
 </template>
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import PracticeArea from './PracticeArea.vue'
+import TimedPractice from './TimedPractice.vue'
 
 export default {
   name: 'app',
   data: () => {
     return {
-      max: 0,
-      choice: [],
-      correct: [],
-      qAnswered: [],
-      output: []
+      // Whether or not to enable various practice modes
+      freePractice: false,
+      timedPractice: false,
+      //Number of questions to create (for timed practice)
+      qNum: 20,
+      // Length of timer in minutes (for timed practice)
+      duration: 2,
+      // Levels of difficulty and the types of questions to make for each
+      difficulty: {
+            easy: [500, 250, 250, 10],
+            normal: [250, 250, 250, 250],
+            hard: [50, 50, 50, 500],
+            impossible: [5, 5, 5, 1000]
+      },
+      difficultyOptions: ["Easy", "Normal", "Hard", "Impossible"],
+      difficultyChoice: "Normal",
+      chosenDifficulty: [250, 250, 250, 250]
     }
+  },
+  components: {
+    PracticeArea,
+    TimedPractice
   },
   props: [
     "username"
   ],
   mounted() {
-    console.log(this.username)
+
   },
   created() {
 
@@ -54,23 +92,26 @@ export default {
 
   },
   methods: {
-    // Create the set of problems
-    genQuestions() {
-      this.output = GenerateQuestions();
-      for (let i = 0; i < this.output.length; i++) {
-        this.qAnswered.push(false);
-        this.correct.push(false);
-        this.choice.push("null");
-      }
-    },
-    // Check submission
-    checkAnswer(index, answer) {
-      if (this.choice[index] == answer) this.correct[index] = true;
-      else this.correct[index] = false;
-    }
+    
   },
   watch: {
-
+    difficultyChoice() {
+      // Adjust questions based on difficulty choice
+      switch(this.difficultyChoice) {
+          case "Easy":
+            this.chosenDifficulty = this.difficulty.easy;
+            break;
+          case "Normal":
+            this.chosenDifficulty = this.difficulty.normal;
+            break;
+          case "Hard":
+            this.chosenDifficulty = this.difficulty.hard;
+            break;
+          case "Impossible":
+            this.chosenDifficulty = this.difficulty.impossible
+            break;
+      }
+    }
   }
 }
 </script>

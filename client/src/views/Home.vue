@@ -1,17 +1,25 @@
 <template>
   <div>
 
-
     <!-- View Controller -->
 
+    <!-- Join Room -->
+    <transition name="slide">
+      <div style="position:fixed; z-index: 3;" class="view-container" v-if="(viewController || viewSelected) === 'JoinSession'">
+        <JoinSession />
+      </div>
+    </transition>
+
     <!-- Create New Room -->
-    <div class="view-container" v-if="viewController === 'CreatingSession'">
-      <CreateNewRoom />
-    </div>
+    <transition name="slide">
+      <div style="position:fixed; z-index: 3;" class="view-container" v-if="(viewController || viewSelected) === 'CreatingSession'">
+        <CreateNewRoom :username="username" /> 
+      </div>
+    </transition>
 
     <!-- Singleplayer Practice -->
-    <div class="view-container" v-else-if="viewController === 'Practice'">
-      <Practice :username="$parent.username" />
+    <div class="view-container" v-if="viewController === 'Practice'">
+      <Practice />
     </div>
 
     <!-- Leaderboard -->
@@ -29,19 +37,61 @@
 
     <!-- Main Menu Content -->
 
-    <div class="view-container" v-else>
-      <p>Sessions Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
-      <button @click="$router.push('/profile/Yonava')">View Profile</button>
-      <button @click="consolelog()">Console Log!</button>
-      <button v-on:click="switchView('CreatingSession')">Create New Session</button>
+    <div v-if="!viewController || !viewSelected">
+
+      <div @click="$router.push(`/profile/${username}`)">
+        <b-icon-person class="profile-icon"></b-icon-person>
+      </div>
+
+      <!-- Session Details -->
+      <!-- <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p> -->
+
+      <div class="center">
+
+        <!-- Sign In Form -->
+        <b-input-group style="padding: 2.5%" prepend="Username" class="mt-3">
+          <b-form-input v-model="username"></b-form-input>
+          <b-input-group-append>
+            <b-button :variant="searchColor"></b-button>
+          </b-input-group-append>
+        </b-input-group>
+
+        <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
+
+        <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>  
+
+        <!-- Connect to Multiplayer Sessions -->
+
+        <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
+          <div style="position: relative">
+            <span>Join Session</span>
+            <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
+          </div>
+        </b-button>
+
+        <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
+          <div style="position: relative">
+            <span>Create Session</span>
+            <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
+          </div>
+        </b-button>
+
+        <!-- End Connect to Multiplayer Sessions -->
+
+        <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+          Delete All Sessions
+        </button>
+      </div>
+
     </div>
 
     <!-- End of Main Menu Content -->
 
+    <br><br><br><br><br>
 
 
     <!-- Bottom Nav Bar -->
-    <footer v-show="!$parent.inGame" class="bottom">
+    <footer style="z-index:8;" class="bottom">
       <div class="bottom-container">
         <div @click="switchView('')" class="nav-container">
           <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
@@ -63,25 +113,41 @@
 
 <script>
 
+import validateUsername from '../functionality/usernameValidation.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import CreateNewRoom from '../components/CreateNewRoom.vue'
+import JoinSession from '../components/JoinRoom.vue'
 import Info from '../components/Info.vue'
+import DatabaseServices from '../DatabaseServices.js'
 
 export default {
   data: () => {
     return {
+
+      /* both work in tandem to create an offset for 
+      allowing smooth transition animation rendering */
       viewController: '',
+      viewSelected: '',
+
+      username: '',
+      errorMsg: '',
+
+      searchColor: 'warning',
     }
   },
   components: {
     Practice,
     Leaderboard,
     CreateNewRoom,
-    Info
+    Info,
+    JoinSession
   },
   mounted() {
-    
+    // checks if username is on file, and if so, sets username data to it
+    if (localStorage?.username !== undefined) {
+      this.username = localStorage.username;
+    }
   },
   created() {
 
@@ -90,27 +156,108 @@ export default {
 
   },
   methods: {
-    switchView(view) {
+    switchView(view, isEntering = false) {
+
+      if (!isEntering) {
+        this.viewController = view;
+        this.viewSelected = view;
+        return;
+      }
+
       this.viewController = view;
+      setTimeout(() => {
+        this.viewSelected = view;
+      }, 250); // set transition duration to what is in component transition class
     },
-    consolelog() {
-      this.$router.push({ name: 'Room', params: { sessionObject: { myname: 'yona' }}})
+    async deleteSession(session) {
+
+      if (session === 'all') {
+        const sessions = await DatabaseServices.getAllSessions();
+        for (let i in sessions) DatabaseServices.deleteSessionByRoomID(sessions[i].roomid);
+        return;
+      }
+      
+      DatabaseServices.deleteSessionByRoomID(session)
+
+      this.sessionDeletedMsg = true;
+      setTimeout(() => {
+        this.sessionDeletedMsg = false;
+      }, 3000);
     }
   },
   watch: {
+    username() {
+
+      this.errorMsg = validateUsername(this.username.trim());
+
+      if (!this.errorMsg)
+        localStorage.username = this.username;
+      
+      if (this.errorMsg || !this.username) {
+        this.searchColor = 'danger'
+        this.joiningRoom = false;
+      } else {
+        this.searchColor = 'success'
+      }
+    }
   }
 
 }
 </script>
 
-<style scoped>
-div.view-container {
-  padding: 2.5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+<style>
+
+/* Buffers */
+
+div.small-buffer {
+  width: 100vw;
+  height: 1vh;
 }
+
+div.large-buffer {
+  width: 100vw;
+  height: 3vh;
+}
+
+/* New CSS Elements */
+
+.profile-icon {
+  padding: 0.5%;
+  margin: 5% 5% 0% 85%;
+  width: 9%;
+  height: 9%;
+  border: 1.5px solid black;
+  border-radius: 25px;
+}
+
+/* Component Transitions! */
+.error-msg-transition {
+  transition: 300ms;
+  font-weight: bold;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transform: translateX(0%);
+  transition: 250ms ease-in-out;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translateX(100%);
+}
+
+div.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main Menu Buttons */
+.main-menu-button {
+  width: 65vw;
+  margin: 2%;
+}
+
 /* NAVIGATION DISPLAY */
 .icon {
     height: 5vh;

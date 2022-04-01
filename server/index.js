@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
 const app = express();
 
@@ -18,7 +17,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const sessions = require('./api/sessions');
+const users = require('./api/users');
+
 app.use('/api/sessions', sessions);
+app.use('/api/users', users);
 
 const PORT = process.env.PORT || 1010;
 
@@ -26,19 +28,19 @@ io.on('connection', socket => {
     console.log(`user ${socket.id} is connected.`)
 
     socket.on('score', (data, room) => {
-        socket.to(room).emit('scoreRecieved', data)
+      socket.to(room).emit('scoreRecieved', data)
     });
     
     socket.on('disconnectMsg', username => {
-        console.log(`${username} left.`)
+      console.log(`${username} left.`)
     });
 
     socket.on('disconnect', () => {
-        console.log('Disconnect Successful.')
+      console.log('Disconnect Successful.')
     });
     
     socket.on('joinRoom', room => {
-        socket.join(room)
+      socket.join(room)
     });
 });
 
@@ -46,9 +48,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public/'));
     app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
-
-mongoose.connect("mongodb+srv://math-race-user:mathpassword@cluster0.n5hn0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-() => console.log('Database Connection Made'));
 
 server.listen(PORT, () => {
     console.log(`Listening on localhost:${PORT}`);
