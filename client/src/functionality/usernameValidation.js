@@ -33,5 +33,9 @@ export default function validateUsername(username) {
     if (username.toLowerCase().includes(dreamStan[i])) return errorMessage = 'Get Out You Filthy Dream Stan!';
   }
 
+  if (username === 'undefined') {
+    return errorMessage = 'Nice Try!';
+  }
+
   return errorMessage;
 }

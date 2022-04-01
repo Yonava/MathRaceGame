@@ -39,6 +39,7 @@
 import validateUsername from '../functionality/usernameValidation.js'
 import validatePassword from '../functionality/passwordValidation.js'
 import DatabaseServices from '../DatabaseServices.js'
+import { hashSync, compareSync } from 'bcryptjs'
 
 export default {
   data: () => {
@@ -60,12 +61,12 @@ export default {
       signInType: true
     }
   },
-  mounted() {
+  async mounted() {
     document.title = 'Sign In - Math Race';
   },
   methods: {
     signUp() {
-      
+    
       /* defers call to database for a variable number of milliseconds from 0-500
       to ensure that multiple accounts with the same username never occur */
       setTimeout(async () => {
@@ -73,9 +74,9 @@ export default {
         if (doesUserAlreadyExist !== null) {
           return this.errorMsgUsername = `'${this.username}' Has Been Taken`;
         }
-
+        
         await DatabaseServices.createNewUser({
-          password: this.password,
+          password: hashSync(this.password),
           username: this.username
         })
 
@@ -98,8 +99,10 @@ export default {
     async login() {
 
       const captureUserData = await DatabaseServices.findUser(this.username);
-
-      if (captureUserData === null || captureUserData?.password !== this.password) {
+      
+      if (captureUserData === null) {
+        return this.errorMsg = `Username || Password Is Incorrect`;
+      } else if (compareSync(this.password, captureUserData.password)) {
         return this.errorMsg = `Username || Password Is Incorrect`;
       }
 
