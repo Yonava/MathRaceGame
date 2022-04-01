@@ -29,6 +29,7 @@
     <b-button @click="$router.push('/')" variant="danger">Return</b-button>
     <br><br>
 
+    <p v-show="creatingAccount"><b>Creating Account...</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
 
   </div>
@@ -54,6 +55,8 @@ export default {
       errorMsgUsername: '',
 
 
+      creatingAccount: false,
+
       /* tiggered if account creation is successful */
       successMsg: false,
 
@@ -66,6 +69,8 @@ export default {
   },
   methods: {
     signUp() {
+
+      this.creatingAccount = true;
     
       /* defers call to database for a variable number of milliseconds from 0-500
       to ensure that multiple accounts with the same username never occur */
@@ -89,21 +94,22 @@ export default {
         // Prompts User For Login If Account Was Created Successfully
         this.signInType = true;
         this.successMsg = true;
+        this.creatingAccount = false;
         setTimeout(() => {
           this.successMsg = false;
         }, 10000)
 
-      }, Math.floor(Math.random() * 500));
+      }, Math.floor(Math.random() * 1000)) + 500;
     },
     
     async login() {
 
       const captureUserData = await DatabaseServices.findUser(this.username);
-      
+
       if (captureUserData === null) {
-        return this.errorMsg = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username || Password Is Incorrect`;
       } else if (compareSync(this.password, captureUserData.password)) {
-        return this.errorMsg = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username || Password Is Incorrect`;
       }
 
       // Push User To Main Menu If Successful
@@ -144,6 +150,10 @@ export default {
 
       this.username = '';
       this.password = '';
+    },
+    errorMsgUsername() {
+
+      this.creatingAccount = false;
     }
   }
 }
