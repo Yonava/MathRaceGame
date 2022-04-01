@@ -21,7 +21,8 @@
 
     <b-button @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
 
-    <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
+    <p class="error-msg-transition" :style="errorMsgUsername ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgUsername ? errorMsgUsername:'placeholder'}}</p>
+    <p class="error-msg-transition" :style="errorMsgPassword ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgPassword ? errorMsgPassword:'placeholder'}}</p>
 
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
     <br><br>
@@ -32,6 +33,7 @@
 <script>
 
 import validateUsername from '../functionality/usernameValidation.js'
+import validatePassword from '../functionality/passwordValidation.js'
 import DatabaseServices from '../DatabaseServices.js'
 
 export default {
@@ -44,7 +46,8 @@ export default {
       username: '',
       usernameColor: 'warning',
 
-      errorMsg: '',
+      errorMsgPassword: '',
+      errorMsgUsername: '',
 
       /* True == login, False == Sign Up */
       signInType: true
@@ -99,12 +102,11 @@ export default {
     username() {
 
       this.username = this.username.trim();
-      this.errorMsg = validateUsername(this.username);
+      this.errorMsgUsername = validateUsername(this.username);
 
-      if (!this.errorMsg)
-        localStorage.username = this.username;
-      
-      if (this.errorMsg || !this.username) {
+      if (!this.username) {
+        this.usernameColor = 'warning';
+      } else if (this.errorMsgUsername) {
         this.usernameColor = 'danger';
       } else {
         this.usernameColor = 'success';
@@ -113,12 +115,16 @@ export default {
     password() {
 
       this.password = this.password.trim();
-
-      if (this.password) {
+      this.errorMsgPassword = validatePassword(this.password);
+      
+      console.log(this.password.includes(['1']))
+      if (!this.password) {
+        this.passwordColor = 'warning';
+      } else if (this.errorMsgPassword) {
+        this.passwordColor = 'danger';
+      } else {
         this.passwordColor = 'success';
-        return;
       }
-      this.passwordColor = 'danger';
     },
     signInType() {
 
