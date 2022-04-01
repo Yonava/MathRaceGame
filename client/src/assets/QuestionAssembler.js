@@ -66,7 +66,8 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                 options
             };
 
-            shuffle(questionObj.options);
+            // 15x shuffle the order of the multiple choice options
+            shuffle(questionObj.options, 15);
 
             output.push(questionObj);
         }
