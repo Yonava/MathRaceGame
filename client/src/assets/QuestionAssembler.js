@@ -2,6 +2,7 @@ import Equations from "../classes/Equations"
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
 import Geometry from "../classes/subClasses/Geometry";
+import Trigonometry from "../classes/subClasses/Trigonometry";
 import shuffle from "../functionality/shuffleArray"
 
 // Each entry i in numQuestions is a different level.
@@ -32,6 +33,9 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
                     break;
                 case 4:
                     question = Geometry.Problem();
+                    break;
+                case 5:
+                    question = Trigonometry.Problem();
                     break;
                 default:
                     throw new Error("Invalid question level.");
