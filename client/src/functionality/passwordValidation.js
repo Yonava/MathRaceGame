@@ -5,6 +5,10 @@ export default function validatePassword(password) {
   let errorMessage = '';
   const minChars = 6;
 
+  if (!password) {
+    return errorMessage = '';
+  }
+
   if (password.length < minChars) {
     return errorMessage = `Password Lacks Length: Minimum Length is ${minChars}`;
   }

@@ -3,8 +3,12 @@ import bannedWords from '../assets/filteredWords.js'
 export default function validateUsername(username) {
 
   let errorMessage = '';
-  const maxChars = 10;
+  const maxChars = 8;
   const minChars = 4;
+
+  if (!username) {
+    return errorMessage = '';
+  }
 
   if (username.length < minChars) {
     return errorMessage = `Username Is Too Short: Min ${minChars}`;

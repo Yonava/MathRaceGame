@@ -13,7 +13,7 @@
     </b-input-group>
 
     <b-input-group prepend="Password" class="mt-3">
-      <b-form-input v-model="password"></b-form-input>
+      <b-form-input v-model="password" type="password"></b-form-input>
       <b-input-group-append>
         <b-button :variant="passwordColor"></b-button>
       </b-input-group-append>
@@ -27,6 +27,10 @@
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
     <br><br>
     <b-button @click="$router.push('/')" variant="danger">Return</b-button>
+    <br><br>
+
+    <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
+
   </div>
 </template>
 
@@ -42,12 +46,15 @@ export default {
 
       password: '',
       passwordColor: 'warning',
+      errorMsgPassword: '',
 
       username: '',
       usernameColor: 'warning',
-
-      errorMsgPassword: '',
       errorMsgUsername: '',
+
+
+      /* tiggered if account creation is successful */
+      successMsg: false,
 
       /* True == login, False == Sign Up */
       signInType: true
@@ -57,40 +64,43 @@ export default {
     document.title = 'Sign In - Math Race';
   },
   methods: {
-    async signUp() {
+    signUp() {
       
-      const doesUserAlreadyExist = await DatabaseServices.findUser(this.username);
-      if (doesUserAlreadyExist !== null) {
-        return this.errorMsg = `'${this.username}' Has Been Taken`;
-      }
+      /* defers call to database for a variable number of milliseconds from 0-500
+      to ensure that multiple accounts with the same username never occur */
+      setTimeout(async () => {
+        const doesUserAlreadyExist = await DatabaseServices.findUser(this.username);
+        if (doesUserAlreadyExist !== null) {
+          return this.errorMsgUsername = `'${this.username}' Has Been Taken`;
+        }
 
-      await DatabaseServices.createNewUser({
-        password: this.password,
-        username: this.username
-      })
+        await DatabaseServices.createNewUser({
+          password: this.password,
+          username: this.username
+        })
 
-      const confirmAccountCreation = await DatabaseServices.findUser(this.username);
+        const confirmAccountCreation = await DatabaseServices.findUser(this.username);
 
-      if (confirmAccountCreation === null) {
-        return this.errorMsg = 'There Has Been An Issue Communicating With Our Servers, Check Your Connection And Try Again';
-      }
+        if (confirmAccountCreation === null) {
+          return this.errorMsgUsername = 'There Has Been An Issue Communicating With Our Servers, Check Your Connection And Try Again';
+        }
 
-      // Push User To Main Menu If Successful
-      localStorage.username = this.username;
-      this.$router.push('/');
+        // Prompts User For Login If Account Was Created Successfully
+        this.signInType = true;
+        this.successMsg = true;
+        setTimeout(() => {
+          this.successMsg = false;
+        }, 10000)
 
+      }, Math.floor(Math.random() * 500));
     },
+    
     async login() {
 
       const captureUserData = await DatabaseServices.findUser(this.username);
 
-      if (captureUserData === null) {
-        return this.errorMsg = `No Account Found That Matches '${this.username}'`;
-      }
-
-      console.log(captureUserData.password, this.password)
-      if (captureUserData.password !== this.password) {
-        return this.errorMsg = 'Password is incorrect';
+      if (captureUserData === null || captureUserData?.password !== this.password) {
+        return this.errorMsg = `Username || Password Is Incorrect`;
       }
 
       // Push User To Main Menu If Successful
@@ -108,6 +118,7 @@ export default {
         this.usernameColor = 'warning';
       } else if (this.errorMsgUsername) {
         this.usernameColor = 'danger';
+        if (this.signInType) this.errorMsgUsername = 'Invalid Username';
       } else {
         this.usernameColor = 'success';
       }
@@ -117,11 +128,11 @@ export default {
       this.password = this.password.trim();
       this.errorMsgPassword = validatePassword(this.password);
       
-      console.log(this.password.includes(['1']))
       if (!this.password) {
         this.passwordColor = 'warning';
       } else if (this.errorMsgPassword) {
         this.passwordColor = 'danger';
+        if (this.signInType) this.errorMsgPassword = 'Invalid Password';
       } else {
         this.passwordColor = 'success';
       }
@@ -141,5 +152,10 @@ export default {
   transition: 300ms;
   font-weight: bold;
 } 
+
+.success-msg {
+  color: rgb(3, 192, 3);
+  font-weight: bold;
+}
 
 </style>
