@@ -22,7 +22,8 @@ const UserSchema = mongoose.Schema({
     },
     accessLevel: {
       type: String,
-      required: true
+      required: true,
+      default: 'user'
     }
 
 });

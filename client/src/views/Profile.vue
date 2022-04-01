@@ -1,41 +1,49 @@
 <template>
   <div class="center">
-      <h1>This is The Profile Page of {{ $route.params.username }}</h1>
-      <button type="button" @click="copyToClipboard" class="btn btn-outline-primary btn-lg">Primary</button>
-      <div>
-        <b-card
-        :title="$route.params.username"
-        img-src="https://images.theconversation.com/files/273872/original/file-20190510-183089-1qzy2lb.jpg?ixlib=rb-1.1.0&rect=355%2C0%2C3290%2C1885&q=20&auto=format&w=320&fit=clip&dpr=2&usm=12&cs=strip"
-        img-alt="Image"
-        img-top
-        tag="article"
-        style="max-width: 20rem;"
-        class="mb-2">
+    <div>
+      <b-card
+      :title="$route.params.username"
+      img-src="https://www.incimages.com/uploaded_files/image/1920x1080/getty_470493341_20001333200092800_398689.jpg"
+      img-alt="Profile Image"
+      img-top
+      tag="article"
+      style="max-width: 20rem;"
+      class="mb-2">
 
-            <b-card-text>
-            {{ $route.params.username }}s Profile and Stats
-            </b-card-text>
+          <b-card-text>
+          {{ $route.params.username }}s Profile and Stats
+          </b-card-text>
 
-            <b-button href="#" variant="danger">Go somewhere</b-button>
-          </b-card>
-          <b-button style="position: fixed; bottom: 10%" variant="outline-danger" @click="$router.push('/')">Return</b-button>
-      </div>
+          <b-button @click="$router.push('/')" variant="danger">Return</b-button>
+        </b-card>
+    </div>
+    <b-button @click="logout()" variant="outline-danger">Log Out</b-button>
   </div>
 </template>
 
 <script>
 export default {
-    methods: {
-      copyToClipboard() {
-        navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
-          // runs if successful
-          console.log('yay')
-        }, () => {
-          // runs if unsuccessful
-          console.log('not yay')
-        });
-      }
+
+  mounted() {
+    if (this.$route.params.username === 'undefined') {
+      this.$router.push('/sign-in');
     }
+  },
+  methods: {
+    copyToClipboard() {
+      navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
+        // runs if successful
+        console.log('yay')
+      }, () => {
+        // runs if unsuccessful
+        console.log('not yay')
+      });
+    },
+    logout() {
+      localStorage.username = undefined;
+      this.$router.push('/');
+    }
+  }
 }
 </script>
 

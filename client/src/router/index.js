@@ -29,6 +29,11 @@ const routes = [
     path: '/session/:sessionObject',
     name: 'Room',
     component: () => import('../views/Room.vue')
+  },
+  {
+    path: '/sign-in',
+    name: 'SignIn',
+    component: () => import('../views/SignIn.vue')
   }
 ]
 
