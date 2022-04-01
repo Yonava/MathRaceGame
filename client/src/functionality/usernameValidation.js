@@ -3,21 +3,23 @@ import bannedWords from '../assets/filteredWords.js'
 export default function validateUsername(username) {
 
   let errorMessage = '';
-  const maxChars = 10
-  const minChars = 4
+  const maxChars = 8;
+  const minChars = 4;
 
-  if (!username) 
-    return errorMessage = 'Enter A Username';
+  if (!username) {
+    return errorMessage = '';
+  }
 
-  if (username.length < minChars)
+  if (username.length < minChars) {
     return errorMessage = `Username Is Too Short: Min ${minChars}`;
+  }
 
   if (username.length > maxChars) {
     return errorMessage = `Username Is Too Long: Max ${maxChars}`;
   }
 
   if (username.includes(' ')) {
-    return errorMessage = 'Username May Not Include Spaces'
+    return errorMessage = 'Username May Not Include Spaces';
   }
 
   for (let i in bannedWords) {
@@ -29,6 +31,10 @@ export default function validateUsername(username) {
   
   for (let i in dreamStan) {
     if (username.toLowerCase().includes(dreamStan[i])) return errorMessage = 'Get Out You Filthy Dream Stan!';
+  }
+
+  if (username === 'undefined') {
+    return errorMessage = 'Nice Try!';
   }
 
   return errorMessage;

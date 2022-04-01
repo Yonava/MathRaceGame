@@ -13,7 +13,7 @@
     <!-- Create New Room -->
     <transition name="slide">
       <div style="position:fixed; z-index: 3;" class="view-container" v-if="(viewController || viewSelected) === 'CreatingSession'">
-        <CreateNewRoom :username="username" /> 
+        <CreateNewRoom /> 
       </div>
     </transition>
 
@@ -39,39 +39,34 @@
 
     <div v-if="!viewController || !viewSelected">
 
-      <div @click="$router.push(`/profile/${username}`)">
+      <div style="position: relative" @click="$router.push(`/profile/${username}`)">
+        <span style="position: absolute; left: 68%; margin-top: 3.5vh;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
         <b-icon-person class="profile-icon"></b-icon-person>
       </div>
+
+      <div class="large-buffer"></div>
+      <div class="large-buffer"></div>
+      <div class="large-buffer"></div>
 
       <!-- Session Details -->
       <!-- <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p> -->
 
       <div class="center">
 
-        <!-- Sign In Form -->
-        <b-input-group style="padding: 2.5%" prepend="Username" class="mt-3">
-          <b-form-input v-model="username"></b-form-input>
-          <b-input-group-append>
-            <b-button :variant="searchColor"></b-button>
-          </b-input-group-append>
-        </b-input-group>
-
-        <p class="error-msg-transition" :style="errorMsg ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsg ? errorMsg:'placeholder'}}</p>
-
-        <p class="error-msg-transition" :style="(errorMsg || !username) ? 'translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">Enter A Valid Username To Unlock</p>  
+        <b-button v-show="!username" @click="$router.push('/sign-in')" variant="info">Sign In To Unlock Create A Room</b-button>  
 
         <!-- Connect to Multiplayer Sessions -->
 
-        <b-button variant="secondary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('JoinSession', true)">
+        <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="!username" @click="switchView('CreatingSession', true)">
           <div style="position: relative">
-            <span>Join Session</span>
+            <span>Create Session</span>
             <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
           </div>
         </b-button>
 
-        <b-button variant="primary" pill class="btn-lg main-menu-button" :disabled="errorMsg || !username" @click="switchView('CreatingSession', true)">
+        <b-button variant="secondary" pill class="btn-lg main-menu-button" @click="switchView('JoinSession', true)">
           <div style="position: relative">
-            <span>Create Session</span>
+            <span>Join Session</span>
             <b-icon-chevron-right style="position: absolute; left: 95%; margin-top: 0.5vh;"></b-icon-chevron-right>
           </div>
         </b-button>
@@ -81,6 +76,7 @@
         <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
           Delete All Sessions
         </button>
+
       </div>
 
     </div>
@@ -113,7 +109,6 @@
 
 <script>
 
-import validateUsername from '../functionality/usernameValidation.js'
 import Practice from '../components/Practice.vue'
 import Leaderboard from '../components/Leaderboard.vue'
 import CreateNewRoom from '../components/CreateNewRoom.vue'
@@ -125,15 +120,12 @@ export default {
   data: () => {
     return {
 
+      username: undefined,
+
       /* both work in tandem to create an offset for 
       allowing smooth transition animation rendering */
       viewController: '',
       viewSelected: '',
-
-      username: '',
-      errorMsg: '',
-
-      searchColor: 'warning',
     }
   },
   components: {
@@ -144,16 +136,10 @@ export default {
     JoinSession
   },
   mounted() {
-    // checks if username is on file, and if so, sets username data to it
-    if (localStorage?.username !== undefined) {
-      this.username = localStorage.username;
-    }
-  },
-  created() {
 
-  },
-  destroyed() {
-
+    document.title = 'Home - Math Race';
+    if (localStorage.username === 'undefined' || !localStorage.username) return;
+    this.username = localStorage.username;
   },
   methods: {
     switchView(view, isEntering = false) {
@@ -184,24 +170,7 @@ export default {
         this.sessionDeletedMsg = false;
       }, 3000);
     }
-  },
-  watch: {
-    username() {
-
-      this.errorMsg = validateUsername(this.username.trim());
-
-      if (!this.errorMsg)
-        localStorage.username = this.username;
-      
-      if (this.errorMsg || !this.username) {
-        this.searchColor = 'danger'
-        this.joiningRoom = false;
-      } else {
-        this.searchColor = 'success'
-      }
-    }
   }
-
 }
 </script>
 
@@ -231,10 +200,6 @@ div.large-buffer {
 }
 
 /* Component Transitions! */
-.error-msg-transition {
-  transition: 300ms;
-  font-weight: bold;
-}
 
 .slide-enter-active, .slide-leave-active {
   transform: translateX(0%);

@@ -19,6 +19,8 @@
           </b-button-group>
         </div>
 
+      <input type="number" v-model="numofoptions" placeholder="number of optins" />
+
       <div class="small-buffer"></div>
 
       <span class="difficulty-display">{{ difficulty ? 'Difficulty Selected: ': 'Select Difficulty'}}</span>
@@ -62,12 +64,10 @@ export default {
         difficulty: null,
         difficultyStyle: '',
 
-        creatingRoom: false
+        creatingRoom: false,
+        numofoptions: 4
       }
     },
-    props: [
-      'username',
-    ],
     methods: {
       canRoomBeCreated() {
         if (!this.difficulty) {
@@ -94,10 +94,10 @@ export default {
         
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([5, 5, 5, 5]),
+            questions: GenerateQuestions([10, 0, 10, 0], parseInt(this.numofoptions)),
             date: new Date,
             roomid: String(this.roomID),
-            host: this.username,
+            host: localStorage.username,
             difficulty: this.difficulty
           });
         } catch (error) {
@@ -116,7 +116,7 @@ export default {
           roomid: confirmedSessionObject.roomid,
           host: confirmedSessionObject.host,
           difficulty: confirmedSessionObject.difficulty,
-          clientName: this.username
+          clientName: localStorage.username
         }}});
       }
     },
