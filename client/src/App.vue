@@ -14,8 +14,10 @@ export default {
   data: () => {
     return {
       throughApp: false,
+
       clientUser: undefined,
-      clientLoginTime: undefined
+      clientLoginTime: undefined,
+      accountLoggedIn: false
     }
   },
   async created() {
@@ -25,15 +27,26 @@ export default {
     }
 
     setInterval(async() => {
+
       if (localStorage.username) {
         this.clientUser = await DatabaseServices.findUser(localStorage.username);
-        if (this.clientUser.lastLogin !== this.clientLoginTime) {
-          console.log('Double Login!!!!!')
-        } 
+        if (this.clientUser.lastLogin !== this.clientLoginTime && this.accountLoggedIn) {
+          setTimeout (() => {
+            this.$router.push('/account-conflict');
+          }, 2000)
+        }
         this.clientLoginTime = this.clientUser.lastLogin;
+        this.accountLoggedIn = true;
+        console.log(this.clientUser)
+      } else {
+        this.accountLoggedIn = false;
       }
-      console.log('ran Inteval')
-    }, 5000)
+      console.log('ran interval')
+
+    }, 3000)
+  },
+  methods: {
+    
   }
 }
 </script>
