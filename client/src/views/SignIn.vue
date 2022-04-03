@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <h1>
-      {{ signInType ? 'Login':'Sign Up'}}
-    </h1>
+  <div class="signin-parent">
+    <center>
+      <h1 class="title">
+        {{ signInType ? 'Login':'Sign Up For Math Race'}}
+      </h1>
+    </center>
 
     <!-- Login Form -->
     <b-input-group prepend="Username" class="mt-3">
@@ -19,15 +21,21 @@
       </b-input-group-append>
     </b-input-group>
 
-    <b-button @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
+    <div class="large-buffer"></div>
 
-    <p class="error-msg-transition" :style="errorMsgUsername ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgUsername ? errorMsgUsername:'placeholder'}}</p>
-    <p class="error-msg-transition" :style="errorMsgPassword ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgPassword ? errorMsgPassword:'placeholder'}}</p>
+    <b-button style="width: 40vw;" @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
 
+    <div class="error-container">
+      <p class="error-msg-transition" :style="errorMsgUsername ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgUsername ? errorMsgUsername:'Resolved'}}</p>
+      <p class="error-msg-transition" :style="errorMsgPassword ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgPassword ? errorMsgPassword:'Resolved'}}</p>
+    </div>
+
+    <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
-    <br><br>
-    <b-button @click="$router.push('/')" variant="danger">Return</b-button>
-    <br><br>
+  
+    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Return</b-button>
+    
+   
 
     <p v-show="creatingAccount"><b>Creating Account...</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
@@ -164,11 +172,35 @@ export default {
 
 .error-msg-transition {
   transition: 300ms;
+  font-size: 11pt;
   font-weight: bold;
+  padding: 0%;
+  margin: 0%;
 } 
+
+.error-container {
+  margin: 2.5% 0% 2.5% 0%;
+}
 
 .success-msg {
   color: rgb(3, 192, 3);
+  font-weight: bold;
+}
+
+.signin-parent {
+  padding: 5%;
+  display: flex;
+  flex-direction: column;
+}
+
+.return-btn {
+  position: fixed;
+  bottom: 5%;
+  width: 90%;
+}
+
+.title {
+  font-size: 22pt;
   font-weight: bold;
 }
 

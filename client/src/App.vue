@@ -30,20 +30,15 @@ export default {
 
       if (localStorage.username) {
         this.clientUser = await DatabaseServices.findUser(localStorage.username);
-        if (this.clientUser.lastLogin !== this.clientLoginTime && this.accountLoggedIn) {
-          setTimeout (() => {
-            this.$router.push('/account-conflict');
-          }, 2000)
+        if (this.clientUser.lastLogin !== this.clientLoginTime && this.accountLoggedIn) { 
+          this.$router.push('/account-conflict');
         }
         this.clientLoginTime = this.clientUser.lastLogin;
         this.accountLoggedIn = true;
-        console.log(this.clientUser)
       } else {
         this.accountLoggedIn = false;
       }
-      console.log('ran interval')
-
-    }, 3000)
+    }, 4500)
   },
   methods: {
     
