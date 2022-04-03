@@ -53,7 +53,7 @@
 
       <div class="center">
 
-        <b-button v-show="!username" @click="$router.push('/sign-in')" variant="info">Sign In To Unlock Create A Room</b-button>  
+        <b-button v-show="!username" @click="$router.push('/sign-in')" variant="info">Sign In To Create Sessions</b-button>  
 
         <!-- Connect to Multiplayer Sessions -->
 

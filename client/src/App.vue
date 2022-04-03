@@ -7,11 +7,33 @@
 </template>
 
 <script>
+
+import DatabaseServices from './DatabaseServices'
+
 export default {
   data: () => {
     return {
-      throughApp: false
+      throughApp: false,
+      clientUser: undefined,
+      clientLoginTime: undefined
     }
+  },
+  async created() {
+
+    if (localStorage.username) {
+      await DatabaseServices.updateLastLogin(localStorage.username, Date.now());
+    }
+
+    setInterval(async() => {
+      if (localStorage.username) {
+        this.clientUser = await DatabaseServices.findUser(localStorage.username);
+        if (this.clientUser.lastLogin !== this.clientLoginTime) {
+          console.log('Double Login!!!!!')
+        } 
+        this.clientLoginTime = this.clientUser.lastLogin;
+      }
+      console.log('ran Inteval')
+    }, 5000)
   }
 }
 </script>

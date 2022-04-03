@@ -113,6 +113,7 @@ export default {
       } 
 
       // Push User To Main Menu If Successful
+      await DatabaseServices.updateLastLogin(this.username, Date.now());
       localStorage.username = this.username;
       this.$router.push('/');
     }

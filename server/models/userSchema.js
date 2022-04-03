@@ -20,6 +20,11 @@ const UserSchema = mongoose.Schema({
       required: true,
       default: Date.now()
     },
+    lastLogin: {
+      type: Date,
+      required: true,
+      default: Date.now()
+    },
     accessLevel: {
       type: String,
       required: true,
