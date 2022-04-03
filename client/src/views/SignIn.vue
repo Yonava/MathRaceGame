@@ -99,7 +99,7 @@ export default {
           this.successMsg = false;
         }, 10000)
 
-      }, Math.floor(Math.random() * 1000)) + 500;
+      }, Math.floor(Math.random() * 1500) + 750);
     },
     
     async login() {
@@ -108,9 +108,9 @@ export default {
 
       if (captureUserData === null) {
         return this.errorMsgUsername = `Username || Password Is Incorrect`;
-      } else if (compareSync(this.password, captureUserData.password)) {
+      } else if (!compareSync(this.password, captureUserData.password)) {
         return this.errorMsgUsername = `Username || Password Is Incorrect`;
-      }
+      } 
 
       // Push User To Main Menu If Successful
       localStorage.username = this.username;

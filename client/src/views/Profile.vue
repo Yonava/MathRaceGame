@@ -25,12 +25,14 @@
 export default {
 
   mounted() {
+    
     if (this.$route.params.username === 'undefined') {
       this.$router.push('/sign-in');
     }
   },
   methods: {
     copyToClipboard() {
+      
       navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
         // runs if successful
         console.log('yay')
@@ -40,7 +42,8 @@ export default {
       });
     },
     logout() {
-      localStorage.username = undefined;
+
+      localStorage.clear();
       this.$router.push('/');
     }
   }

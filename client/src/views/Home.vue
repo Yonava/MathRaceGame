@@ -138,7 +138,7 @@ export default {
   mounted() {
 
     document.title = 'Home - Math Race';
-    if (localStorage.username === 'undefined' || !localStorage.username) return;
+    if (!localStorage.username) return;
     this.username = localStorage.username;
   },
   methods: {
