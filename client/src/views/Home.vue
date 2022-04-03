@@ -39,21 +39,21 @@
 
     <div v-if="!viewController || !viewSelected">
 
-      <div style="position: relative" @click="$router.push(`/profile/${username}`)">
-        <span style="position: absolute; left: 68%; margin-top: 3.5vh;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
+      <div class="profile-btn-container" @click="$router.push(`/profile/${username}`)">
+        <span style="margin-right: 2vw;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
         <b-icon-person class="profile-icon"></b-icon-person>
       </div>
 
-      <div class="large-buffer"></div>
-      <div class="large-buffer"></div>
-      <div class="large-buffer"></div>
+      <div class="x-large-buffer"></div>
+      <div class="x-large-buffer"></div>
 
       <!-- Session Details -->
       <!-- <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p> -->
 
       <div class="center">
 
-        <b-button v-show="!username" @click="$router.push('/sign-in')" variant="info">Sign In To Create Sessions</b-button>  
+        <b-button v-show="!username" class="main-menu-button" @click="$router.push('/sign-in')" variant="info">Sign In To Create Sessions</b-button> 
+        <div v-show="!username" class="large-buffer"></div> 
 
         <!-- Connect to Multiplayer Sessions -->
 
@@ -188,16 +188,31 @@ div.large-buffer {
   height: 3vh;
 }
 
+div.x-large-buffer {
+  width: 100vw;
+  height: 10vh;
+}
+
 /* New CSS Elements */
 
-.profile-icon {
-  padding: 0.5%;
-  margin: 5% 5% 0% 85%;
-  width: 9%;
-  height: 9%;
-  border: 1.5px solid black;
-  border-radius: 25px;
+.profile-btn-container {
+  display: flex; 
+  flex-direction: row; 
+  align-items: center; 
+  position: absolute; 
+  right: 0%; 
+  margin-top: 3.5vh; 
+  margin-right: 5vw;
 }
+
+.profile-icon {
+  width: 10vw; 
+  height: 10vw; 
+  border: 1px solid black; 
+  border-radius: 50px; 
+  padding: 4%;
+}
+
 
 /* Component Transitions! */
 

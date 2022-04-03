@@ -6,11 +6,11 @@
       <p>We have detected that another device has just logged on with your account 😳😳😳😳</p>
     </center>
     <br>
-    <b-button variant="danger" v-on:click="logout()">Log Out 🥺</b-button>
+    <b-button :disabled="disableUI" variant="danger" v-on:click="logout()">Log Out 🥺</b-button>
     <br>
     <p><b>- OR -</b></p>
 
-    <b-button variant="dark" v-on:click="goBack()">Kick Off The Other Device 😈</b-button>
+    <b-button :disabled="disableUI" variant="dark" v-on:click="goBack()">Kick Off The Other Device 😈</b-button>
     <br>
     <p v-show="goingBack" style="color: red; font-size: 12pt;"><b>Hang Tight As We Kick Off Your Doppelganger!</b></p>
   </div>
@@ -23,7 +23,8 @@ import DatabaseServices from '../DatabaseServices'
 export default {
   data: () => {
     return {
-      goingBack: false
+      goingBack: false,
+      disableUI: false
     }
   },
   mounted() {
@@ -32,14 +33,18 @@ export default {
   methods: {
     async goBack() {
 
+      this.disableUI = true;
+
       await DatabaseServices.updateLastLogin(localStorage.username, Date.now());
       this.goingBack = true;
       setTimeout (() => {
         this.$parent.accountLoggedIn = false;
         this.$router.push('/');
-      }, 3500)
+      }, 5000)
     },
     logout() {
+
+      this.disableUI = true;
 
       localStorage.clear();
       this.$router.push('/sign-in');
