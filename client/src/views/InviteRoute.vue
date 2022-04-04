@@ -73,12 +73,12 @@ export default {
       });
   },
   methods: {
-    joinRoom(isGuest = false) {
+    async joinRoom(isGuest = false) {
 
       if (isGuest) {
-        if (this.doesUserExist) {
-          return this.errorMessage = 'This Username Has Been Taken By Another Account'
-        }
+
+        const doesUserExist = await DatabaseServices.findUser(this.username);
+        if (doesUserExist) return this.errorMessage = 'This Username Has Been Taken By Another Account';
       }
 
       this.$router.push({ name: 'Room', params: { sessionObject: {
@@ -89,11 +89,6 @@ export default {
         difficulty: this.sessionInfo.difficulty,
         clientName: this.username
       }}});
-    },
-    async doesUserExist() {
-
-      const doesUserAlreadyExist = await DatabaseServices.findUser(this.username);
-      return doesUserAlreadyExist ? true:false;
     }
   },
   watch: {
