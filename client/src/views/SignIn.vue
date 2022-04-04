@@ -6,7 +6,7 @@
       </h1>
     </center>
 
-    <!-- Login Form -->
+    <!-- Sign In Form -->
     <b-input-group prepend="Username" class="mt-3">
       <b-form-input v-model="username"></b-form-input>
       <b-input-group-append>
@@ -34,10 +34,9 @@
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
   
     <b-button class="return-btn" @click="$router.push('/')" variant="danger">Return</b-button>
-    
-   
-
-    <p v-show="creatingAccount"><b>Creating Account...</b></p>
+  
+    <br>
+    <p v-show="processingRequest"><b>{{ signInType ? 'Logging In...':'Creating Account...' }}</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
 
   </div>
@@ -63,7 +62,7 @@ export default {
       errorMsgUsername: '',
 
 
-      creatingAccount: false,
+      processingRequest: false,
 
       /* tiggered if account creation is successful */
       successMsg: false,
@@ -78,7 +77,7 @@ export default {
   methods: {
     signUp() {
 
-      this.creatingAccount = true;
+      this.processingRequest = true;
     
       /* defers call to database for a variable number of milliseconds from 0-500
       to ensure that multiple accounts with the same username never occur */
@@ -102,7 +101,7 @@ export default {
         // Prompts User For Login If Account Was Created Successfully
         this.signInType = true;
         this.successMsg = true;
-        this.creatingAccount = false;
+        this.processingRequest = false;
         setTimeout(() => {
           this.successMsg = false;
         }, 10000)
@@ -111,6 +110,8 @@ export default {
     },
     
     async login() {
+
+      this.processingRequest = true;
 
       const captureUserData = await DatabaseServices.findUser(this.username);
 
@@ -162,7 +163,7 @@ export default {
     },
     errorMsgUsername() {
 
-      this.creatingAccount = false;
+      this.processingRequest = false;
     }
   }
 }
@@ -188,10 +189,9 @@ export default {
 }
 
 .signin-parent {
-  padding: 5%;
   display: flex;
   flex-direction: column;
-}
+} 
 
 .return-btn {
   position: fixed;
