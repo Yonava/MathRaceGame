@@ -1,32 +1,11 @@
 <template>
   <div>
-    <div v-show="!hideall">
-      <br>
-      <b-button variant="info" v-on:click="gameStarted = !gameStarted">toggle game</b-button>
-      <br>
-      <b-button variant="outline-info" v-on:click="debug = !debug">toggle debug mode</b-button>
-
-      
-      <div style="position: fixed; top: 0; font-size: 9pt; font-weight: bold;">
-        <span style="margin-right: 20vw;">Room {{ sessionData.roomid }}</span>
-        <span style="">{{ inviteLink.substring(8) }}</span>
-      </div>
-
-      <p v-show="debug">
-        <b>Session Details: <br> Host Name</b> = {{ sessionData.host }} <br>
-        <b>My Name</b> = {{ sessionData.clientName }} <br>
-        <b>Time Created</b> = {{ sessionData.date }} <br>
-        <b>Room ID</b> = {{ sessionData.roomid }} <br>
-        <b>Difficulty</b> = {{ sessionData.difficulty }} <br>
-        <b>Questions</b> = {{ sessionData.questions }} <br>
-        <b>Player Data</b> = {{ playerInfo }} <br>
-        <button @click="hideall = true">Hide All</button>
-      </p>
-    </div>
-
+    
     <!-- Waiting Area -->
     <div v-if="!gameStarted">
       <WaitingArea
+      ref="waitingArea"
+      :host="sessionData.host"
       :playerData="playerInfo" />
     </div>
 
@@ -78,14 +57,13 @@ export default {
   data: () => {
     return {
 
-      debug: false,
-      hideall: false,
-
+      /* playerList is a list of unique players' usernames, playerInfo contains all of the players' data */
       playerList: [],
       playerInfo: [],
 
       /* included in each player object to detect if they are still in game */
       refreshTimer: 5000,
+      
       /* reset on socket callback to detect if client socket has disconnected */
       detectInboundConnection: 5000,
 
@@ -95,16 +73,23 @@ export default {
       /* counts how many seconds have passed since game has begun */
       secondsPassed: 0,
 
+      /* stores session object pulled from database */
       sessionData: null,
+
+      /* displayed at the top for users to invite friends */
       inviteLink: '',
 
+      /* controls cooldown for wrong answer submission */
       cooldownActive: false,
       cooldownDuration: 2000,
 
+      /* true when host begins game */
       gameStarted: false,
-      /* Waiting Area Data */
+
+      /* toggled by each client, depending on whether they are ready for game to begin */
       isUserReady: false,
-      /* Race Area Data */
+
+      /* what question the client is on */
       qNumber: 1,
     };
   },
@@ -193,6 +178,11 @@ export default {
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
+          // only returns true if host broadcasted a signal to start
+          if (data.startEvent) {
+            console.log('startEvent detected')
+            this.$refs.waitingArea.startCountdown();
+          }
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
@@ -211,12 +201,13 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings() {
+    updateStandings(startEvent = false) {
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
-        refreshTimer: this.refreshTimer
+        refreshTimer: this.refreshTimer,
+        startEvent,
       };
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);

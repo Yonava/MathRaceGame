@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <h1>
-      {{ signInType ? 'Login':'Sign Up'}}
-    </h1>
+  <div class="signin-parent">
+    <center>
+      <h1 class="title">
+        {{ signInType ? 'Login':'Sign Up For Math Race'}}
+      </h1>
+    </center>
 
-    <!-- Login Form -->
+    <!-- Sign In Form -->
     <b-input-group prepend="Username" class="mt-3">
       <b-form-input v-model="username"></b-form-input>
       <b-input-group-append>
@@ -19,17 +21,22 @@
       </b-input-group-append>
     </b-input-group>
 
-    <b-button @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
+    <div class="large-buffer"></div>
 
-    <p class="error-msg-transition" :style="errorMsgUsername ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgUsername ? errorMsgUsername:'placeholder'}}</p>
-    <p class="error-msg-transition" :style="errorMsgPassword ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgPassword ? errorMsgPassword:'placeholder'}}</p>
+    <b-button style="width: 40vw;" @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
 
+    <div class="error-container">
+      <p class="error-msg-transition" :style="errorMsgUsername ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgUsername ? errorMsgUsername:'Resolved'}}</p>
+      <p class="error-msg-transition" :style="errorMsgPassword ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">{{  errorMsgPassword ? errorMsgPassword:'Resolved'}}</p>
+    </div>
+
+    <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
-    <br><br>
-    <b-button @click="$router.push('/')" variant="danger">Return</b-button>
-    <br><br>
-
-    <p v-show="creatingAccount"><b>Creating Account...</b></p>
+  
+    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Return</b-button>
+  
+    <br>
+    <p v-show="processingRequest"><b>{{ signInType ? 'Logging In...':'Creating Account...' }}</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
 
   </div>
@@ -55,7 +62,7 @@ export default {
       errorMsgUsername: '',
 
 
-      creatingAccount: false,
+      processingRequest: false,
 
       /* tiggered if account creation is successful */
       successMsg: false,
@@ -70,7 +77,7 @@ export default {
   methods: {
     signUp() {
 
-      this.creatingAccount = true;
+      this.processingRequest = true;
     
       /* defers call to database for a variable number of milliseconds from 0-500
       to ensure that multiple accounts with the same username never occur */
@@ -94,25 +101,28 @@ export default {
         // Prompts User For Login If Account Was Created Successfully
         this.signInType = true;
         this.successMsg = true;
-        this.creatingAccount = false;
+        this.processingRequest = false;
         setTimeout(() => {
           this.successMsg = false;
         }, 10000)
 
-      }, Math.floor(Math.random() * 1000)) + 500;
+      }, Math.floor(Math.random() * 1500) + 750);
     },
     
     async login() {
+
+      this.processingRequest = true;
 
       const captureUserData = await DatabaseServices.findUser(this.username);
 
       if (captureUserData === null) {
         return this.errorMsgUsername = `Username || Password Is Incorrect`;
-      } else if (compareSync(this.password, captureUserData.password)) {
+      } else if (!compareSync(this.password, captureUserData.password)) {
         return this.errorMsgUsername = `Username || Password Is Incorrect`;
-      }
+      } 
 
       // Push User To Main Menu If Successful
+      await DatabaseServices.updateLastLogin(this.username, Date.now());
       localStorage.username = this.username;
       this.$router.push('/');
     }
@@ -153,7 +163,7 @@ export default {
     },
     errorMsgUsername() {
 
-      this.creatingAccount = false;
+      this.processingRequest = false;
     }
   }
 }
@@ -163,11 +173,34 @@ export default {
 
 .error-msg-transition {
   transition: 300ms;
+  font-size: 11pt;
   font-weight: bold;
+  padding: 0%;
+  margin: 0%;
 } 
+
+.error-container {
+  margin: 2.5% 0% 2.5% 0%;
+}
 
 .success-msg {
   color: rgb(3, 192, 3);
+  font-weight: bold;
+}
+
+.signin-parent {
+  display: flex;
+  flex-direction: column;
+} 
+
+.return-btn {
+  position: fixed;
+  bottom: 5%;
+  width: 90%;
+}
+
+.title {
+  font-size: 22pt;
   font-weight: bold;
 }
 

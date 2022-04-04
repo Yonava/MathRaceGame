@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const sessionUrl = 'api/sessions/';
-const userUrl = 'api/users/';
+const sessionUrl = 'https://math-race-game.herokuapp.com/api/sessions/';
+const userUrl = 'https://math-race-game.herokuapp.com/api/users/';
 
 class DatabaseServices {
 
@@ -58,6 +58,11 @@ class DatabaseServices {
     } catch (error) {
       console.warn(`${userUrl}${username}`, error);
     }
+  }
+
+  // Update When User Last Logged
+  static updateLastLogin(username, lastLogin) {
+    return axios.put(`${userUrl}${username}/updateLastLogin`, { lastLogin: lastLogin })
   }
 
   // Log User Data
