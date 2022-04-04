@@ -30,14 +30,11 @@
         <p style="color: white; font-size: 15pt; margin: 2%;">{{ $parent.sessionData.clientName }}</p>
       </div>
 
-      <div style="margin-top: 2vh; width: 100vw;"></div>
-
       <!-- all users minus client user -->
       <div v-for="player in playerData" :key="player.id">
-        <div style="width: 96vw;" v-show="player.user !== $parent.sessionData.clientName" class="users" :style="`${player.isUserReady ? 'background-color: #28a745;':'background-color: #dc3545;'}`">
+        <div class="users" style="width: 96vw; margin-top: 1vh;" :style="`${player.isUserReady ? 'background-color: #28a745;':'background-color: #dc3545;'}`">
           <p style="color: white; font-size: 15pt; margin: 2%;">{{ player.user }}</p>
         </div>
-        <div style="margin-top: 2vh; width: 100vw;"></div>
       </div>
     </div>
 
