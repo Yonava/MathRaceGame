@@ -3,9 +3,11 @@
 
     <div class="wait-top-card">
 
-      <center>
+      <div class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
+
+      <div class="center">
         <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? 'Waiting For Players To Join...':`Race Is Beginning In ${countdownTimer}` }}</b></p>
-      </center>
+      </div>
 
       <div style="flex-direction: row;" class="center tool-bar">
         <b-button style="margin-right: 1vw; width: 40vw; height: 6vh;" :variant="$parent.isUserReady ? 'success':'danger'" v-on:click="toggleReadiness()">
@@ -20,9 +22,18 @@
     
     </div>
 
-    <div class="user-container" v-for="player in playerData" :key="player.id">
-      <div class="users" :style="`${player.isUserReady ? `background-color: #28a745; ${readyTransition}`:`background-color: #dc3545; ${readyTransition}`}`">
-        <p style="color: white; font-size: 15pt; margin: 2%;">{{ player.user }}</p>
+    <div style="margin-top: 21vh; width: 100vw;"></div>
+
+    <div class="user-container">
+      <!-- client user -->
+      <div class="users" :style="`${$parent.isUserReady ? `background-color: #28a745; ${readyTransition}`:`background-color: #dc3545; ${readyTransition}`}`">
+        <p style="color: white; font-size: 15pt; margin: 2%;">{{ $parent.sessionData.clientName }}</p>
+      </div>
+      <!-- all users minus client user -->
+      <div v-for="player in playerData" :key="player.id">
+        <div v-show="player.user !== $parent.sessionData.clientName" class="users" :style="`${player.isUserReady ? 'background-color: #28a745;':'background-color: #dc3545;'}`">
+          <p style="color: white; font-size: 15pt; margin: 2%;">{{ player.user }}</p>
+        </div>
       </div>
     </div>
 
@@ -57,7 +68,7 @@ export default {
   methods: {
     toggleReadiness() {
       this.$parent.isUserReady = !this.$parent.isUserReady;
-      this.readyTransition = 'width: 5vw;';
+      this.readyTransition = 'width: 3vw;';
       setTimeout(() => {
         this.readyTransition = 'width: 96vw;'
       }, 200)
@@ -82,6 +93,23 @@ export default {
 </script>
 
 <style scoped>
+
+.roomid-display {
+  width: 13vw;
+  height: 2%;
+  position: fixed;
+  font-size: 50%;
+  font-weight: bold;
+  margin: 1vw;
+  background-color:rgb(161, 47, 47);
+  color: white;
+  display: flex;
+  justify-content: center;
+  padding: 0.25%;
+  border-radius: 5px;
+
+
+}
 
 .wait-top-card {
   background-color: rgb(238, 238, 238);
@@ -109,7 +137,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 21vh;
 }
 
 .users {
