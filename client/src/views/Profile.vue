@@ -25,11 +25,11 @@
           </b-card-text>
 
           <b-card-text>
-            Last Login: {{ finishedFetching ? userData.lastDate:'Loading...' }}
+            Last Login: {{ finishedFetching ? userData.lastLogin:'Loading...' }}
           </b-card-text>
 
           <b-card-text>
-            Game Data: {{ finishedFetching ? userData.gameDate:'Loading...' }}
+            Game Data: {{ finishedFetching ? userData.gameData:'Loading...' }}
           </b-card-text>
 
           <b-card-text>

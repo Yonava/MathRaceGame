@@ -32,12 +32,11 @@
 
     <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
     <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
-  
-    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Return</b-button>
-  
     <br>
     <p v-show="processingRequest"><b>{{ signInType ? 'Logging In...':'Creating Account...' }}</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
+
+    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Back</b-button>
 
   </div>
 </template>
@@ -116,9 +115,9 @@ export default {
       const captureUserData = await DatabaseServices.findUser(this.username);
 
       if (captureUserData === null) {
-        return this.errorMsgUsername = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username or Password is Incorrect`;
       } else if (!compareSync(this.password, captureUserData.password)) {
-        return this.errorMsgUsername = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username or Password is Incorrect`;
       } 
 
       // Push User To Main Menu If Successful
@@ -189,6 +188,7 @@ export default {
 }
 
 .signin-parent {
+  padding: 5%;  
   display: flex;
   flex-direction: column;
 } 
