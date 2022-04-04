@@ -1,34 +1,73 @@
 <template>
+
   <div class="center">
+
+    <b-button pill style="width: 35vw; position: fixed; top: 0; margin-top: 1.5vh; left: 0; margin-left: 5vw;" variant="outline-danger" v-on:click="$router.push('/')">
+      Back 
+    </b-button>
+
+    <div class="large-buffer"></div>
+    <div class="large-buffer"></div>
+
     <div>
+
       <b-card
-      :title="$route.params.username"
+      :title="finishedFetching ? `${userData.username}s Profile and Stats`:'Loading Latest Profile Data...'"
       img-src="https://www.incimages.com/uploaded_files/image/1920x1080/getty_470493341_20001333200092800_398689.jpg"
       img-alt="Profile Image"
       img-top
       tag="article"
-      style="max-width: 20rem;"
+      style="margin: 5%"
       class="mb-2">
 
           <b-card-text>
-          {{ $route.params.username }}s Profile and Stats
+            Account Created: {{ finishedFetching ? userData.accountCreationDate:'Loading...' }}
           </b-card-text>
 
-          <b-button @click="$router.push('/')" variant="danger">Return</b-button>
+          <b-card-text>
+            Last Login: {{ finishedFetching ? userData.lastDate:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Game Data: {{ finishedFetching ? userData.gameDate:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Access Level: {{ finishedFetching ? userData.accessLevel:'Loading...' }}
+          </b-card-text>
+
+          <b-button @click="logout()" variant="danger">Log Out</b-button>
         </b-card>
+
     </div>
-    <b-button @click="logout()" variant="outline-danger">Log Out</b-button>
+
   </div>
+
 </template>
 
 <script>
+
+import DatabaseServices from '../DatabaseServices'
+
 export default {
 
-  mounted() {
-    
+  data: () => {
+    return {
+
+      finishedFetching: false,
+      userData: undefined
+    }
+  },
+  async mounted() {
+
+    // reroute to sign-in if no user is logged in
     if (this.$route.params.username === 'undefined') {
       this.$router.push('/sign-in');
     }
+
+    this.userData = await DatabaseServices.findUser(this.$route.params.username);
+
+    this.finishedFetching = true;
   },
   methods: {
     copyToClipboard() {

@@ -41,7 +41,7 @@ export default {
       setTimeout (() => {
         this.$parent.accountLoggedIn = false;
         this.$router.push('/');
-      }, 5000)
+      }, 2000)
     },
     logout() {
 

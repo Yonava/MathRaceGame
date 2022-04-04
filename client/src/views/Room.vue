@@ -40,7 +40,7 @@
 
     </div>
 
-    <div v-if="qNumber === (sessionData.questions.length + 1)">
+    <div v-else>
       <Congrats />
     </div>
 
