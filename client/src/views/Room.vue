@@ -102,12 +102,20 @@ export default {
     
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
+    } else {
+
+      this.gameStarted = this.sessionData.hasBegun;
+      this.connect();
+      
+      if (localStorage.raceData) {
+        if (localStorage.raceData.substring(0, 4) == this.sessionData.roomid) {
+          this.qNumber = parseInt(localStorage.raceData.substring(6));
+          this.cooldownDuration += ((this.qNumber - 1) * 250); // adds appropriate cooldown duration back
+        } else {
+          localStorage.raceData = '';
+        }
+      }
     }
-
-    this.sessionData.hasBegun = this.gameStarted;
-
-    this.connect();
-    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.sessionData.roomid}`;
   },
   created() {
 
@@ -192,13 +200,12 @@ export default {
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
       );
-      this.updateStandings();
     },
     checkAnswer(answer) {
       if (answer === this.sessionData.questions[this.qNumber - 1].answer) {
         this.qNumber++;
-        this.updateStandings();
         this.cooldownDuration += 250;
+        localStorage.raceData = `${this.sessionData.roomid}: ${this.qNumber}`;
       } else {
         this.cooldownActive = true;
         setTimeout(() => {

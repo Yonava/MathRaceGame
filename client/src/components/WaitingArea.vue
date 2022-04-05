@@ -47,6 +47,8 @@
 
 <script>
 
+import DatabaseServices from '../DatabaseServices'
+
 export default {
   data: () => {
     return {
@@ -59,9 +61,17 @@ export default {
     'host'
   ],
   created() {
+
     this.refresh = setInterval(() => {
       this.$forceUpdate();
     }, 250)
+
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible') {
+        const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+        if (hasGameBegun.hasBegun) this.$parent.gameStarted = true;
+      }
+    });
   },
   destroyed() {
     clearInterval(this.refresh);
