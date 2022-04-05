@@ -33,7 +33,7 @@ export default {
         if (this.clientUser.lastLogin !== this.clientLoginTime && this.accountLoggedIn) { 
           setTimeout(() => {
             this.$router.push('/account-conflict');
-          }, 5000)
+          }, 6500)
         }
         this.clientLoginTime = this.clientUser.lastLogin;
         this.accountLoggedIn = true;

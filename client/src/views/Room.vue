@@ -52,6 +52,7 @@
 import io from "socket.io-client"
 import WaitingArea from "../components/WaitingArea.vue"
 import Congrats from "../components/Congrats.vue"
+import DatabaseServices from "../DatabaseServices.js"
 
 export default {
   data: () => {
@@ -98,9 +99,13 @@ export default {
     Congrats
   },
   mounted() {
+    
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
     }
+
+    this.sessionData.hasBegun = this.gameStarted;
+
     this.connect();
     this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.sessionData.roomid}`;
   },
@@ -202,6 +207,7 @@ export default {
       }
     },
     updateStandings(startEvent = false) {
+
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
@@ -211,6 +217,10 @@ export default {
       };
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
+
+      setTimeout(() => {
+        if (startEvent) DatabaseServices.sessionStarted(this.sessionData.roomid); 
+      }, 10000) // Countdown Time Accounted For
     },
     reArrangePlayerList() {
       this.playerList = [];
@@ -228,9 +238,7 @@ export default {
 </script>
 
 <style scoped>
-p {
-  user-select: default;
-}
+
 .cooldown-bar {
   position: fixed;
   border-radius: 15px;

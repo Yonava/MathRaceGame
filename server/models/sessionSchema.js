@@ -22,6 +22,11 @@ const SessionSchema = mongoose.Schema({
     difficulty: {
       type: String,
       required: false
+    },
+    hasBegun: {
+      type: Boolean,
+      required: true,
+      default: false
     }
     
 

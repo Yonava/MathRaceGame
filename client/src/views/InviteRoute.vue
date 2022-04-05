@@ -87,7 +87,8 @@ export default {
         roomid: this.sessionInfo.roomid,
         host: this.sessionInfo.host,
         difficulty: this.sessionInfo.difficulty,
-        clientName: this.username
+        clientName: this.username,
+        hasBegun: this.sessionInfo.hasBegun
       }}});
     }
   },
