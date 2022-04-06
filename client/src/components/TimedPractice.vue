@@ -28,7 +28,7 @@
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import GenerateQuestions from '../functionality/QuestionAssembler'
 import shuffle from '../functionality/shuffleArray'
 import sumArray from '../functionality/sumArray'
 
@@ -76,10 +76,10 @@ export default {
             this.chosenDifficulty = [quarter, quarter, quarter, quarter];
             break;
           case "Hard":
-            this.chosenDifficulty = [sixth, sixth, third, third];
+            this.chosenDifficulty = [sixth / 2, sixth / 2, sixth, third, third / 2, third / 2];
             break;
           case "Extreme":
-            this.chosenDifficulty = [eigth, eigth, eigth, 5 * eigth];
+            this.chosenDifficulty = [eigth / 2, eigth / 2, eigth, 2 * eigth, 2 * eigth, 2 * eigth];
             break;
         }
 

@@ -48,7 +48,7 @@
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import GenerateQuestions from '../functionality/QuestionAssembler'
 import DatabaseServices from '../DatabaseServices.js'
 
 export default {

@@ -1,12 +1,14 @@
 import Equations from "../classes/Equations"
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
-import shuffle from "../functionality/shuffleArray"
+import Geometry from "../classes/subClasses/Geometry";
+import Trigonometry from "../classes/subClasses/Trigonometry";
+import shuffle from "./shuffleArray"
 
 // Each entry i in numQuestions is a different level.
 // The value of i is how many questions of that level to make
 // numOptions specifies how many choices to create (for multiple choice)
-export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOptions = 4) {
+export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOptions = 4) {
     let questionObj;
     let output = [];
 
@@ -28,6 +30,12 @@ export default function GenerateQuestions(numQuestions = [1, 1, 1, 1], numOption
                     break;
                 case 3:
                     question = Algebra.Problem();
+                    break;
+                case 4:
+                    question = Geometry.Problem();
+                    break;
+                case 5:
+                    question = Trigonometry.Problem();
                     break;
                 default:
                     throw new Error("Invalid question level.");
