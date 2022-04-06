@@ -3,7 +3,7 @@ import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
 import Geometry from "../classes/subClasses/Geometry";
 import Trigonometry from "../classes/subClasses/Trigonometry";
-import shuffle from "../functionality/shuffleArray"
+import shuffle from "./shuffleArray"
 
 // Each entry i in numQuestions is a different level.
 // The value of i is how many questions of that level to make

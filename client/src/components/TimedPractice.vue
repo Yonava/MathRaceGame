@@ -28,7 +28,7 @@
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import GenerateQuestions from '../functionality/QuestionAssembler'
 import shuffle from '../functionality/shuffleArray'
 import sumArray from '../functionality/sumArray'
 

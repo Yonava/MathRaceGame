@@ -1,47 +1,52 @@
 <!-- Singleplayer Session Room -->
 <template>
-    <div>
+    <div class="page">
+
+      <div class="wrap-background"></div>
       <!-- Mode customization -->
 
-      <div v-if="!freePractice && !timedPractice">
+      <div class="center" v-if="!freePractice && !timedPractice">
         <!-- Specify number of questions -->
         <div class="num-questions-slider">
           <label for="num-questions">Number of Questions</label><br>
-          <input type="range" id="num-questions" name="num-questions" min="4" max="40" value="20" step="4" v-model="qNum">{{qNum}}
+          <input type="range" id="num-questions" name="num-questions" min="4" max="40" value="20" step="4" v-model="qNum"> {{qNum}}
           <br><br><br><br>
         </div>
         <!-- Adjust timer for timed practice -->
         <div class="time-selector">
-          <label for="question-timer">Timer Duration (minutes)</label><br>
-          <input type="range" id="question-timer" name="question-timer" min="1" max="30" value="5" v-model="duration">{{duration}}
+          <label for="question-timer">Timer Duration (min)</label><br>
+          <input type="range" id="question-timer" name="question-timer" min="1" max="30" value="5" v-model="duration"> {{duration}}
           <br><br><br><br>
         </div>
         <!-- Difficulty Selection -->
         <div class="difficulty-selection">
           <b-form-select v-model="difficultyChoice" :options="difficultyOptions"></b-form-select>
-          <br><br><br><br>
+          <br><br><br><br><br><br>
         </div>
       </div>
 
-      <!-- Timed Practice -->
-      <div v-if="!freePractice">
-        <b-button v-if="!timedPractice" pill @click="timedPractice = true">Timed Practice</b-button>
-        <div v-if="timedPractice">
-          <TimedPractice :qNum="qNum" :duration="duration" :difficultyChoice="difficultyChoice" />
-          <!-- Return to practice menu -->
-          <b-button pill variant="outline-info" @click="timedPractice = false">End Practice</b-button>
+      <div class="button-parent">
+        <!-- Timed Practice -->
+        <div class="inline-button" v-if="!freePractice">
+          <b-button v-if="!timedPractice" pill @click="timedPractice = true">Timed Practice</b-button>
+          <div v-if="timedPractice">
+            <TimedPractice :qNum="qNum" :duration="duration" :difficultyChoice="difficultyChoice" />
+            <!-- Return to practice menu -->
+            <b-button pill variant="outline-info" @click="timedPractice = false">End Practice</b-button>
+          </div>
+        </div>
+        <!-- Free-Form Practice -->
+        <div class="inline-button" v-if="!timedPractice">
+          <b-button v-if="!freePractice" pill variant="outline-dark" @click="freePractice = true">Free-Form Practice</b-button>
+        
+          <div v-if="freePractice">
+            <PracticeArea :chosenDifficulty="chosenDifficulty" />
+            <!-- Return to practice menu -->
+            <b-button pill variant="outline-info" @click="freePractice = false">End Practice</b-button>
+          </div>
         </div>
       </div>
-
-      <!-- Free-Form Practice -->
-      <div v-if="!timedPractice">
-        <b-button v-if="!freePractice" pill variant="outline-dark" @click="freePractice = true">Free-Form Practice</b-button>
-        <div v-if="freePractice">
-          <PracticeArea :chosenDifficulty="chosenDifficulty" />
-          <!-- Return to practice menu -->
-          <b-button pill variant="outline-info" @click="freePractice = false">End Practice</b-button>
-        </div>
-      </div>
+      
     </div>
 </template>
 
@@ -115,5 +120,31 @@ export default {
 </script>
 
 <style scoped>
+
+.page {
+  margin: 0;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  -ms-transform: translate(-50%, -30%);
+  transform: translate(-50%, -30%);
+}
+
+.wrap-background {
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  position: fixed;
+}
+
+.button-parent {
+  text-align: center;
+}
+
+.inline-button {
+  display: inline-block;
+  padding-left: 10px;
+  padding-bottom:5px;
+}
 
 </style>
