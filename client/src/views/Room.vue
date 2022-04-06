@@ -12,18 +12,28 @@
     <!-- Race Area -->
     <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
 
+      <!-- <button v-on:click="qNumber++">answer</button> -->
+      <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
+
       <!-- Progress Side Bar -->
-      <div>
-        <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p>
-        <!-- <b-icon-award></b-icon-award> -->
-        <div :style="`height: ${(playerInfo[playerList.indexOf(sessionData.clientName)].qnum - 1) * 4}vh;`" class="display-pole"></div>
-        <div class="progress-pole"></div>
-        <div v-for="player in playerInfo" :key="player.id">
-          <!--  -->
-          <div v-if="player.user !== sessionData.clientName" :style="`bottom: ${((player.qnum - 1) * 4) + 8.15}vh;`" class="opponent-positioning">
-            <span style="margin-right: 8%;">{{ player.user }}</span><div class="arrow-right"></div>
+      <div class="progress-container" style="display: flex; flex-direction: column; right: 0; top: 0; margin-top: 15vh; position: fixed; justify-content: center; align-items: center">
+
+        <b-icon-award style="margin-bottom: 1vh; width: 9vw; height: 9vw;"></b-icon-award>
+
+        <div style="border: 1px solid black; border-right: none; height: 60vh; width: 10vw;">
+
+          <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
+
+          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; bottom: ${((qNumber - 1) * 3) - 1.25}vh; transition: 500ms; left: -13vw;`" v-for="player in playerInfo" :key="player.id">
+            <div v-show="player.user !== sessionData.clientName">
+              <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
+              <div style="margin-left: 1vw;" class="arrow-right"></div>
+            </div>
           </div>
-        </div>  
+
+        </div>
+
+
       </div>
 
       <!-- Question Panel -->
@@ -40,7 +50,7 @@
 
     </div>
 
-    <div v-if="qNumber === (sessionData.questions.length + 1)">
+    <div v-else>
       <Congrats />
     </div>
 
@@ -52,6 +62,7 @@
 import io from "socket.io-client"
 import WaitingArea from "../components/WaitingArea.vue"
 import Congrats from "../components/Congrats.vue"
+import DatabaseServices from "../DatabaseServices.js"
 
 export default {
   data: () => {
@@ -98,11 +109,27 @@ export default {
     Congrats
   },
   mounted() {
+
+    // this line for testing purposes only!
+    // localStorage.raceData = '';
+    // this.sessionData = {"_id":"624dabcdfe515236dfe92e16","roomid":"6130","questions":[{"equation":"$$13+10$$","task":"Evaluate","answer":23,"options":[23,34,14,13]},{"equation":"$$1-13$$","task":"Evaluate","answer":-12,"options":[-8,-14,-10,-12]},{"equation":"$$1.63+2.08$$","task":"Evaluate","answer":3.71,"options":[2.11,5.23,2.86,3.71]},{"equation":"$$2.20\\cdot0.55$$","task":"Evaluate","answer":1.21,"options":[1.39,0.67,1.21,0.88]},{"equation":"$$6\\over2$$","task":"Evaluate","answer":3,"options":[3,4,5,2]},{"equation":"$$2+14$$","task":"Evaluate","answer":16,"options":[12,20,16,22]},{"equation":"$$8^0$$","task":"Evaluate","answer":1,"options":[1,2,-1,0]},{"equation":"$$7-3$$","task":"Evaluate","answer":4,"options":[4,8,3,6]},{"equation":"$$1.63-1.68$$","task":"Evaluate","answer":-0.05,"options":[-0.05,-0.06,-0.06,-0.03]},{"equation":"$$0.24\\cdot2.48$$","task":"Evaluate","answer":0.6,"options":[0.6,0.88,0.46,0.85]},{"equation":"$$(1^1)^1$$","task":"Evaluate","answer":1,"options":[3,0,1,-1]},{"equation":"$$(2+5)^1$$","task":"Evaluate","answer":7,"options":[7,6,8,5]},{"equation":"$$(7+1)^2$$","task":"Evaluate","answer":64,"options":[64,32,63,65]},{"equation":"$$(4+8)^1$$","task":"Evaluate","answer":12,"options":[13,14,10,12]},{"equation":"$$(3^2)^2$$","task":"Evaluate","answer":81,"options":[55,54,66,81]},{"equation":"$$(1^2)^1$$","task":"Evaluate","answer":1,"options":[2,3,1,0]},{"equation":"$$(6+7)^1$$","task":"Evaluate","answer":13,"options":[13,16,11,15]},{"equation":"$$(6+6)^1$$","task":"Evaluate","answer":12,"options":[12,16,11,14]},{"equation":"$$(8+6)^2$$","task":"Evaluate","answer":196,"options":[196,206,184,208]},{"equation":"$$(2^1)^2$$","task":"Evaluate","answer":4,"options":[4,6,3,1]}],"date":"2022-04-06T15:03:41.244Z","host":"YonaTest","difficulty":"Hard","hasBegun":true,"__v":0}
+    
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
+    } else {
+
+      this.gameStarted = this.sessionData.hasBegun;
+      this.connect();
+
+      if (localStorage.raceData) {
+        if (localStorage.raceData.substring(0, 4) == this.sessionData.roomid) {
+          this.qNumber = parseInt(localStorage.raceData.substring(6));
+          this.cooldownDuration += ((this.qNumber - 1) * 250); // adds appropriate cooldown duration back
+        } else {
+          localStorage.raceData = '';
+        }
+      }
     }
-    this.connect();
-    this.inviteLink = `https://math-race-game.herokuapp.com/go/${this.sessionData.roomid}`;
   },
   created() {
 
@@ -187,13 +214,12 @@ export default {
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
       );
-      this.updateStandings();
     },
     checkAnswer(answer) {
       if (answer === this.sessionData.questions[this.qNumber - 1].answer) {
         this.qNumber++;
-        this.updateStandings();
         this.cooldownDuration += 250;
+        localStorage.raceData = `${this.sessionData.roomid}: ${this.qNumber}`;
       } else {
         this.cooldownActive = true;
         setTimeout(() => {
@@ -202,6 +228,7 @@ export default {
       }
     },
     updateStandings(startEvent = false) {
+
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
@@ -211,6 +238,10 @@ export default {
       };
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
+
+      setTimeout(() => {
+        if (startEvent) DatabaseServices.sessionStarted(this.sessionData.roomid); 
+      }, 10000) // Countdown Time Accounted For
     },
     reArrangePlayerList() {
       this.playerList = [];
@@ -228,9 +259,7 @@ export default {
 </script>
 
 <style scoped>
-p {
-  user-select: default;
-}
+
 .cooldown-bar {
   position: fixed;
   border-radius: 15px;
@@ -252,38 +281,12 @@ p {
   width: 50vw;
 }
 
-.display-pole {
-  bottom: 10%;
-  right: 0%;
-  position: fixed;
-  width: 3.5vw;
-  background-color: rgb(55, 236, 85);
-  transition: 500ms ease-in-out;
-}
-
-.progress-pole {
-  bottom: 10%;
-  right: 0%;
-  position: fixed;
-  height: 80vh;
-  width: 3.5vw;
-  border: 0.5px solid black;
-  border-right: none;
-}
-
-.opponent-positioning {
-  display: flex;
-  transition: 500ms ease-in-out;
-  position: fixed;
-  right: 5%;
-}
-
 .arrow-right {
   width: 0; 
   height: 0; 
-  border-top: 2vh solid transparent;
-  border-bottom: 2vh solid transparent;
-  border-left: 2vh solid rgb(230, 41, 41);
+  border-top: 1.5vh solid transparent;
+  border-bottom: 1.5vh solid transparent;
+  border-left: 1.5vh solid rgb(230, 41, 41);
   
 }
 

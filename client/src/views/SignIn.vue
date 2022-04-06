@@ -7,14 +7,14 @@
     </center>
 
     <!-- Sign In Form -->
-    <b-input-group prepend="Username" class="mt-3">
+    <b-input-group prepend="Username" class="mt-3 input-fields">
       <b-form-input v-model="username"></b-form-input>
       <b-input-group-append>
         <b-button :variant="usernameColor"></b-button>
       </b-input-group-append>
     </b-input-group>
 
-    <b-input-group prepend="Password" class="mt-3">
+    <b-input-group prepend="Password" class="mt-3 input-fields">
       <b-form-input v-model="password" type="password"></b-form-input>
       <b-input-group-append>
         <b-button :variant="passwordColor"></b-button>
@@ -31,13 +31,12 @@
     </div>
 
     <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
-    <b-button @click="signInType = !signInType" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
-  
-    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Return</b-button>
-  
+    <b-button @click="signInType = !signInType" class="input-fields" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
     <br>
     <p v-show="processingRequest"><b>{{ signInType ? 'Logging In...':'Creating Account...' }}</b></p>
     <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
+
+    <b-button class="return-btn" @click="$router.push('/')" variant="danger">Back</b-button>
 
   </div>
 </template>
@@ -116,9 +115,9 @@ export default {
       const captureUserData = await DatabaseServices.findUser(this.username);
 
       if (captureUserData === null) {
-        return this.errorMsgUsername = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username or Password is Incorrect`;
       } else if (!compareSync(this.password, captureUserData.password)) {
-        return this.errorMsgUsername = `Username || Password Is Incorrect`;
+        return this.errorMsgUsername = `Username or Password is Incorrect`;
       } 
 
       // Push User To Main Menu If Successful
@@ -171,6 +170,10 @@ export default {
 
 <style scoped>
 
+.input-fields {
+  width: 90vw;
+}
+
 .error-msg-transition {
   transition: 300ms;
   font-size: 11pt;
@@ -189,6 +192,8 @@ export default {
 }
 
 .signin-parent {
+  position: fixed;
+  padding: 5vw; 
   display: flex;
   flex-direction: column;
 } 

@@ -37,7 +37,7 @@
 
     <!-- Main Menu Content -->
 
-    <div v-if="!viewController || !viewSelected">
+    <div style="position: fixed;" v-if="!viewController || !viewSelected">
 
       <div class="profile-btn-container" @click="$router.push(`/profile/${username}`)">
         <span style="margin-right: 2vw;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
