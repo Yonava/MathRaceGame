@@ -28,7 +28,7 @@ export default class Equations {
     // Make compatible with Mathjax
     static toMathjax(formula) {
         
-        const regexes = [/\//g, /Math\.sqrt\(/g, /\)/g, /Math\.PI/g, /\*{2}/g, /\*/g];
+        const regexes = [/\//g, /Math\.sqrt\(/g, /\)/g, /\*?Math\.PI/g, /\*{2}/g, /\*/g];
         const replacements = ["\\over", "\\sqrt{", "}", "\\pi", "^", "\\cdot "];
 
         for(let i = 0; i < formula.length; i++) {

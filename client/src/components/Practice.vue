@@ -65,8 +65,8 @@ export default {
       difficulty: {
             easy: [500, 250, 250, 10],
             normal: [250, 250, 250, 250],
-            hard: [50, 50, 50, 500],
-            extreme: [5, 5, 5, 1000]
+            hard: [50, 50, 50, 200, 200, 200],
+            extreme: [5, 5, 5, 500, 300, 300]
       },
       difficultyOptions: ["Easy", "Normal", "Hard", "Extreme"],
       difficultyChoice: "Normal",

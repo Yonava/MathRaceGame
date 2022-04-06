@@ -15,8 +15,9 @@ export default class Trigonometry extends Equations {
             values = ["0", "90", "180", "270", "360"];
             unit = this.randItem(values);
         }
+        // Radians
         else if (form === "r" || form === "R") {
-            values = ["0", "pi/2", "pi", "3pi/2", "2pi"];
+            values = ["0", "pi/2", "pi", "3*pi/2", "2*pi"];
             unit = this.randItem(values);
             unit = unit.replace(/pi/g, "Math.PI");
         }
@@ -25,13 +26,12 @@ export default class Trigonometry extends Equations {
         }
 
         let item = this.randItem(trigFuncs);
-        let num = this.randNum(1, 10);
+        let num = this.randNum(2, 10);
 
         const template = [
             {
                 equation: `${num}${item}[{${unit}}]`,
-                evaluation: `Math.${item}(0) * ${num}`,
-                // evaluation: `Math.${item}(${unit}) * ${num}`,
+                evaluation: `Math.${item}(${eval(unit)}) * ${num}`,
                 task: "Evaluate"
             }
         ];

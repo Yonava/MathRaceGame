@@ -43,7 +43,7 @@ export default {
     ],
     mounted() {
         // Create questions
-        this.output = GenerateQuestions([0,0,0,0,0,100]);
+        this.output = GenerateQuestions(this.chosenDifficulty);
         shuffle(this.output);
         this.itemized = this.output[0];
     },
