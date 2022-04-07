@@ -13,7 +13,7 @@
         <b-button style="margin-right: 1vw; width: 40vw; height: 6vh;" :variant="$parent.isUserReady ? 'success':'danger'" v-on:click="toggleReadiness()">
           {{ $parent.isUserReady ? 'Ready!':'Not Ready' }}
         </b-button>
-        <b-button v-show="$parent.sessionData.clientName === $parent.sessionData.host" v-on:click="beginGame()" style="margin-left: 1vw; width: 40vw; height: 6vh;" variant="primary">
+        <b-button v-show="$parent.sessionData.clientName === $parent.sessionData.host" :disabled="disableStartButton" v-on:click="beginGame()" style="margin-left: 1vw; width: 40vw; height: 6vh;" variant="primary">
           Start Game
         </b-button>
       </div>
@@ -47,13 +47,12 @@
 
 <script>
 
-import DatabaseServices from '../DatabaseServices'
-
 export default {
   data: () => {
     return {
       readyTransition: 'width: 96vw;',
-      countdownTimer: 10
+      countdownTimer: 10,
+      disableStartButton: false
     };
   },
   props: [
@@ -65,16 +64,10 @@ export default {
     this.refresh = setInterval(() => {
       this.$forceUpdate();
     }, 250)
-
-    document.addEventListener('visibilitychange', async () => {
-      if (document.visibilityState === 'visible') {
-        const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
-        if (hasGameBegun.hasBegun) this.$parent.gameStarted = true;
-      }
-    });
   },
   destroyed() {
     clearInterval(this.refresh);
+
   },
   methods: {
     toggleReadiness() {
@@ -85,11 +78,13 @@ export default {
       }, 200)
     },
     beginGame() {
+
+      this.disableStartButton = true;
       this.$parent.updateStandings(true);
       this.startCountdown();
     },
     startCountdown() {
-      console.log('starting countdown')
+
       this.countdownTimer--;
       this.countdown = setInterval(() => {
         this.countdownTimer--;

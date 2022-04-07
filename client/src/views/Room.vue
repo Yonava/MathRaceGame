@@ -24,8 +24,8 @@
 
           <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
 
-          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; bottom: ${((qNumber - 1) * 3) - 1.25}vh; transition: 500ms; left: -13vw;`" v-for="player in playerInfo" :key="player.id">
-            <div v-show="player.user !== sessionData.clientName">
+          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; left: -13vw;`" v-for="player in playerInfo" :key="player.id">
+            <div :style="`bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-show="player.user !== sessionData.clientName">
               <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
               <div style="margin-left: 1vw;" class="arrow-right"></div>
             </div>
@@ -136,14 +136,8 @@ export default {
     this.sessionData = this.$route.params.sessionObject;
 
     // listens to see if user tabs out or minimizes our game
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        this.visibilityState = true;
-        document.title = `Race ${this.sessionData.roomid}`;
-      } else {
-        this.visibilityState = false;
-        document.title = 'Click Back!';
-      }});
+    document.addEventListener('visibilitychange', this.visibilityHandler)
+      
     
     this.gameClock = setInterval(() => {
       this.secondsPassed++;
@@ -181,8 +175,22 @@ export default {
   destroyed() {
     clearInterval(this.refreshConnection);
     clearInterval(this.checkRefreshTimers);
+    document.removeEventListener('visibilitychange', this.visibilityHandler)
   },
   methods: {
+    async visibilityHandler() {
+      if (document.visibilityState === 'visible') {
+        this.visibilityState = true;
+        document.title = `Race ${this.sessionData.roomid}`;
+        if (!this.gameStarted) {
+          const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.sessionData.roomid);
+          if (hasGameBegun.hasBegun) this.gameStarted = true;
+        } 
+      } else {
+        this.visibilityState = false;
+        document.title = 'Click Back!';
+      }
+    },
     updatePlayerInfo(data) {
       if (!this.playerList.includes(data.user)) {
         this.playerInfo.push(data);
@@ -195,7 +203,7 @@ export default {
         }
       }
 
-      this.playerInfo.sort((a, b) => b.qnum - a.qnum);
+      // this.playerInfo.sort((a, b) => b.qnum - a.qnum);
       this.reArrangePlayerList();
       this.$forceUpdate();
     },
@@ -206,10 +214,7 @@ export default {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
           // only returns true if host broadcasted a signal to start
-          if (data.startEvent) {
-            console.log('startEvent detected')
-            this.$refs.waitingArea.startCountdown();
-          }
+          if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
