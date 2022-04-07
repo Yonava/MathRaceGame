@@ -20,7 +20,7 @@
 
 <script>
 
-import GenerateQuestions from '../assets/QuestionAssembler'
+import GenerateQuestions from '../functionality/QuestionAssembler'
 import shuffle from '../functionality/shuffleArray'
 
 export default {
@@ -83,4 +83,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
