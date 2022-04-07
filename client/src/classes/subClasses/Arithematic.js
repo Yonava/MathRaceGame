@@ -45,7 +45,7 @@ export default class Arithmetic extends Equations {
     static ExpoExpr(expr, minExp = 0, maxExp = 2) {
         let pow = this.randNum(minExp, maxExp);
         return {
-            equation: `(${expr})**${pow}`,
+            equation: `[${expr}]**${pow}`,
             evaluation: `${eval(expr)**pow}`
         }
     }
@@ -57,6 +57,6 @@ export default class Arithmetic extends Equations {
         // Catch negative numbers
         if(min < 0 || max < 0) throw new Error("Invalid sqrt argument: cannot be a negative number.");
 
-        return `Math.sqrt[[${number}]]`;
+        return `Math.sqrt(${number})`;
     }
 }
