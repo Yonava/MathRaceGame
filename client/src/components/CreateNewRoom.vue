@@ -8,7 +8,7 @@
       </div>
     </b-button>
 
-    <!-- Create Rxoom -->
+    <!-- Create Room -->
     <div>
 
         <div class="mt-3">
@@ -18,8 +18,6 @@
             <b-button v-on:click="difficulty = 'Hard'" variant="danger">Hard</b-button>
           </b-button-group>
         </div>
-
-      <input type="number" v-model="numofoptions" placeholder="number of optins" />
 
       <div class="small-buffer"></div>
 
@@ -64,17 +62,16 @@ export default {
         difficulty: null,
         difficultyStyle: '',
 
-        creatingRoom: false,
-        numofoptions: 4
+        creatingRoom: false
       }
     },
     methods: {
       canRoomBeCreated() {
         if (!this.difficulty) {
-          return "Select A Difficulty"
+          return "Select A Difficulty";
         }
 
-        return ""
+        return "";
       },
       async createRoom() {
 
@@ -94,7 +91,7 @@ export default {
         
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([10, 0, 10, 0], parseInt(this.numofoptions)),
+            questions: GenerateQuestions([4, 4, 3, 3, 3, 3]),
             date: new Date,
             roomid: String(this.roomID),
             host: localStorage.username,
