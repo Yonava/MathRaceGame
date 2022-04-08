@@ -18,13 +18,14 @@
       <!-- Progress Side Bar -->
       <div class="progress-container" style="display: flex; flex-direction: column; right: 0; top: 0; margin-top: 15vh; position: fixed; justify-content: center; align-items: center">
 
-        <b-icon-award style="margin-bottom: 1vh; width: 9vw; height: 9vw;"></b-icon-award>
+        <b-icon-award-fill variant="warning" :animation="ribbonAnimation" style="margin-bottom: 1vh; width: 9vw; height: 9vw;"></b-icon-award-fill>
 
         <div style="border: 1px solid black; border-right: none; height: 60vh; width: 10vw;">
 
           <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
 
-          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; left: -21vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
+          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; right: 11vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
+            <!--  -->
             <div :style="`display: flex; flex-direction: row; align-items: center;`" v-show="player.user !== sessionData.clientName">
               <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
               <div style="margin-left: 1vw;" class="arrow-right"></div>
@@ -40,13 +41,24 @@
 
       <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'}`"></div>
 
-      <div class="display-questions">
-        <p style="text-decoration: underline; margin-bottom: 0%"><b>{{ sessionData.questions[qNumber - 1].task }}</b></p>
-        <vue-mathjax style="font-size: 16pt" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
-        <div class="answer-button-container" v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
-          <b-button pill :disabled="cooldownActive" variant="primary" @click="checkAnswer(option)" class="answer-button">{{ option }}</b-button>
-        </div>
+      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 12.5vh; width: 70vw; margin-left: 7.5vw;">
+        <p style="text-decoration: underline; font-weight: bold">{{ sessionData.questions[qNumber - 1].task }}</p>
+        <vue-mathjax style="font-size: 16pt; position: absolute; bottom: 0;" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
       </div>
+
+      <div style="width: 100vw; height: 30vh; background-color: white; z-index: -1"></div>
+
+      
+      <div style="display: flex; flex-direction: column; margin-left: 7.5vw; z-index: -2;" v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
+        <b-button pill :disabled="cooldownActive" style="margin-top: 1vh; width: 55vw;" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
+      </div>
+
+      <div style="position: fixed; bottom: 0; width: 60vw; height: 40vh; left: 7vw; border-top: 1px solid black">
+        <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
+        <p style="margin-top: 3.5vh; font-size: 9pt;">Race Annoucements Coming Soon!</p>
+      </div>
+      
+   
 
     </div>
 
@@ -102,6 +114,8 @@ export default {
 
       /* what question the client is on */
       qNumber: 1,
+
+      ribbonAnimation: '',
     };
   },
   components: {
@@ -225,6 +239,12 @@ export default {
         this.qNumber++;
         this.cooldownDuration += 250;
         localStorage.raceData = `${this.sessionData.roomid}: ${this.qNumber}`;
+        this.ribbonAnimation = 'throb';
+        if (this.qNumber < 18) {
+          setTimeout(() => {
+            this.ribbonAnimation = '';
+          }, 800)
+        }
       } else {
         this.cooldownActive = true;
         setTimeout(() => {
@@ -267,21 +287,9 @@ export default {
 
 .cooldown-bar {
   position: fixed;
+  top: 0;
   height: 5vh;
   background-color: rgb(0, 132, 255);
-}
-
-.answer-button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1vw;
-}
-
-.answer-button {
-  transition: 500ms ease-in-out;
-  width: 50vw;
 }
 
 .arrow-right {
@@ -290,15 +298,6 @@ export default {
   border-top: 1.5vh solid transparent;
   border-bottom: 1.5vh solid transparent;
   border-left: 1.5vh solid rgb(230, 41, 41);
-  
-}
-
-.display-questions {
-  margin-top: 7.5vh;
-  margin-left: 5vw;
-  position: fixed;
-  padding: 2.5%;
-  max-width: 85vw;
 }
 
 .center-container {

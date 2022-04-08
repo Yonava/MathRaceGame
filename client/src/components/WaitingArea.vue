@@ -6,7 +6,7 @@
       <div class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
 
       <div class="center">
-        <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? 'Waiting For Players To Join...':`Race Is Beginning In ${countdownTimer}` }}</b></p>
+        <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? `Waiting For ${host} To Start...`:`Race Is Beginning In ${countdownTimer}` }}</b></p>
       </div>
 
       <div style="flex-direction: row;" class="center tool-bar">
