@@ -31,10 +31,7 @@
               <div style="margin-left: 1vw;" class="arrow-right"></div>
             </div>
           </div>
-
         </div>
-
-
       </div>
 
       <!-- Question Panel -->
@@ -49,11 +46,13 @@
       <div style="width: 100vw; height: 30vh; background-color: white; z-index: -1"></div>
 
       
-      <div style="display: flex; flex-direction: column; margin-left: 7.5vw; z-index: -2;" v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
-        <b-button pill :disabled="cooldownActive" style="margin-top: 1vh; width: 55vw;" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
+      <div style="display: flex; flex-direction: column; margin-left: 7.5vw; z-index: -2;">
+        <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
+          <b-button pill :disabled="cooldownActive" style="margin-top: 1vh; width: 55vw;" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
+        </div>
       </div>
 
-      <div style="position: fixed; bottom: 0; width: 60vw; height: 40vh; left: 7vw; border-top: 1px solid black">
+      <div style="position: fixed; bottom: 0; width: 60vw; height: 40vh; left: 7vw; border-top: 1px solid black; background-color: white;">
         <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
         <p style="margin-top: 3.5vh; font-size: 9pt;">Race Annoucements Coming Soon!</p>
       </div>
@@ -126,7 +125,7 @@ export default {
 
     // this line for testing purposes only!
     // localStorage.raceData = '';
-    // this.sessionData = {"_id":"624dabcdfe515236dfe92e16","roomid":"6130","questions":[{"equation":"$$13+10$$","task":"Evaluate","answer":23,"options":[23,34,14,13]},{"equation":"$$1-13$$","task":"Evaluate","answer":-12,"options":[-8,-14,-10,-12]},{"equation":"$$1.63+2.08$$","task":"Evaluate","answer":3.71,"options":[2.11,5.23,2.86,3.71]},{"equation":"$$2.20\\cdot0.55$$","task":"Evaluate","answer":1.21,"options":[1.39,0.67,1.21,0.88]},{"equation":"$$6\\over2$$","task":"Evaluate","answer":3,"options":[3,4,5,2]},{"equation":"$$2+14$$","task":"Evaluate","answer":16,"options":[12,20,16,22]},{"equation":"$$8^0$$","task":"Evaluate","answer":1,"options":[1,2,-1,0]},{"equation":"$$7-3$$","task":"Evaluate","answer":4,"options":[4,8,3,6]},{"equation":"$$1.63-1.68$$","task":"Evaluate","answer":-0.05,"options":[-0.05,-0.06,-0.06,-0.03]},{"equation":"$$0.24\\cdot2.48$$","task":"Evaluate","answer":0.6,"options":[0.6,0.88,0.46,0.85]},{"equation":"$$(1^1)^1$$","task":"Evaluate","answer":1,"options":[3,0,1,-1]},{"equation":"$$(2+5)^1$$","task":"Evaluate","answer":7,"options":[7,6,8,5]},{"equation":"$$(7+1)^2$$","task":"Evaluate","answer":64,"options":[64,32,63,65]},{"equation":"$$(4+8)^1$$","task":"Evaluate","answer":12,"options":[13,14,10,12]},{"equation":"$$(3^2)^2$$","task":"Evaluate","answer":81,"options":[55,54,66,81]},{"equation":"$$(1^2)^1$$","task":"Evaluate","answer":1,"options":[2,3,1,0]},{"equation":"$$(6+7)^1$$","task":"Evaluate","answer":13,"options":[13,16,11,15]},{"equation":"$$(6+6)^1$$","task":"Evaluate","answer":12,"options":[12,16,11,14]},{"equation":"$$(8+6)^2$$","task":"Evaluate","answer":196,"options":[196,206,184,208]},{"equation":"$$(2^1)^2$$","task":"Evaluate","answer":4,"options":[4,6,3,1]}],"date":"2022-04-06T15:03:41.244Z","host":"YonaTest","difficulty":"Hard","hasBegun":true,"__v":0}
+    // this.sessionData = {"_id":"62506eb2a54ad6e1692f203a","roomid":"5131","questions":[{"equation":"$$13+9$$","task":"Evaluate","answer":22,"options":[14,31,13,17,20,24,33,12,22,19]},{"equation":"$$2.14+0.30$$","task":"Evaluate","answer":2.44,"options":[2.29,2.29,2.34,2.27,2.44,2.68,1.93,2.17,2,1.32]},{"equation":"$$11^2$$","task":"Evaluate","answer":121,"options":[71,121,163,110,73,114,178,108,155,150]},{"equation":"$$7-15$$","task":"Evaluate","answer":-8,"options":[-7,-8,-15,-6,-11,-12,-5,-4,-10,-9]},{"equation":"$$\\sqrt{49} + 11-17$$","task":"Evaluate","answer":1,"options":[-3,6,0,2,1,4,3,-1,-2,5]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[31,33,21,39,22,34,30,27,15,19]},{"equation":"$$12 + 9\\cdot 5$$","task":"Evaluate","answer":57,"options":[34,78,67,76,48,29,36,74,46,57]},{"equation":"$$5 + 10\\cdot 6$$","task":"Evaluate","answer":65,"options":[77,36,85,53,57,75,94,81,65,78]},{"equation":"$$(3^1)^2$$","task":"Evaluate","answer":9,"options":[5,9,12,10,14,11,6,8,13,7]},{"equation":"$$(2^1)^2$$","task":"Evaluate","answer":4,"options":[2,0,7,11,1,8,6,3,5,4]},{"equation":"$$(3+1)^1$$","task":"Evaluate","answer":4,"options":[4,8,5,6,3,1,11,7,2,0]},{"equation":"$$7 + y - 4 = 2$$","task":"Solve for y","answer":-1,"options":[-1,0,2,1,-2,-3,6,4,3,-4]},{"equation":"$$7y = 7$$","task":"Solve for y","answer":1,"options":[0,-1,5,1,2,-3,3,4,-2,-4]},{"equation":"$$5c + 7 = 4$$","task":"Solve for c","answer":-0.6,"options":[-0.88,-0.6,-0.32,-0.56,-0.37,-0.78,-0.61,-0.52,-0.71,-0.35]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 11 and width 4.","answer":44,"options":[37,44,58,40,26,59,66,46,45,32]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 10 and width 19.","answer":190,"options":[131,241,178,190,262,127,129,200,283,163]},{"equation":"$$$$","task":"Find the area of the triangle with base 8.1 and height 17.5.","answer":70.88,"options":[83.64,44.65,84.35,49.62,48.2,50.32,48.2,98.52,70.88,59.54]},{"equation":"$$6cos({0})$$","task":"Evaluate","answer":6,"options":[8,3,5,12,9,10,2,7,4,6]},{"equation":"$$2cos({\\pi})$$","task":"Evaluate","answer":-2,"options":[1,-3,-2,0,-6,-1,-5,4,-4,2]},{"equation":"$$8cos({3\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[3,4,-3,0,1,2,-4,-2,6,-1]}],"date":"2022-04-08T17:19:46.070Z","host":"2xLogger","difficulty":"Intermediate","hasBegun":true,"__v":0}
     
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
