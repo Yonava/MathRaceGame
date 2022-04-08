@@ -24,8 +24,8 @@
 
           <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
 
-          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; left: -13vw;`" v-for="player in playerInfo" :key="player.id">
-            <div :style="`bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-show="player.user !== sessionData.clientName">
+          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; left: -21vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
+            <div :style="`display: flex; flex-direction: row; align-items: center;`" v-show="player.user !== sessionData.clientName">
               <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
               <div style="margin-left: 1vw;" class="arrow-right"></div>
             </div>
@@ -38,7 +38,7 @@
 
       <!-- Question Panel -->
 
-      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 55vw;'}`"></div>
+      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'}`"></div>
 
       <div class="display-questions">
         <p style="text-decoration: underline; margin-bottom: 0%"><b>{{ sessionData.questions[qNumber - 1].task }}</b></p>
@@ -267,10 +267,8 @@ export default {
 
 .cooldown-bar {
   position: fixed;
-  border-radius: 15px;
-  height: 2vh;
+  height: 5vh;
   background-color: rgb(0, 132, 255);
-  margin-left: 4%;
 }
 
 .answer-button-container {
