@@ -91,7 +91,6 @@ export default {
         if (this.countdownTimer === 0) {
           clearInterval(this.countdown);
           this.$parent.gameStarted = true;
-          this.$parent.announcements = [];
         }
       }, 1000);
     }

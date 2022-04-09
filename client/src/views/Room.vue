@@ -55,8 +55,9 @@
 
       <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; border-top: 1px solid black; background-color: white;">
         <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
-        <div v-for="annoucement in annoucements" :key="annoucement.id">
-          <p style="margin-top: 3.5vh; font-size: 9pt;">{{ annoucement }}</p>
+        <div class="large-buffer"></div>
+        <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
+          <p style="font-size: 9pt; margin-bottom: 0%;">{{ annoucement }}</p>
         </div>
       </div>
       
@@ -124,7 +125,7 @@ export default {
 
       position: 0,
 
-      annoucements: []
+      annoucements: ['hi', 'guys', 'lol']
     };
   },
   components: {
@@ -173,7 +174,7 @@ export default {
       if (this.visibilityState) {
         this.updateStandings();
       }
-    }, 250);
+    }, 500);
 
 
     this.checkRefreshTimers = setInterval(() => {
@@ -284,7 +285,6 @@ export default {
         startEvent
       };
 
-      console.log(this.position)
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
 
@@ -313,7 +313,11 @@ export default {
       if (this.qNumber > 20) {
         this.updateStandings(false, true);
       }
-    }
+    },
+    gameStarted() {
+
+      this.annoucements = [];
+    },
   },
 }
 </script>
