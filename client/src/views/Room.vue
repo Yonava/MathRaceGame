@@ -12,7 +12,7 @@
     <!-- Race Area -->
     <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
 
-      <!-- <button v-on:click="qNumber++" style="">answer</button> -->
+      <button v-on:click="qNumber++" style="">answer</button>
       <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
 
       <!-- Progress Side Bar -->
@@ -36,9 +36,9 @@
 
       <!-- Question Panel -->
 
-      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'};`"></div>
+      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'}; z-index: -6;`"></div>
 
-      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 12.5vh; width: 55vw; margin-left: 7.5vw;">
+      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 15vh; width: 55vw; margin-left: 7.5vw;">
         <p style="text-decoration: underline; font-weight: bold">{{ sessionData.questions[qNumber - 1].task }}</p>
         <vue-mathjax class="mathjax" :style="`color: ${hideMathjaxPrerender}`" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
         <p class="mathjax" ></p>
@@ -234,7 +234,7 @@ export default {
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
-          data.position = this.position;
+          this.position = data.position;
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
