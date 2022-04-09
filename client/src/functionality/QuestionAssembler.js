@@ -18,27 +18,27 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
             let options = [];
             let question;
 
-            switch(i) {
-                case 0:
-                    question = Levels.levelOne();
-                    break;
-                case 1:
-                    question = Levels.levelTwo();
-                    break;
-                case 2:
-                    question = Levels.levelThree();
-                    break;
-                case 3:
-                    question = Algebra.Problem();
-                    break;
-                case 4:
-                    question = Geometry.Problem();
-                    break;
-                case 5:
-                    question = Trigonometry.Problem();
-                    break;
-                default:
-                    throw new Error("Invalid question level.");
+            switch (i) {
+              case 0:
+                question = Levels.levelOne();
+                break;
+              case 1:
+                question = Levels.levelTwo();
+                break;
+              case 2:
+                question = Levels.levelThree();
+                break;
+              case 3:
+                question = Algebra.Problem();
+                break;
+              case 4:
+                question = Geometry.Problem();
+                break;
+              case 5:
+                question = Trigonometry.Problem();
+                break;
+              default:
+                throw new Error("Invalid question level.");
             }
 
             question.evaluation = question.evaluation ?? question.equation;

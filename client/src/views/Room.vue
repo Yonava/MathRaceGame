@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <!-- Waiting Area -->
+    <!-- Pre-Game Waiting Area -->
     <div v-if="!gameStarted">
       <WaitingArea
       ref="waitingArea"
@@ -9,49 +9,82 @@
       :playerData="playerInfo" />
     </div>
 
-    <!-- Race Area -->
-    <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
-
-      <!-- <button v-on:click="qNumber++">answer</button> -->
-      <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
+    
+    <!-- Fixed Element Container -->
+    <div v-else>
 
       <!-- Progress Side Bar -->
-      <div class="progress-container" style="display: flex; flex-direction: column; right: 0; top: 0; margin-top: 15vh; position: fixed; justify-content: center; align-items: center">
+      <div class="progress-container">
 
-        <b-icon-award style="margin-bottom: 1vh; width: 9vw; height: 9vw;"></b-icon-award>
+        <b-icon-award-fill variant="warning" :animation="ribbonAnimation" class="ribbon"></b-icon-award-fill>
 
-        <div style="border: 1px solid black; border-right: none; height: 60vh; width: 10vw;">
+        <div class="progress-bar-outline">
 
-          <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
+          <div class="progress-bar-fill" :style="`height: ${(qNumber - 1) * 3}vh; background-color: rgb(0, ${255 - (qNumber * 7)}, 0);`"></div>
 
-          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; bottom: ${((qNumber - 1) * 3) - 1.25}vh; transition: 500ms; left: -13vw;`" v-for="player in playerInfo" :key="player.id">
-            <div v-show="player.user !== sessionData.clientName">
-              <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
-              <div style="margin-left: 1vw;" class="arrow-right"></div>
+          <div class="opponent-container" :style="`bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
+            <!--  -->
+            <div class="inner-opponent-container" v-show="player.user !== sessionData.clientName && player.qnum <= 20">
+              <span class="opponent-nametag">{{ player.user }}</span>
+              <div class="arrow-right"></div>
             </div>
+
           </div>
 
         </div>
-
-
       </div>
 
+      <!-- Annoucement Display -->
+      <div class="announcement-container">
+        <p class="announcement-title">Annoucements:</p>
+
+        <div class="large-buffer"></div>
+        <div class="small-buffer"></div>
+
+        <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
+          <p class="announcement-txt">{{ annoucement }}</p>
+        </div>
+      </div>
+
+      <!-- Room ID Display At Bottom Of Screen -->
+      <div class="center">
+        <p class="roomid-display-txt">You Are Playing In Room 
+          <span style="color: #008b8b;">{{ sessionData.roomid }}</span>
+        </p>
+      </div>
+
+    </div>
+
+
+
+    <!-- Race Area -->
+    <div v-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
+
       <!-- Question Panel -->
+      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'};`"></div>
 
-      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 55vw;'}`"></div>
+      <div class="prompt-container">
+        <p class="task-display">{{ sessionData.questions[qNumber - 1].task }}</p>
+        <vue-mathjax class="mathjax" :style="`color: ${hideMathjaxPrerender}`" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
+      </div>
 
-      <div class="display-questions">
-        <p style="text-decoration: underline; margin-bottom: 0%"><b>{{ sessionData.questions[qNumber - 1].task }}</b></p>
-        <vue-mathjax style="font-size: 16pt" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
-        <div class="answer-button-container" v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
-          <b-button pill :disabled="cooldownActive" variant="primary" @click="checkAnswer(option)" class="answer-button">{{ option }}</b-button>
+      <div class="options-buffer"></div>
+
+      <!-- TEMPT TESTING ELEMENT -->
+      <button v-on:click="qNumber++">answer</button>  
+
+      <div class="options-container">
+        <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
+          <b-button pill :disabled="cooldownActive" class="option-btn" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
         </div>
       </div>
 
     </div>
 
-    <div v-else>
-      <Congrats />
+    <!-- Post Race Area -->
+    <div v-if="qNumber > 20 && gameStarted">
+      <Congrats
+      :position="position" />
     </div>
 
   </div>
@@ -102,6 +135,14 @@ export default {
 
       /* what question the client is on */
       qNumber: 1,
+
+      ribbonAnimation: '',
+
+      hideMathjaxPrerender: '',
+
+      position: 0,
+
+      annoucements: []
     };
   },
   components: {
@@ -112,7 +153,7 @@ export default {
 
     // this line for testing purposes only!
     // localStorage.raceData = '';
-    // this.sessionData = {"_id":"624dabcdfe515236dfe92e16","roomid":"6130","questions":[{"equation":"$$13+10$$","task":"Evaluate","answer":23,"options":[23,34,14,13]},{"equation":"$$1-13$$","task":"Evaluate","answer":-12,"options":[-8,-14,-10,-12]},{"equation":"$$1.63+2.08$$","task":"Evaluate","answer":3.71,"options":[2.11,5.23,2.86,3.71]},{"equation":"$$2.20\\cdot0.55$$","task":"Evaluate","answer":1.21,"options":[1.39,0.67,1.21,0.88]},{"equation":"$$6\\over2$$","task":"Evaluate","answer":3,"options":[3,4,5,2]},{"equation":"$$2+14$$","task":"Evaluate","answer":16,"options":[12,20,16,22]},{"equation":"$$8^0$$","task":"Evaluate","answer":1,"options":[1,2,-1,0]},{"equation":"$$7-3$$","task":"Evaluate","answer":4,"options":[4,8,3,6]},{"equation":"$$1.63-1.68$$","task":"Evaluate","answer":-0.05,"options":[-0.05,-0.06,-0.06,-0.03]},{"equation":"$$0.24\\cdot2.48$$","task":"Evaluate","answer":0.6,"options":[0.6,0.88,0.46,0.85]},{"equation":"$$(1^1)^1$$","task":"Evaluate","answer":1,"options":[3,0,1,-1]},{"equation":"$$(2+5)^1$$","task":"Evaluate","answer":7,"options":[7,6,8,5]},{"equation":"$$(7+1)^2$$","task":"Evaluate","answer":64,"options":[64,32,63,65]},{"equation":"$$(4+8)^1$$","task":"Evaluate","answer":12,"options":[13,14,10,12]},{"equation":"$$(3^2)^2$$","task":"Evaluate","answer":81,"options":[55,54,66,81]},{"equation":"$$(1^2)^1$$","task":"Evaluate","answer":1,"options":[2,3,1,0]},{"equation":"$$(6+7)^1$$","task":"Evaluate","answer":13,"options":[13,16,11,15]},{"equation":"$$(6+6)^1$$","task":"Evaluate","answer":12,"options":[12,16,11,14]},{"equation":"$$(8+6)^2$$","task":"Evaluate","answer":196,"options":[196,206,184,208]},{"equation":"$$(2^1)^2$$","task":"Evaluate","answer":4,"options":[4,6,3,1]}],"date":"2022-04-06T15:03:41.244Z","host":"YonaTest","difficulty":"Hard","hasBegun":true,"__v":0}
+    // this.sessionData = {"_id":"6250d63ae42bc5193289755b","roomid":"6225","questions":[{"equation":"$$2**1$$","task":"Evaluate","answer":2,"options":[2,1,0,3]},{"equation":"$$8*2$$","task":"Evaluate","answer":16,"options":[24,21,13,16]},{"equation":"$$6+4$$","task":"Evaluate","answer":10,"options":[8,10,6,5]},{"equation":"$$0.89+1.45$$","task":"Evaluate","answer":2.34,"options":[1.78,2.34,3.16,2.27]},{"equation":"$$\\sqrt{361} + 7-5$$","task":"Evaluate","answer":21,"options":[18,28,11,21]},{"equation":"$$7**3$$","task":"Evaluate","answer":343,"options":[220,401,281,343]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[36,21,35,27]},{"equation":"$$\\sqrt{121} + 18-17$$","task":"Evaluate","answer":12,"options":[9,8,12,10]},{"equation":"$$(9+9)^0$$","task":"Evaluate","answer":1,"options":[4,2,1,3]},{"equation":"$$(5+7)^2$$","task":"Evaluate","answer":144,"options":[216,150,202,144]},{"equation":"$$(7+6)^2$$","task":"Evaluate","answer":169,"options":[169,211,144,93]},{"equation":"$$8c + 6 = 7$$","task":"Solve for c","answer":0.13,"options":[0.12,0.15,0.13,0.08]},{"equation":"$$9x = 7$$","task":"Solve for x","answer":0.78,"options":[0.51,0.9,0.72,0.78]},{"equation":"$$2x = 3$$","task":"Solve for x","answer":1.5,"options":[1.56,2.13,1.33,1.5]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 17.1 and width 5.8.","answer":99.18,"options":[94.22,146.79,90.25,99.18]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.5 and width 5.2.","answer":39,"options":[39,38,42,43]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.67 and width 12.92.","answer":99.1,"options":[123.88,131.8,99.1,113.96]},{"equation":"$$5cos({\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[0,1,3,-1]},{"equation":"$$9sin({\\pi})$$","task":"Evaluate","answer":0,"options":[-3,-1,0,1]},{"equation":"$$3cos({\\pi})$$","task":"Evaluate","answer":-3,"options":[-4,-6,-2,-3]}],"date":"2022-04-09T00:41:30.460Z","host":"2xLogger","difficulty":"Easy","hasBegun":true,"__v":0}
     
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
@@ -123,6 +164,7 @@ export default {
 
       if (localStorage.raceData) {
         if (localStorage.raceData.substring(0, 4) == this.sessionData.roomid) {
+          if (parseInt(localStorage.raceData.substring(6)) > 20) this.$router.push('/');
           this.qNumber = parseInt(localStorage.raceData.substring(6));
           this.cooldownDuration += ((this.qNumber - 1) * 250); // adds appropriate cooldown duration back
         } else {
@@ -135,15 +177,11 @@ export default {
 
     this.sessionData = this.$route.params.sessionObject;
 
+    document.title = `Race ${this.sessionData.roomid}`;
+
     // listens to see if user tabs out or minimizes our game
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        this.visibilityState = true;
-        document.title = `Race ${this.sessionData.roomid}`;
-      } else {
-        this.visibilityState = false;
-        document.title = 'Click Back!';
-      }});
+    document.addEventListener('visibilitychange', this.visibilityHandler)
+      
     
     this.gameClock = setInterval(() => {
       this.secondsPassed++;
@@ -154,7 +192,7 @@ export default {
       if (this.visibilityState) {
         this.updateStandings();
       }
-    }, 250);
+    }, 500);
 
 
     this.checkRefreshTimers = setInterval(() => {
@@ -164,6 +202,7 @@ export default {
         this.playerInfo[i].refreshTimer -= 250;
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
+          this.annoucements.push(`${this.playerList[i]} Left Us :(`);
           this.reArrangePlayerList();
         }
       }
@@ -181,11 +220,26 @@ export default {
   destroyed() {
     clearInterval(this.refreshConnection);
     clearInterval(this.checkRefreshTimers);
+    document.removeEventListener('visibilitychange', this.visibilityHandler)
   },
   methods: {
+    async visibilityHandler() {
+      if (document.visibilityState === 'visible') {
+        this.visibilityState = true;
+        document.title = `Race ${this.sessionData.roomid}`;
+        if (!this.gameStarted) {
+          const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.sessionData.roomid);
+          if (hasGameBegun.hasBegun) this.gameStarted = true;
+        } 
+      } else {
+        this.visibilityState = false;
+        document.title = 'Click Back!';
+      }
+    },
     updatePlayerInfo(data) {
       if (!this.playerList.includes(data.user)) {
         this.playerInfo.push(data);
+        this.annoucements.push(`${data.user} Joined Up!`);
       } else {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
@@ -195,7 +249,7 @@ export default {
         }
       }
 
-      this.playerInfo.sort((a, b) => b.qnum - a.qnum);
+      // this.playerInfo.sort((a, b) => b.qnum - a.qnum);
       this.reArrangePlayerList();
       this.$forceUpdate();
     },
@@ -203,13 +257,23 @@ export default {
       this.socketInstance = io('/');
       this.socketInstance.on(
         "scoreRecieved", (data) => {
+
           this.updatePlayerInfo(data);
-          this.detectInboundConnection = 2500;
-          // only returns true if host broadcasted a signal to start
-          if (data.startEvent) {
-            console.log('startEvent detected')
-            this.$refs.waitingArea.startCountdown();
+          this.detectInboundConnection = 3000;
+
+          if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
+
+          if (this.position !== data.position) {
+
+            this.position = data.position;
+
+            // for idempotency
+            if (data.qnum === 21 && this.annoucements.reverse()[0].substring(0, 4) !== data.user.substring(0, 4)) {
+              this.annoucements.push(`${data.user} Finished!`);
+            }
           }
+          // only returns true if host broadcasted a signal to start
+          if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
       this.socketInstance.emit(
         "joinRoom", this.sessionData.roomid
@@ -220,6 +284,12 @@ export default {
         this.qNumber++;
         this.cooldownDuration += 250;
         localStorage.raceData = `${this.sessionData.roomid}: ${this.qNumber}`;
+        this.ribbonAnimation = 'throb';
+        if (this.qNumber < 18) {
+          setTimeout(() => {
+            this.ribbonAnimation = '';
+          }, 800)
+        }
       } else {
         this.cooldownActive = true;
         setTimeout(() => {
@@ -227,21 +297,26 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings(startEvent = false) {
+    updateStandings(startEvent = false, finished = false, broadcastMessage = '') {
+
+      if (finished) this.position++;
 
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
-        startEvent,
+        position: this.position,
+        broadcastMessage,
+        startEvent
       };
+
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
 
       setTimeout(() => {
         if (startEvent) DatabaseServices.sessionStarted(this.sessionData.roomid); 
-      }, 10000) // Countdown Time Accounted For
+      }, 10000); // Countdown Time Accounted For
     },
     reArrangePlayerList() {
       this.playerList = [];
@@ -254,31 +329,112 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
+    qNumber() {
+  
+      this.hideMathjaxPrerender = 'white';
+      setTimeout(() => {
+        this.hideMathjaxPrerender = '';
+      }, 200)
+
+      if (this.qNumber > 20) {
+        this.annoucements.push(`${this.sessionData.clientName} Finished!`);
+        this.updateStandings(false, true);
+      }
+    },
+    gameStarted() {
+
+      this.annoucements = ['And We Are Off To The Races!'];
+    },
   },
 }
 </script>
 
 <style scoped>
 
-.cooldown-bar {
-  position: fixed;
-  border-radius: 15px;
-  height: 2vh;
-  background-color: rgb(0, 132, 255);
-  margin-left: 4%;
+/* Annoucement System */
+
+.announcement-txt {
+  font-size: 9pt; 
+  margin-bottom: 0%;
 }
 
-.answer-button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.announcement-container {
+  position: fixed; 
+  bottom: 0; 
+  width: 60vw; 
+  height: 30vh; 
+  left: 2vw; 
+  background-color: white;
+}
+
+.announcement-title {
+  font-weight: bold; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  font-size: 14pt
+}
+
+/* Misc */
+
+.roomid-display-txt {
+  position: fixed; 
+  bottom: 0; 
+  margin-bottom: 0px; 
+  font-weight: bold; 
+  width: 100vw; 
+  background-color: white; 
+  margin-left: 2.5vw;
+}
+
+/* Progress Display */
+
+.ribbon {
+  margin-bottom: 1vh; 
+  width: 9vw; 
+  height: 9vw;
+}
+
+.progress-bar-fill {
+  position: absolute;
+  width: 10vw; 
+  bottom: 0; 
+  transition: 500ms; 
+  border-bottom: 1px solid black;
+}
+
+.progress-bar-outline {
+  border: 1px solid black; 
+  border-right: none; 
+  height: 60vh; 
+  width: 10vw;
+}
+
+.progress-container {
+  display: flex; 
+  flex-direction: column; 
+  right: 0; 
+  top: 0; 
+  margin-top: 15vh; 
+  position: fixed; 
+  justify-content: center; 
+  align-items: center
+}
+
+.opponent-container {
+  display: flex; 
+  flex-direction: row; 
+  align-items: center; 
+  position: absolute; 
+  transition: 500ms; 
+  right: 11vw;
+  z-index: 5;
+}
+
+.inner-opponent-container {
+  display: flex; 
+  flex-direction: row; 
   align-items: center;
-  padding: 1vw;
-}
-
-.answer-button {
-  transition: 500ms ease-in-out;
-  width: 50vw;
 }
 
 .arrow-right {
@@ -287,21 +443,62 @@ export default {
   border-top: 1.5vh solid transparent;
   border-bottom: 1.5vh solid transparent;
   border-left: 1.5vh solid rgb(230, 41, 41);
-  
+  margin-left: 1vw;
 }
 
-.display-questions {
-  margin-top: 7.5vh;
-  margin-left: 5vw;
+.opponent-nametag {
+  font-size: 10pt; 
+  font-weight: bold;
+}
+
+
+/* Question Display */
+
+.task-display {
+  text-decoration: underline; 
+  font-weight: bold
+}
+
+.cooldown-bar {
   position: fixed;
-  padding: 2.5%;
-  max-width: 85vw;
+  top: 0;
+  height: 5vh;
+  background-color: rgb(0, 132, 255);
 }
 
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.mathjax {
+  font-size: 16pt; 
+  position: absolute;
+  bottom: 0;
 }
+
+.prompt-container {
+  background-color: white; 
+  position: fixed; 
+  left: 0; 
+  top: 15vh; 
+  height: 12.5vh; 
+  width: 55vw; 
+  margin-left: 7.5vw;
+}
+
+.options-buffer {
+  width: 100vw; 
+  height: 30vh; 
+  background-color: white; 
+  z-index: -1
+}
+
+.options-container {
+  display: flex; 
+  flex-direction: column; 
+  margin-left: 7.5vw; 
+  position: fixed;
+}
+
+.option-btn {
+  margin-top: 1vh; 
+  width: 55vw;
+}
+
 </style>

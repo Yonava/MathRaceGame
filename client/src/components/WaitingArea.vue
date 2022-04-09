@@ -6,14 +6,14 @@
       <div class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
 
       <div class="center">
-        <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? 'Waiting For Players To Join...':`Race Is Beginning In ${countdownTimer}` }}</b></p>
+        <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? `Waiting For ${host} To Start...`:`Race Is Beginning In ${countdownTimer}` }}</b></p>
       </div>
 
       <div style="flex-direction: row;" class="center tool-bar">
         <b-button style="margin-right: 1vw; width: 40vw; height: 6vh;" :variant="$parent.isUserReady ? 'success':'danger'" v-on:click="toggleReadiness()">
           {{ $parent.isUserReady ? 'Ready!':'Not Ready' }}
         </b-button>
-        <b-button v-show="$parent.sessionData.clientName === $parent.sessionData.host" v-on:click="beginGame()" style="margin-left: 1vw; width: 40vw; height: 6vh;" variant="primary">
+        <b-button v-show="$parent.sessionData.clientName === $parent.sessionData.host" :disabled="disableStartButton" v-on:click="beginGame()" style="margin-left: 1vw; width: 40vw; height: 6vh;" variant="primary">
           Start Game
         </b-button>
       </div>
@@ -27,19 +27,19 @@
     <div class="user-container">
       <!-- client user -->
       <div class="users" :style="`${$parent.isUserReady ? `background-color: #28a745; ${readyTransition}`:`background-color: #dc3545; ${readyTransition}`}`">
-        <p style="color: white; font-size: 15pt; margin: 2%;">{{ $parent.sessionData.clientName }}</p>
+        <p class="player-tag">{{ $parent.sessionData.clientName }}</p>
       </div>
 
       <!-- all users minus client user -->
       <div v-for="player in playerData" :key="player.id">
         <div class="users" v-show="player.user !== $parent.sessionData.clientName" style="width: 96vw; margin-top: 1vh;" :style="`${player.isUserReady ? 'background-color: #28a745;':'background-color: #dc3545;'}`">
-          <p style="color: white; font-size: 15pt; margin: 2%;">{{ player.user }}</p>
+          <p class="player-tag">{{ player.user }}</p>
         </div>
       </div>
     </div>
 
     <div class="center">
-      <b-button style="position: fixed; bottom: 2.5%; width: 60vw;" variant="outline-danger" v-on:click="$router.push('/')">Leave Session</b-button>
+      <b-button class="back-btn" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
     </div>
 
   </div>
@@ -47,13 +47,12 @@
 
 <script>
 
-import DatabaseServices from '../DatabaseServices'
-
 export default {
   data: () => {
     return {
       readyTransition: 'width: 96vw;',
-      countdownTimer: 10
+      countdownTimer: 10,
+      disableStartButton: false
     };
   },
   props: [
@@ -65,16 +64,10 @@ export default {
     this.refresh = setInterval(() => {
       this.$forceUpdate();
     }, 250)
-
-    document.addEventListener('visibilitychange', async () => {
-      if (document.visibilityState === 'visible') {
-        const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
-        if (hasGameBegun.hasBegun) this.$parent.gameStarted = true;
-      }
-    });
   },
   destroyed() {
     clearInterval(this.refresh);
+
   },
   methods: {
     toggleReadiness() {
@@ -85,11 +78,13 @@ export default {
       }, 200)
     },
     beginGame() {
+
+      this.disableStartButton = true;
       this.$parent.updateStandings(true);
       this.startCountdown();
     },
     startCountdown() {
-      console.log('starting countdown')
+
       this.countdownTimer--;
       this.countdown = setInterval(() => {
         this.countdownTimer--;
@@ -155,6 +150,18 @@ export default {
   align-items: center;
   border-radius: 10px;
   transition: 200ms ease-in-out;
+}
+
+.player-tag {
+  color: white; 
+  font-size: 15pt; 
+  margin: 2%;
+}
+
+.back-btn {
+  position: fixed; 
+  bottom: 2.5%; 
+  width: 60vw;
 }
 
 </style>
