@@ -12,7 +12,7 @@
     <!-- Race Area -->
     <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
 
-      <!-- <button v-on:click="qNumber++">answer</button> -->
+      <!-- <button v-on:click="qNumber++" style="">answer</button> -->
       <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
 
       <!-- Progress Side Bar -->
@@ -24,7 +24,7 @@
 
           <div :style="`position: absolute; height: ${(qNumber - 1) * 3}vh; width: 10vw; bottom: 0; background-color: rgb(0, ${255 - (qNumber * 7)}, 0); transition: 500ms; border-bottom: 1px solid black;`"></div>
 
-          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; right: 11vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
+          <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; right: 11vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh; z-index: 5;`" v-for="player in playerInfo" :key="player.id">
             <!--  -->
             <div :style="`display: flex; flex-direction: row; align-items: center;`" v-show="player.user !== sessionData.clientName">
               <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
@@ -36,23 +36,24 @@
 
       <!-- Question Panel -->
 
-      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'}`"></div>
+      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'};`"></div>
 
-      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 12.5vh; width: 70vw; margin-left: 7.5vw;">
+      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 12.5vh; width: 55vw; margin-left: 7.5vw;">
         <p style="text-decoration: underline; font-weight: bold">{{ sessionData.questions[qNumber - 1].task }}</p>
-        <vue-mathjax style="font-size: 16pt; position: absolute; bottom: 0;" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
+        <vue-mathjax class="mathjax" :style="`color: ${hideMathjaxPrerender}`" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
+        <p class="mathjax" ></p>
       </div>
 
       <div style="width: 100vw; height: 30vh; background-color: white; z-index: -1"></div>
 
       
-      <div style="display: flex; flex-direction: column; margin-left: 7.5vw; z-index: -2;">
+      <div style="display: flex; flex-direction: column; margin-left: 7.5vw; position: fixed;">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
           <b-button pill :disabled="cooldownActive" style="margin-top: 1vh; width: 55vw;" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
         </div>
       </div>
 
-      <div style="position: fixed; bottom: 0; width: 60vw; height: 40vh; left: 7vw; border-top: 1px solid black; background-color: white;">
+      <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; border-top: 1px solid black; background-color: white;">
         <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
         <p style="margin-top: 3.5vh; font-size: 9pt;">Race Annoucements Coming Soon!</p>
       </div>
@@ -62,7 +63,8 @@
     </div>
 
     <div v-else>
-      <Congrats />
+      <Congrats
+      :position="position" />
     </div>
 
   </div>
@@ -115,6 +117,10 @@ export default {
       qNumber: 1,
 
       ribbonAnimation: '',
+
+      hideMathjaxPrerender: '',
+
+      position: 1
     };
   },
   components: {
@@ -125,7 +131,7 @@ export default {
 
     // this line for testing purposes only!
     // localStorage.raceData = '';
-    // this.sessionData = {"_id":"62506eb2a54ad6e1692f203a","roomid":"5131","questions":[{"equation":"$$13+9$$","task":"Evaluate","answer":22,"options":[14,31,13,17,20,24,33,12,22,19]},{"equation":"$$2.14+0.30$$","task":"Evaluate","answer":2.44,"options":[2.29,2.29,2.34,2.27,2.44,2.68,1.93,2.17,2,1.32]},{"equation":"$$11^2$$","task":"Evaluate","answer":121,"options":[71,121,163,110,73,114,178,108,155,150]},{"equation":"$$7-15$$","task":"Evaluate","answer":-8,"options":[-7,-8,-15,-6,-11,-12,-5,-4,-10,-9]},{"equation":"$$\\sqrt{49} + 11-17$$","task":"Evaluate","answer":1,"options":[-3,6,0,2,1,4,3,-1,-2,5]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[31,33,21,39,22,34,30,27,15,19]},{"equation":"$$12 + 9\\cdot 5$$","task":"Evaluate","answer":57,"options":[34,78,67,76,48,29,36,74,46,57]},{"equation":"$$5 + 10\\cdot 6$$","task":"Evaluate","answer":65,"options":[77,36,85,53,57,75,94,81,65,78]},{"equation":"$$(3^1)^2$$","task":"Evaluate","answer":9,"options":[5,9,12,10,14,11,6,8,13,7]},{"equation":"$$(2^1)^2$$","task":"Evaluate","answer":4,"options":[2,0,7,11,1,8,6,3,5,4]},{"equation":"$$(3+1)^1$$","task":"Evaluate","answer":4,"options":[4,8,5,6,3,1,11,7,2,0]},{"equation":"$$7 + y - 4 = 2$$","task":"Solve for y","answer":-1,"options":[-1,0,2,1,-2,-3,6,4,3,-4]},{"equation":"$$7y = 7$$","task":"Solve for y","answer":1,"options":[0,-1,5,1,2,-3,3,4,-2,-4]},{"equation":"$$5c + 7 = 4$$","task":"Solve for c","answer":-0.6,"options":[-0.88,-0.6,-0.32,-0.56,-0.37,-0.78,-0.61,-0.52,-0.71,-0.35]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 11 and width 4.","answer":44,"options":[37,44,58,40,26,59,66,46,45,32]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 10 and width 19.","answer":190,"options":[131,241,178,190,262,127,129,200,283,163]},{"equation":"$$$$","task":"Find the area of the triangle with base 8.1 and height 17.5.","answer":70.88,"options":[83.64,44.65,84.35,49.62,48.2,50.32,48.2,98.52,70.88,59.54]},{"equation":"$$6cos({0})$$","task":"Evaluate","answer":6,"options":[8,3,5,12,9,10,2,7,4,6]},{"equation":"$$2cos({\\pi})$$","task":"Evaluate","answer":-2,"options":[1,-3,-2,0,-6,-1,-5,4,-4,2]},{"equation":"$$8cos({3\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[3,4,-3,0,1,2,-4,-2,6,-1]}],"date":"2022-04-08T17:19:46.070Z","host":"2xLogger","difficulty":"Intermediate","hasBegun":true,"__v":0}
+    // this.sessionData = {"_id":"6250d63ae42bc5193289755b","roomid":"6225","questions":[{"equation":"$$2**1$$","task":"Evaluate","answer":2,"options":[2,1,0,3]},{"equation":"$$8*2$$","task":"Evaluate","answer":16,"options":[24,21,13,16]},{"equation":"$$6+4$$","task":"Evaluate","answer":10,"options":[8,10,6,5]},{"equation":"$$0.89+1.45$$","task":"Evaluate","answer":2.34,"options":[1.78,2.34,3.16,2.27]},{"equation":"$$\\sqrt{361} + 7-5$$","task":"Evaluate","answer":21,"options":[18,28,11,21]},{"equation":"$$7**3$$","task":"Evaluate","answer":343,"options":[220,401,281,343]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[36,21,35,27]},{"equation":"$$\\sqrt{121} + 18-17$$","task":"Evaluate","answer":12,"options":[9,8,12,10]},{"equation":"$$(9+9)^0$$","task":"Evaluate","answer":1,"options":[4,2,1,3]},{"equation":"$$(5+7)^2$$","task":"Evaluate","answer":144,"options":[216,150,202,144]},{"equation":"$$(7+6)^2$$","task":"Evaluate","answer":169,"options":[169,211,144,93]},{"equation":"$$8c + 6 = 7$$","task":"Solve for c","answer":0.13,"options":[0.12,0.15,0.13,0.08]},{"equation":"$$9x = 7$$","task":"Solve for x","answer":0.78,"options":[0.51,0.9,0.72,0.78]},{"equation":"$$2x = 3$$","task":"Solve for x","answer":1.5,"options":[1.56,2.13,1.33,1.5]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 17.1 and width 5.8.","answer":99.18,"options":[94.22,146.79,90.25,99.18]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.5 and width 5.2.","answer":39,"options":[39,38,42,43]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.67 and width 12.92.","answer":99.1,"options":[123.88,131.8,99.1,113.96]},{"equation":"$$5cos({\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[0,1,3,-1]},{"equation":"$$9sin({\\pi})$$","task":"Evaluate","answer":0,"options":[-3,-1,0,1]},{"equation":"$$3cos({\\pi})$$","task":"Evaluate","answer":-3,"options":[-4,-6,-2,-3]}],"date":"2022-04-09T00:41:30.460Z","host":"2xLogger","difficulty":"Easy","hasBegun":true,"__v":0}
     
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
@@ -147,6 +153,8 @@ export default {
   created() {
 
     this.sessionData = this.$route.params.sessionObject;
+
+    document.title = `Race ${this.sessionData.roomid}`;
 
     // listens to see if user tabs out or minimizes our game
     document.addEventListener('visibilitychange', this.visibilityHandler)
@@ -226,6 +234,7 @@ export default {
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
+          data.position = this.position;
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
@@ -251,14 +260,15 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings(startEvent = false) {
+    updateStandings(startEvent = false, finished = false) {
 
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
-        startEvent,
+        position: this.position + finished ? 1:0,
+        startEvent
       };
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
@@ -278,6 +288,17 @@ export default {
     isUserReady() {
       this.updateStandings();
     },
+    qNumber() {
+  
+      this.hideMathjaxPrerender = 'white';
+      setTimeout(() => {
+        this.hideMathjaxPrerender = '';
+      }, 200)
+
+      if (this.qNumber > 20) {
+        this.updateStandings(false, true);
+      }
+    }
   },
 }
 </script>
@@ -304,5 +325,11 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.mathjax {
+  font-size: 16pt; 
+  position: absolute;
+  bottom: 0;
 }
 </style>
