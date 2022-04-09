@@ -27,19 +27,19 @@
     <div class="user-container">
       <!-- client user -->
       <div class="users" :style="`${$parent.isUserReady ? `background-color: #28a745; ${readyTransition}`:`background-color: #dc3545; ${readyTransition}`}`">
-        <p style="color: white; font-size: 15pt; margin: 2%;">{{ $parent.sessionData.clientName }}</p>
+        <p class="player-tag">{{ $parent.sessionData.clientName }}</p>
       </div>
 
       <!-- all users minus client user -->
       <div v-for="player in playerData" :key="player.id">
         <div class="users" v-show="player.user !== $parent.sessionData.clientName" style="width: 96vw; margin-top: 1vh;" :style="`${player.isUserReady ? 'background-color: #28a745;':'background-color: #dc3545;'}`">
-          <p style="color: white; font-size: 15pt; margin: 2%;">{{ player.user }}</p>
+          <p class="player-tag">{{ player.user }}</p>
         </div>
       </div>
     </div>
 
     <div class="center">
-      <b-button style="position: fixed; bottom: 2.5%; width: 60vw;" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
+      <b-button class="back-btn" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
     </div>
 
   </div>
@@ -150,6 +150,18 @@ export default {
   align-items: center;
   border-radius: 10px;
   transition: 200ms ease-in-out;
+}
+
+.player-tag {
+  color: white; 
+  font-size: 15pt; 
+  margin: 2%;
+}
+
+.back-btn {
+  position: fixed; 
+  bottom: 2.5%; 
+  width: 60vw;
 }
 
 </style>

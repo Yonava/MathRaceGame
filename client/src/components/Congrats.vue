@@ -1,37 +1,37 @@
 <template>
-  <div style="position: fixed; left: 5vw; top: 2vh;">
+  <div class="main-container">
 
-    <h1 style="font-size: 23pt; font-weight: bold; margin: 0px">Congratulations!</h1>
+    <h1 class="main-title">Congratulations!</h1>
 
     <p style="margin-top: 0.5vh;">You Finished In {{ finalPosition }}{{ placementSuffix }} Place</p>
 
     <div class="large-buffer"></div>
 
-    <b-icon style="width: 16vw; height: 12vh; margin-left: 19.5vw;" icon="trophy" animation="cylon-vertical"></b-icon>
+    <b-icon class="trophy-icon" icon="trophy" animation="cylon-vertical"></b-icon>
 
     <div class="large-buffer"></div>
 
     <div style="display: flex; flex-direction: column;">
 
-      <b-button style="width: 55vw;" v-on:click="encourage()" variant="success">Cheer On The Remaining Racers</b-button>
+      <b-button class="standard-btn" v-on:click="encourage()" variant="success">Cheer On The Remaining Racers</b-button>
       <div class="small-buffer"></div>
 
       <p style="font-weight: bold; margin: 0px; margin-left: 24vw;">OR</p>
 
       <div class="small-buffer"></div>
-      <b-button style="width: 55vw;" v-on:click="brag()" variant="danger">Brag</b-button>
+      <b-button class="standard-btn" v-on:click="brag()" variant="danger">Trash Talk</b-button>
 
     </div>
+
     <div class="large-buffer"></div>
     <div class="large-buffer"></div>
 
-    <p style="margin: 0px; font-size: 8pt; font-weight: bold;">Re-Entry Is Prohibited</p>
-    <b-button style="width: 55vw;" variant="outline-danger">
+    <p class="no-re-entry">Re-Entry Is Prohibited</p>
+    <b-button class="standard-btn" v-on:click="$router.push('/')" variant="outline-danger">
       Exit Room
       <b-icon icon="door-open-fill"></b-icon>
     </b-button>
-
-    
+ 
   </div>
 </template>
 
@@ -97,4 +97,36 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.main-container {
+  position: fixed; 
+  left: 5vw; 
+  top: 2vh;
+}
+
+.main-title {
+  font-size: 23pt; 
+  font-weight: bold; 
+  margin: 0px
+}
+
+.trophy-icon {
+  width: 16vw; 
+  height: 12vh; 
+  margin-left: 19.5vw;
+}
+
+.standard-btn {
+  width: 55vw;
+}
+
+.no-re-entry {
+  margin: 0px; 
+  font-size: 8pt; 
+  font-weight: bold;
+}
+
+</style>
 
