@@ -9,13 +9,9 @@
       :playerData="playerInfo" />
     </div>
 
-    <!-- Race Area -->
-    <div v-else-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
+    <!-- Progress Side Bar -->
+    <div v-else>
 
-      <button v-on:click="qNumber++" style="">answer</button>
-      <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
-
-      <!-- Progress Side Bar -->
       <div class="progress-container" style="display: flex; flex-direction: column; right: 0; top: 0; margin-top: 15vh; position: fixed; justify-content: center; align-items: center">
 
         <b-icon-award-fill variant="warning" :animation="ribbonAnimation" style="margin-bottom: 1vh; width: 9vw; height: 9vw;"></b-icon-award-fill>
@@ -26,7 +22,7 @@
 
           <div :style="`display: flex; flex-direction: row; align-items: center; position: absolute; transition: 500ms; right: 11vw; bottom: ${((player.qnum - 1) * 3) - 1.25}vh; z-index: 5;`" v-for="player in playerInfo" :key="player.id">
             <!--  -->
-            <div :style="`display: flex; flex-direction: row; align-items: center;`" v-show="player.user !== sessionData.clientName">
+            <div :style="`display: flex; flex-direction: row; align-items: center;`" v-show="player.user !== sessionData.clientName && player.qnum <= 20">
               <span style="font-size: 10pt; font-weight: bold;">{{ player.user }}</span>
               <div style="margin-left: 1vw;" class="arrow-right"></div>
             </div>
@@ -34,11 +30,33 @@
         </div>
       </div>
 
+      <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; background-color: white;">
+        <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
+        <div class="large-buffer"></div>
+        <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
+          <p style="font-size: 9pt; margin-bottom: 0%;">{{ annoucement }}</p>
+        </div>
+      </div>
+
+      <div class="center">
+        <p style="position: fixed; bottom: 0; margin-bottom: 0px; font-weight: bold; width: 100vw; background-color: white; margin-left: 2.5vw;">You Are Playing In Room 
+          <span style="color: #008b8b;">{{ sessionData.roomid }}</span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Race Area -->
+    <div v-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
+
+      <!-- <button v-on:click="qNumber++" style="">answer</button> -->
+      <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
+
       <!-- Question Panel -->
 
-      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'}; z-index: -6;`"></div>
+      <div class="cooldown-bar" :style="`${cooldownActive ? `width: 0vw; transition: ${cooldownDuration}ms;`:'width: 100vw;'};`"></div>
 
-      <div style="background-color: white; position: fixed; left: 0; top: 17.5vh; height: 15vh; width: 55vw; margin-left: 7.5vw;">
+      <div style="background-color: white; position: fixed; left: 0; top: 15vh; height: 12.5vh; width: 55vw; margin-left: 7.5vw;">
         <p style="text-decoration: underline; font-weight: bold">{{ sessionData.questions[qNumber - 1].task }}</p>
         <vue-mathjax class="mathjax" :style="`color: ${hideMathjaxPrerender}`" :formula="sessionData.questions[qNumber - 1].equation"></vue-mathjax>
         <p class="mathjax" ></p>
@@ -53,19 +71,13 @@
         </div>
       </div>
 
-      <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; border-top: 1px solid black; background-color: white;">
-        <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
-        <div class="large-buffer"></div>
-        <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
-          <p style="font-size: 9pt; margin-bottom: 0%;">{{ annoucement }}</p>
-        </div>
-      </div>
+      
       
    
 
     </div>
 
-    <div v-else>
+    <div v-if="qNumber > 20 && gameStarted">
       <Congrats
       :position="position" />
     </div>
@@ -117,7 +129,7 @@ export default {
       isUserReady: false,
 
       /* what question the client is on */
-      qNumber: 1,
+      qNumber: 21,
 
       ribbonAnimation: '',
 
@@ -125,7 +137,7 @@ export default {
 
       position: 0,
 
-      annoucements: ['hi', 'guys', 'lol']
+      annoucements: []
     };
   },
   components: {
@@ -135,8 +147,8 @@ export default {
   mounted() {
 
     // this line for testing purposes only!
-    // localStorage.raceData = '';
-    // this.sessionData = {"_id":"6250d63ae42bc5193289755b","roomid":"6225","questions":[{"equation":"$$2**1$$","task":"Evaluate","answer":2,"options":[2,1,0,3]},{"equation":"$$8*2$$","task":"Evaluate","answer":16,"options":[24,21,13,16]},{"equation":"$$6+4$$","task":"Evaluate","answer":10,"options":[8,10,6,5]},{"equation":"$$0.89+1.45$$","task":"Evaluate","answer":2.34,"options":[1.78,2.34,3.16,2.27]},{"equation":"$$\\sqrt{361} + 7-5$$","task":"Evaluate","answer":21,"options":[18,28,11,21]},{"equation":"$$7**3$$","task":"Evaluate","answer":343,"options":[220,401,281,343]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[36,21,35,27]},{"equation":"$$\\sqrt{121} + 18-17$$","task":"Evaluate","answer":12,"options":[9,8,12,10]},{"equation":"$$(9+9)^0$$","task":"Evaluate","answer":1,"options":[4,2,1,3]},{"equation":"$$(5+7)^2$$","task":"Evaluate","answer":144,"options":[216,150,202,144]},{"equation":"$$(7+6)^2$$","task":"Evaluate","answer":169,"options":[169,211,144,93]},{"equation":"$$8c + 6 = 7$$","task":"Solve for c","answer":0.13,"options":[0.12,0.15,0.13,0.08]},{"equation":"$$9x = 7$$","task":"Solve for x","answer":0.78,"options":[0.51,0.9,0.72,0.78]},{"equation":"$$2x = 3$$","task":"Solve for x","answer":1.5,"options":[1.56,2.13,1.33,1.5]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 17.1 and width 5.8.","answer":99.18,"options":[94.22,146.79,90.25,99.18]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.5 and width 5.2.","answer":39,"options":[39,38,42,43]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.67 and width 12.92.","answer":99.1,"options":[123.88,131.8,99.1,113.96]},{"equation":"$$5cos({\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[0,1,3,-1]},{"equation":"$$9sin({\\pi})$$","task":"Evaluate","answer":0,"options":[-3,-1,0,1]},{"equation":"$$3cos({\\pi})$$","task":"Evaluate","answer":-3,"options":[-4,-6,-2,-3]}],"date":"2022-04-09T00:41:30.460Z","host":"2xLogger","difficulty":"Easy","hasBegun":true,"__v":0}
+    localStorage.raceData = '';
+    this.sessionData = {"_id":"6250d63ae42bc5193289755b","roomid":"6225","questions":[{"equation":"$$2**1$$","task":"Evaluate","answer":2,"options":[2,1,0,3]},{"equation":"$$8*2$$","task":"Evaluate","answer":16,"options":[24,21,13,16]},{"equation":"$$6+4$$","task":"Evaluate","answer":10,"options":[8,10,6,5]},{"equation":"$$0.89+1.45$$","task":"Evaluate","answer":2.34,"options":[1.78,2.34,3.16,2.27]},{"equation":"$$\\sqrt{361} + 7-5$$","task":"Evaluate","answer":21,"options":[18,28,11,21]},{"equation":"$$7**3$$","task":"Evaluate","answer":343,"options":[220,401,281,343]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[36,21,35,27]},{"equation":"$$\\sqrt{121} + 18-17$$","task":"Evaluate","answer":12,"options":[9,8,12,10]},{"equation":"$$(9+9)^0$$","task":"Evaluate","answer":1,"options":[4,2,1,3]},{"equation":"$$(5+7)^2$$","task":"Evaluate","answer":144,"options":[216,150,202,144]},{"equation":"$$(7+6)^2$$","task":"Evaluate","answer":169,"options":[169,211,144,93]},{"equation":"$$8c + 6 = 7$$","task":"Solve for c","answer":0.13,"options":[0.12,0.15,0.13,0.08]},{"equation":"$$9x = 7$$","task":"Solve for x","answer":0.78,"options":[0.51,0.9,0.72,0.78]},{"equation":"$$2x = 3$$","task":"Solve for x","answer":1.5,"options":[1.56,2.13,1.33,1.5]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 17.1 and width 5.8.","answer":99.18,"options":[94.22,146.79,90.25,99.18]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.5 and width 5.2.","answer":39,"options":[39,38,42,43]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.67 and width 12.92.","answer":99.1,"options":[123.88,131.8,99.1,113.96]},{"equation":"$$5cos({\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[0,1,3,-1]},{"equation":"$$9sin({\\pi})$$","task":"Evaluate","answer":0,"options":[-3,-1,0,1]},{"equation":"$$3cos({\\pi})$$","task":"Evaluate","answer":-3,"options":[-4,-6,-2,-3]}],"date":"2022-04-09T00:41:30.460Z","host":"2xLogger","difficulty":"Easy","hasBegun":true,"__v":0}
     
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
@@ -246,7 +258,11 @@ export default {
           if (this.position !== data.position) {
 
             this.position = data.position;
-            if (data.qnum === 21) this.annoucements.push(`${data.user} Finished!`);
+
+            // for idempotency
+            if (data.qnum === 21 && this.annoucements.reverse()[0].substring(0, 4) !== data.user.substring(0, 4)) {
+              this.annoucements.push(`${data.user} Finished!`);
+            }
           }
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
