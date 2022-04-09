@@ -30,9 +30,10 @@
         </div>
       </div>
 
-      <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; background-color: white;">
-        <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
+      <div style="position: fixed; bottom: 0; width: 60vw; height: 30vh; left: 2vw; background-color: white;">
+        <p style="font-weight: bold; position: absolute; top: 0; left: 0; font-size: 14pt">Annoucements:</p>
         <div class="large-buffer"></div>
+        <div class="small-buffer"></div>
         <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
           <p style="font-size: 9pt; margin-bottom: 0%;">{{ annoucement }}</p>
         </div>
@@ -49,7 +50,6 @@
     <!-- Race Area -->
     <div v-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
 
-      <!-- <button v-on:click="qNumber++" style="">answer</button> -->
       <!-- <p>{{ Math.floor(secondsPassed / 60) }}:{{ secondsPassed - Math.floor(secondsPassed / 60) * 60 }}</p> -->
 
       <!-- Question Panel -->
@@ -64,16 +64,12 @@
 
       <div style="width: 100vw; height: 30vh; background-color: white; z-index: -1"></div>
 
-      
+      <button v-on:click="qNumber++" style="">answer</button>      
       <div style="display: flex; flex-direction: column; margin-left: 7.5vw; position: fixed;">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
           <b-button pill :disabled="cooldownActive" style="margin-top: 1vh; width: 55vw;" variant="primary" @click="checkAnswer(option)">{{ option }}</b-button>
         </div>
       </div>
-
-      
-      
-   
 
     </div>
 
@@ -255,6 +251,8 @@ export default {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
 
+          if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
+
           if (this.position !== data.position) {
 
             this.position = data.position;
@@ -289,7 +287,7 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings(startEvent = false, finished = false) {
+    updateStandings(startEvent = false, finished = false, broadcastMessage = '') {
 
       if (finished) this.position++;
 
@@ -299,6 +297,7 @@ export default {
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
         position: this.position,
+        broadcastMessage,
         startEvent
       };
 
@@ -328,12 +327,13 @@ export default {
       }, 200)
 
       if (this.qNumber > 20) {
+        this.annoucements.push(`${this.sessionData.clientName} Finished!`);
         this.updateStandings(false, true);
       }
     },
     gameStarted() {
 
-      this.annoucements = [];
+      this.annoucements = ['And We Are Off To The Races!'];
     },
   },
 }

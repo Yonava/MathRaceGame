@@ -39,7 +39,7 @@
     </div>
 
     <div class="center">
-      <b-button style="position: fixed; bottom: 2.5%; width: 60vw;" variant="outline-danger" v-on:click="$router.push('/')">Leave Session</b-button>
+      <b-button style="position: fixed; bottom: 2.5%; width: 60vw;" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
     </div>
 
   </div>
