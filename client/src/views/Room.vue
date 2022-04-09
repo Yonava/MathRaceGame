@@ -120,7 +120,7 @@ export default {
 
       hideMathjaxPrerender: '',
 
-      position: 1
+      position: 0
     };
   },
   components: {
@@ -262,14 +262,18 @@ export default {
     },
     updateStandings(startEvent = false, finished = false) {
 
+      if (finished) this.position++;
+
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
-        position: this.position + finished ? 1:0,
+        position: this.position,
         startEvent
       };
+
+      console.log(this.position)
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
 
