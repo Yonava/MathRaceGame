@@ -55,7 +55,9 @@
 
       <div style="position: fixed; bottom: 0; width: 55vw; height: 30vh; left: 7vw; border-top: 1px solid black; background-color: white;">
         <p style="font-weight: bold; position: absolute; top: 0; left: 0;">Annoucements:</p>
-        <p style="margin-top: 3.5vh; font-size: 9pt;">Race Annoucements Coming Soon!</p>
+        <div v-for="annoucement in annoucements" :key="annoucement.id">
+          <p style="margin-top: 3.5vh; font-size: 9pt;">{{ annoucement }}</p>
+        </div>
       </div>
       
    
@@ -120,7 +122,9 @@ export default {
 
       hideMathjaxPrerender: '',
 
-      position: 0
+      position: 0,
+
+      annoucements: []
     };
   },
   components: {
@@ -179,6 +183,7 @@ export default {
         this.playerInfo[i].refreshTimer -= 250;
         if (this.playerInfo[i].refreshTimer < 0) {
           this.playerInfo.splice(i, 1);
+          this.annoucements.push(`${this.playerList[i]} Left Us :(`);
           this.reArrangePlayerList();
         }
       }
@@ -215,6 +220,7 @@ export default {
     updatePlayerInfo(data) {
       if (!this.playerList.includes(data.user)) {
         this.playerInfo.push(data);
+        this.annoucements.push(`${data.user} Joined Up!`);
       } else {
         for (let i = 0; i < this.playerInfo.length; i++) {
           if (this.playerInfo[i].user === data.user) {
@@ -234,7 +240,12 @@ export default {
         "scoreRecieved", (data) => {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 2500;
-          this.position = data.position;
+
+          if (this.position !== data.position) {
+
+            this.position = data.position;
+            this.annoucements.push(`${data.user} Finished!`);
+          }
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
