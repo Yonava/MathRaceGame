@@ -147,6 +147,7 @@ export default {
 
       if (localStorage.raceData) {
         if (localStorage.raceData.substring(0, 4) == this.sessionData.roomid) {
+          if (parseInt(localStorage.raceData.substring(6)) > 20) this.$router.push('/');
           this.qNumber = parseInt(localStorage.raceData.substring(6));
           this.cooldownDuration += ((this.qNumber - 1) * 250); // adds appropriate cooldown duration back
         } else {
@@ -245,7 +246,7 @@ export default {
           if (this.position !== data.position) {
 
             this.position = data.position;
-            this.annoucements.push(`${data.user} Finished!`);
+            if (data.qnum === 21) this.annoucements.push(`${data.user} Finished!`);
           }
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
