@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import GameDataTracker from '../functionality/updateGameData';
 
 export default {
   data: () => {
@@ -71,7 +72,13 @@ export default {
   },
   methods: {
     toggleReadiness() {
+
       this.$parent.isUserReady = !this.$parent.isUserReady;
+
+      if (this.$parent.isUserReady) {
+        this.$parent.gameData = GameDataTracker.readyPressed(this.$parent.gameData);
+      }
+
       this.readyTransition = 'width: 3vw;';
       setTimeout(() => {
         this.readyTransition = 'width: 96vw;'

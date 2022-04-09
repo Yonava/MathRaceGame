@@ -41,17 +41,19 @@
         <div class="large-buffer"></div>
         <div class="small-buffer"></div>
 
-        <div v-for="annoucement in annoucements.slice().reverse()" :key="annoucement.id">
-          <p class="announcement-txt">{{ annoucement }}</p>
+        <div>
+          <p :style="shiftAnnouncementTxt" class="announcement-txt">{{ annoucements.slice().reverse()[0] }}</p>
+          <p :style="shiftAnnouncementTxt" class="announcement-txt">{{ annoucements.slice().reverse()[1] }}</p>
+          <p :style="shiftAnnouncementTxt" class="announcement-txt">{{ annoucements.slice().reverse()[2] }}</p>
+          <p :style="shiftAnnouncementTxt" class="announcement-txt">{{ annoucements.slice().reverse()[3] }}</p>
+          <p :style="shiftAnnouncementTxt" class="announcement-txt">{{ annoucements.slice().reverse()[4] }}</p>
         </div>
+
       </div>
 
       <!-- Room ID Display At Bottom Of Screen -->
-      <div class="center">
-        <p class="roomid-display-txt">You Are Playing In Room 
-          <span style="color: #008b8b;">{{ sessionData.roomid }}</span>
-        </p>
-      </div>
+      <p class="roomid-display-txt">math-race-game.herokuapp.com/go/{{ sessionData.roomid }}</p>
+      
 
     </div>
 
@@ -71,7 +73,8 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <button v-on:click="qNumber++">answer</button>  
+      <!-- <button v-on:click="qNumber++">answer</button>  
+      <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
@@ -96,6 +99,7 @@ import io from "socket.io-client"
 import WaitingArea from "../components/WaitingArea.vue"
 import Congrats from "../components/Congrats.vue"
 import DatabaseServices from "../DatabaseServices.js"
+import GameDataTracker from "../functionality/updateGameData"
 
 export default {
   data: () => {
@@ -114,14 +118,8 @@ export default {
       /* false if user is on another tab or minimizes window */
       visibilityState: true,
 
-      /* counts how many seconds have passed since game has begun */
-      secondsPassed: 0,
-
       /* stores session object pulled from database */
       sessionData: null,
-
-      /* displayed at the top for users to invite friends */
-      inviteLink: '',
 
       /* controls cooldown for wrong answer submission */
       cooldownActive: false,
@@ -140,9 +138,15 @@ export default {
 
       hideMathjaxPrerender: '',
 
+      /* increments each time someone crosses the finish line */
       position: 0,
 
-      annoucements: []
+      annoucements: [],
+      shiftAnnouncementTxt: '',
+
+      timeTracker: 0,
+
+      gameData: {}
     };
   },
   components: {
@@ -182,16 +186,10 @@ export default {
     // listens to see if user tabs out or minimizes our game
     document.addEventListener('visibilitychange', this.visibilityHandler)
       
-    
-    this.gameClock = setInterval(() => {
-      this.secondsPassed++;
-    }, 1000)
-
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
-      if (this.visibilityState) {
-        this.updateStandings();
-      }
+      if (this.visibilityState) this.updateStandings();
+      if (this.gameStarted) this.timeTracker += 500;
     }, 500);
 
 
@@ -223,6 +221,9 @@ export default {
     document.removeEventListener('visibilitychange', this.visibilityHandler)
   },
   methods: {
+    console() {
+      console.table(this.gameData)
+    },
     async visibilityHandler() {
       if (document.visibilityState === 'visible') {
         this.visibilityState = true;
@@ -281,16 +282,22 @@ export default {
     },
     checkAnswer(answer) {
       if (answer === this.sessionData.questions[this.qNumber - 1].answer) {
+
         this.qNumber++;
         this.cooldownDuration += 250;
         localStorage.raceData = `${this.sessionData.roomid}: ${this.qNumber}`;
         this.ribbonAnimation = 'throb';
+
+        this.gameData = GameDataTracker.questionAnsweredCorrectly(this.gameData, this.timeTracker);
+        this.timeTracker = 0;
+
         if (this.qNumber < 18) {
           setTimeout(() => {
             this.ribbonAnimation = '';
           }, 800)
         }
       } else {
+        this.gameData = GameDataTracker.questionAnsweredIncorrectly(this.gameData);
         this.cooldownActive = true;
         setTimeout(() => {
           this.cooldownActive = false;
@@ -327,6 +334,7 @@ export default {
   },
   watch: {
     isUserReady() {
+
       this.updateStandings();
     },
     qNumber() {
@@ -336,15 +344,28 @@ export default {
         this.hideMathjaxPrerender = '';
       }, 200)
 
-      if (this.qNumber > 20) {
+      if (this.qNumber === 21) {
         this.annoucements.push(`${this.sessionData.clientName} Finished!`);
         this.updateStandings(false, true);
+      } else if (this.qNumber === 11) {
+        this.annoucements.push(`${this.sessionData.clientName} Is Half Way There!`);
+        this.updateStandings(false, false, `${this.sessionData.clientName} Is Half Way There!`);
+      } else if (this.qNumber == 18) {
+        this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
+        this.updateStandings(false, false, `${this.sessionData.clientName} Is About To Finish`);
       }
     },
     gameStarted() {
 
       this.annoucements = ['And We Are Off To The Races!'];
     },
+    annoucements() {
+
+      this.shiftAnnouncementTxt = 'transform: translateY(50%); color: limegreen;';
+      setTimeout(() => {
+        this.shiftAnnouncementTxt = '';
+      }, 200)
+    }
   },
 }
 </script>
@@ -356,12 +377,13 @@ export default {
 .announcement-txt {
   font-size: 9pt; 
   margin-bottom: 0%;
+  transition: 200ms;
 }
 
 .announcement-container {
   position: fixed; 
   bottom: 0; 
-  width: 60vw; 
+  width: 65vw; 
   height: 30vh; 
   left: 2vw; 
   background-color: white;
@@ -381,10 +403,12 @@ export default {
   position: fixed; 
   bottom: 0; 
   margin-bottom: 0px; 
+  margin-left: 0.5vw; 
   font-weight: bold; 
   width: 100vw; 
   background-color: white; 
-  margin-left: 2.5vw;
+  user-select: default;
+  font-size: 10pt;
 }
 
 /* Progress Display */
