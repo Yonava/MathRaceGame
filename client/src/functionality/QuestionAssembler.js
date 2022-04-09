@@ -21,21 +21,27 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
             switch(i) {
                 case 0:
                     question = Levels.levelOne();
+                    question.value = 1;
                     break;
                 case 1:
                     question = Levels.levelTwo();
+                    question.value = 2;
                     break;
                 case 2:
                     question = Levels.levelThree();
+                    question.value = 3;
                     break;
                 case 3:
                     question = Algebra.Problem();
+                    question.value = 4;
                     break;
                 case 4:
                     question = Geometry.Problem();
+                    question.value = 4;
                     break;
                 case 5:
                     question = Trigonometry.Problem();
+                    question.value = 4;
                     break;
                 default:
                     throw new Error("Invalid question level.");
@@ -71,6 +77,7 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
                 equation: `${Equations.toMathjax(question.equation)}`,
                 task: question.task,
                 answer: options[0],
+                value: question.value,
                 options
             };
 

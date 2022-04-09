@@ -40,6 +40,8 @@ export default {
         return {
             // Whether or not to render the questions (for loading Mathjax)
             render: false,
+            // Points given by completing questions in the race
+            points: 0,
             // Selection of answers and if question is answered
             selected: '',
             answered: false,
@@ -146,6 +148,7 @@ export default {
             if (this.selected === this.itemized.answer) {
                 this.isCorrect = true;
                 this.numCorrect++;
+                this.points += this.output[0].value;
             }
             else this.isCorrect = false;
 
