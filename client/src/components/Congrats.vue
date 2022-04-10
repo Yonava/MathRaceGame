@@ -135,9 +135,9 @@ export default {
 }
 
 .trophy-icon {
-  width: 16vw; 
-  height: 12vh; 
-  margin-left: 19.5vw;
+  width: 10vw; 
+  height: 5vh; 
+  margin-left: 22vw;
 }
 
 .standard-btn {

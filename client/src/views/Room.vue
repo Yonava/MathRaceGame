@@ -73,8 +73,8 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <!-- <button v-on:click="qNumber++">answer</button>  
-      <button v-on:click="console">log gamedata</button>  -->
+      <button v-on:click="qNumber++">answer</button>  
+      <button v-on:click="console">log gamedata</button> 
 
       <div class="options-container">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
@@ -132,7 +132,7 @@ export default {
       isUserReady: false,
 
       /* what question the client is on */
-      qNumber: 1,
+      qNumber: 21,
 
       ribbonAnimation: '',
 
@@ -264,15 +264,8 @@ export default {
 
           if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
 
-          if (this.position !== data.position) {
+          this.position = data.position;
 
-            this.position = data.position;
-
-            // for idempotency
-            if (data.qnum === 21 && this.annoucements.reverse()[0].substring(0, 4) !== data.user.substring(0, 4)) {
-              this.annoucements.push(`${data.user} Finished!`);
-            }
-          }
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
@@ -321,9 +314,11 @@ export default {
       this.updatePlayerInfo(data);
       this.socketInstance.emit('score', data, this.sessionData.roomid);
 
-      setTimeout(() => {
-        if (startEvent) DatabaseServices.sessionStarted(this.sessionData.roomid); 
-      }, 10000); // Countdown Time Accounted For
+      if (startEvent) {
+        setTimeout(() => {
+          DatabaseServices.sessionStarted(this.sessionData.roomid); 
+        }, 10000); // Countdown Time Accounted For
+      }
     },
     reArrangePlayerList() {
       this.playerList = [];
@@ -344,15 +339,19 @@ export default {
         this.hideMathjaxPrerender = '';
       }, 200)
 
-      if (this.qNumber === 21) {
-        this.annoucements.push(`${this.sessionData.clientName} Finished!`);
-        this.updateStandings(false, true);
-      } else if (this.qNumber === 11) {
-        this.annoucements.push(`${this.sessionData.clientName} Is Half Way There!`);
-        this.updateStandings(false, false, `${this.sessionData.clientName} Is Half Way There!`);
-      } else if (this.qNumber == 18) {
-        this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
-        this.updateStandings(false, false, `${this.sessionData.clientName} Is About To Finish`);
+      switch (this.qNumber) {
+        case 12:
+          this.annoucements.push(`${this.sessionData.clientName} Is Half Way There!`);
+          this.updateStandings(false, false, `${this.sessionData.clientName} Is Half Way There!`);
+          break;
+        case 18:
+          this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
+          this.updateStandings(false, false, `${this.sessionData.clientName} Is About To Finish`);
+          break;
+        case 21:
+          this.annoucements.push(`${this.sessionData.clientName} Finished!`);
+          this.updateStandings(false, true, `${this.sessionData.clientName} Finished!`);
+          break;
       }
     },
     gameStarted() {
