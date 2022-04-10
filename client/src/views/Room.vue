@@ -132,7 +132,7 @@ export default {
       isUserReady: false,
 
       /* what question the client is on */
-      qNumber: 21,
+      qNumber: 1,
 
       ribbonAnimation: '',
 
@@ -473,7 +473,6 @@ export default {
   font-size: 10pt; 
   font-weight: bold;
 }
-
 
 /* Question Display */
 
