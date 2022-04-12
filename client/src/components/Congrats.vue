@@ -58,9 +58,9 @@ export default {
 
     if (userData) {
       userData.gameData.push({
-        incorrectAnswers: this.$parent.gameData.incorrectAnswers,
-        correctAnswers: this.$parent.gameData.correctAnswers,
-        readyPressed: this.$parent.gameData.readyPressed,
+        incorrectAnswers: this.$parent.gameData.incorrectAnswers ?? 0,
+        correctAnswers: this.$parent.gameData.correctAnswers ?? [],
+        readyPressed: this.$parent.gameData.readyPressed ?? 0,
         difficulty: this.$parent.sessionData.difficulty,
         position: this.finalPosition
       });

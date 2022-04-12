@@ -115,7 +115,7 @@ export default {
       const captureUserData = await DatabaseServices.findUser(this.username);
 
       if (captureUserData === null) {
-        return this.errorMsgUsername = `Username or Password is Incorrect`;
+        return this.errorMsgUsername = `Account Does Not Exist`;
       } else if (!compareSync(this.password, captureUserData.password)) {
         return this.errorMsgUsername = `Username or Password is Incorrect`;
       } 

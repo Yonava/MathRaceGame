@@ -29,15 +29,34 @@
           </b-card-text>
 
           <b-card-text>
-            Game Data: {{ finishedFetching ? userData.gameData:'Loading...' }}
+            Races Completed: {{ finishedFetching ? gameData.racesCompleted:'Loading...' }}
           </b-card-text>
 
           <b-card-text>
-            Access Level: {{ finishedFetching ? userData.accessLevel:'Loading...' }}
+            Races Won: {{ finishedFetching ? gameData.racesWon:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Correct Answers: {{ finishedFetching ? gameData.correctAnswers:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Answer Accuracy: {{ finishedFetching ? `${gameData.accuracy}%`:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Average Time Taken Per Correct Answer: {{ finishedFetching ? gameData.timeTaken:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Incorrect Answers: {{ finishedFetching ? gameData.incorrectAnswers:'Loading...' }}
+          </b-card-text>
+
+          <b-card-text>
+            Times Ready Pressed: {{ finishedFetching ? gameData.readyPressed:'Loading...' }}
           </b-card-text>
 
           <b-button @click="logout()" variant="danger">Log Out</b-button>
-          <b-button @click="logParsedGameData()" variant="danger">Log Data</b-button>
         </b-card>
 
     </div>
@@ -57,7 +76,8 @@ export default {
     return {
 
       finishedFetching: false,
-      userData: undefined
+      userData: undefined,
+      gameData: undefined
     }
   },
   async mounted() {
@@ -68,13 +88,13 @@ export default {
     }
 
     this.userData = await DatabaseServices.findUser(this.$route.params.username);
-
     this.finishedFetching = true;
+
+    console.log('gamedata' ,this.userData.gameData);
+    this.gameData = gameDataParser(this.userData.gameData);
+
   },
   methods: {
-    logParsedGameData() {
-      console.log(gameDataParser(this.userData.gameData));
-    },
     logout() {
 
       localStorage.clear();
