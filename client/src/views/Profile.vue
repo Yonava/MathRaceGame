@@ -37,6 +37,7 @@
           </b-card-text>
 
           <b-button @click="logout()" variant="danger">Log Out</b-button>
+          <b-button @click="logParsedGameData()" variant="danger">Log Data</b-button>
         </b-card>
 
     </div>
@@ -48,6 +49,7 @@
 <script>
 
 import DatabaseServices from '../DatabaseServices'
+import gameDataParser from '../functionality/gameDataParser'
 
 export default {
 
@@ -70,15 +72,8 @@ export default {
     this.finishedFetching = true;
   },
   methods: {
-    copyToClipboard() {
-      
-      navigator.clipboard.writeText(`hi, my name is ${this.$route.params.username}`).then(() => {
-        // runs if successful
-        console.log('yay')
-      }, () => {
-        // runs if unsuccessful
-        console.log('not yay')
-      });
+    logParsedGameData() {
+      console.log(gameDataParser(this.userData.gameData));
     },
     logout() {
 
