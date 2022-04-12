@@ -36,7 +36,7 @@
 
       <!-- Annoucement Display -->
       <div class="announcement-container">
-        <p class="announcement-title">Annoucements:</p>
+        <p class="announcement-title">Annoucements:</p><chat-text-fill></chat-text-fill>
 
         <div class="large-buffer"></div>
         <div class="small-buffer"></div>
@@ -73,8 +73,8 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <button v-on:click="qNumber++">answer</button>  
-      <button v-on:click="console">log gamedata</button> 
+      <!-- <button v-on:click="qNumber++">answer</button>  
+      <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">

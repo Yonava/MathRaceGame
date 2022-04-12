@@ -23,12 +23,13 @@ export default function gameDataParser(gameData) {
 
     correctAnswers += gameData[i].correctAnswers.length;
     incorrectAnswers += gameData[i].incorrectAnswers;
+    readyPressed += gameData[i].readyPressed;
+    
     for (let j = 0; j < gameData[i].correctAnswers.length; j++) {
       timeTaken += parseInt(gameData[i].correctAnswers[j]);
     }
 
     if (gameData[i].position == 1) racesWon++;
-    if (gameData[i]?.readyPressed) readyPressed += gameData[i].readyPressed;
 
     switch (gameData[i].difficulty) {
       case 'Easy':
