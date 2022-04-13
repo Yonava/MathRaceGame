@@ -69,4 +69,19 @@ router.put('/:username', async (req, res) => {
   
 });
 
+router.put('/:username/updateLastLogin', async (req, res) => {
+
+  try {
+    const updatedUserData = await UserBase.updateOne(
+      { username: req.params.username }, 
+      { $set: 
+      { lastLogin: req.body.lastLogin } }
+    );
+    res.json(updatedUserData);
+  } catch (error) {
+    res.json({ message: error })
+  }
+  
+});
+
 module.exports = router;

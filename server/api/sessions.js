@@ -54,4 +54,19 @@ router.delete('/:roomid', async (req, res) => {
   
 });
 
+router.put('/:roomid/start', async (req, res) => {
+
+  try {
+    const updatedSession = await Session.updateOne(
+      { roomid: req.params.roomid }, 
+      { $set: 
+      { hasBegun: req.body.hasBegun } }
+    );
+    res.json(updatedSession);
+  } catch (error) {
+    res.json({ message: error })
+  }
+  
+});
+
 module.exports = router;

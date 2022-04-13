@@ -29,6 +29,16 @@ const routes = [
     path: '/session/:sessionObject',
     name: 'Room',
     component: () => import('../views/Room.vue')
+  },
+  {
+    path: '/sign-in',
+    name: 'SignIn',
+    component: () => import('../views/SignIn.vue')
+  },
+  {
+    path: '/account-conflict',
+    name: 'AccountConflict',
+    component: () => import('../views/AccountConflict.vue')
   }
 ]
 

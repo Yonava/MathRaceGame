@@ -8,7 +8,7 @@
       </div>
     </b-button>
 
-    <!-- Create Rxoom -->
+    <!-- Create Room -->
     <div>
 
         <div class="mt-3">
@@ -65,16 +65,13 @@ export default {
         creatingRoom: false
       }
     },
-    props: [
-      'username',
-    ],
     methods: {
       canRoomBeCreated() {
         if (!this.difficulty) {
-          return "Select A Difficulty"
+          return "Select A Difficulty";
         }
 
-        return ""
+        return "";
       },
       async createRoom() {
 
@@ -94,10 +91,10 @@ export default {
         
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([5, 5, 5, 5]),
+            questions: GenerateQuestions([4, 4, 3, 3, 3, 3]),
             date: new Date,
             roomid: String(this.roomID),
-            host: this.username,
+            host: localStorage.username,
             difficulty: this.difficulty
           });
         } catch (error) {
@@ -116,7 +113,7 @@ export default {
           roomid: confirmedSessionObject.roomid,
           host: confirmedSessionObject.host,
           difficulty: confirmedSessionObject.difficulty,
-          clientName: this.username
+          clientName: localStorage.username
         }}});
       }
     },
