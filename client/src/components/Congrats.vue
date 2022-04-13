@@ -62,6 +62,7 @@ export default {
         correctAnswers: this.$parent.gameData.correctAnswers ?? [],
         readyPressed: this.$parent.gameData.readyPressed ?? 0,
         difficulty: this.$parent.sessionData.difficulty,
+        sessionDate: this.$parent.sessionData.date,
         position: this.finalPosition
       });
       
