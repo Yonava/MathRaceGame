@@ -31,7 +31,8 @@ router.post('/', async (req, res) => {
     password: req.body.password,
     gameData: req.body.gameData,
     accountCreationDate: req.body.accountCreationDate,
-    accessLevel: req.body.accessLevel
+    accessLevel: req.body.accessLevel,
+    pfp: req.body.pfp
   });
 
   try {

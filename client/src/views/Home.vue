@@ -41,7 +41,7 @@
 
       <div class="profile-btn-container" @click="$router.push(`/profile/${username}`)">
         <span style="margin-right: 2vw;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
-        <b-icon-person class="profile-icon"></b-icon-person>
+        <b-avatar :text="username ? `${username[0]}`:''"></b-avatar>
       </div>
 
       <div class="x-large-buffer"></div>
@@ -73,9 +73,9 @@
 
         <!-- End Connect to Multiplayer Sessions -->
 
-        <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+        <!-- <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
           Delete All Sessions
-        </button>
+        </button> -->
 
       </div>
 
@@ -90,16 +90,20 @@
     <footer style="z-index:8;" class="bottom">
       <div class="bottom-container">
         <div @click="switchView('')" class="nav-container">
-          <img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Home-icon.svg/1200px-Home-icon.svg.png" alt="home">
+          <b-icon class="icon" :icon="`house${viewController === '' ? '-fill':''}`"></b-icon>
+          <p class="icon-txt">Home</p>
         </div>
         <div @click="switchView('Practice')" class="nav-container">
-          <img class="icon" src="https://previews.123rf.com/images/sarahdesign/sarahdesign1706/sarahdesign170600477/80760345-target-practice-icon.jpg" alt="singleplayer">
+          <b-icon class="icon" :icon="`vinyl${viewController === 'Practice' ? '-fill':''}`"></b-icon>
+          <p class="icon-txt">Practice</p>
         </div>
         <div @click="switchView('Leaderboard')" class="nav-container">
-          <img class="icon" src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png" alt="singleplayer">
+          <b-icon class="icon" :icon="`star${viewController === 'Leaderboard' ? '-fill':''}`"></b-icon>
+          <p class="icon-txt">Leaderboard</p>
         </div>
         <div @click="switchView('Info')" class="nav-container">
-          <img class="icon" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg" alt="singleplayer">
+          <b-icon class="icon" :icon="`info-circle${viewController === 'Info' ? '-fill':''}`"></b-icon>
+          <p class="icon-txt">Info</p>
         </div>
       </div>
     </footer> 
@@ -239,34 +243,42 @@ div.center {
 }
 
 /* NAVIGATION DISPLAY */
+.icon-txt {
+  font-size: 8pt;
+  margin-top: 0.25vh;
+}
 .icon {
-    height: 5vh;
-    width: 5.3vh;
-    margin-bottom: 0px;
+  margin-top: 0.33vh;
+  height: 4.3vh;
+  width: 4.3vh;
+  margin-bottom: 0px;
 }
 .nav-container {
-    height: 5vh;
-    width: 5vh;
-    margin-top: .5vh;
-    margin-right: 5vw;
-    margin-left: 5vw;
-    margin-bottom: 0px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 5vh;
+  width: 5vh;
+  margin-top: .5vh;
+  margin-right: 7vw;
+  margin-left: 7vw;
+  margin-bottom: 0px;
 }
 .bottom-container {
-    margin-top: .5vh;
-    width: 90vw;
-    justify-content: center;
-    display: flex;
-    background-color: white;
+  width: 90vw;
+  justify-content: center;
+  display: flex;
+  background-color: white;
 }
 .bottom {
-    height: 7.75vh;
-    background-color: white;
-    position: fixed;
-    bottom: 0;
-    min-width: 100vw;
-    border-top: 1px black solid;
-    display: flex;
-    justify-content: center;
+  height: 7.75vh;
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  min-width: 100vw;
+  border-top: 1px black solid;
+  display: flex;
+  justify-content: center;
 }
 </style>

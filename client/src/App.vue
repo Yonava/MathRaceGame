@@ -23,6 +23,11 @@ export default {
   async created() {
 
     if (localStorage.username) {
+
+      // checks if account has been deleted since last login, if so, logs user out
+      const findUser = await DatabaseServices.findUser(localStorage.username);
+      if (!findUser) localStorage.clear();
+
       await DatabaseServices.updateLastLogin(localStorage.username, Date.now());
     }
 
