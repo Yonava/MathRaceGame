@@ -3,10 +3,10 @@
         <b-badge pill variant="primary" id="Timer"> {{minutes + 1}}:00 </b-badge>
         <br><br>
         <!-- Display question -->
+        <p v-if="render" class="task"><strong>{{ itemized.task }}</strong></p>
         <vue-mathjax v-if="render" :formula="itemized.equation"></vue-mathjax>
         <br>
         <!-- Display possible answers -->
-        <p v-if="render" class="task"><strong>{{ itemized.task }}</strong></p>
         <b-form-group v-slot="{ ariaDescribedby }" v-for="i in itemized.options" :key="i.id">
         <b-form-radio
             v-if="render"

@@ -1,6 +1,7 @@
 import Equations from "../classes/Equations"
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
+import Calculus from "../classes/subClasses/Calculus";
 import Geometry from "../classes/subClasses/Geometry";
 import Trigonometry from "../classes/subClasses/Trigonometry";
 import shuffle from "./shuffleArray"
@@ -41,6 +42,10 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
                     break;
                 case 5:
                     question = Trigonometry.Problem();
+                    question.value = 4;
+                    break;
+                case 6:
+                    question = Calculus.Problem();
                     question.value = 4;
                     break;
                 default:
