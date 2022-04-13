@@ -1,11 +1,13 @@
 <template>
     <div class="practice-area">
         <!-- Display question -->
-        <vue-mathjax :formula="itemized.equation"></vue-mathjax>
+        <p v-if="render" class="task"><strong>{{ itemized.task }}</strong></p>
+        <vue-mathjax v-if="render" :formula="itemized.equation"></vue-mathjax>
+        <br>
         <!-- Display possible answers -->
-        <p class="task"><strong>{{ itemized.task }}</strong></p>
         <b-form-group v-slot="{ ariaDescribedby }" v-for="i in itemized.options" :key="i.id">
         <b-form-radio
+            v-if="render"
             v-model="selected"
             :aria-describedby="ariaDescribedby"
             :name="itemized.equation" :value="i"
@@ -26,6 +28,8 @@ import shuffle from '../functionality/shuffleArray'
 export default {
     data: () => {
       return {
+        // Whether to render the questions (for loading Mathjax)
+        render: false,
         // Selection of answers and if question is answered
         selected: '',
         answered: false,
@@ -46,6 +50,11 @@ export default {
         this.output = GenerateQuestions(this.chosenDifficulty);
         shuffle(this.output);
         this.itemized = this.output[0];
+    },
+    created() {
+        setTimeout(() => {
+            this.render = true;
+        }, 100);
     },
     methods: {
 

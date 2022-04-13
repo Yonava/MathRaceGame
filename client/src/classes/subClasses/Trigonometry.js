@@ -26,11 +26,11 @@ export default class Trigonometry extends Equations {
         }
 
         let item = this.randItem(trigFuncs);
-        let num = this.randNum(2, 10);
+        let num = this.randNum(1, 10);
 
         const template = [
             {
-                equation: `${num}${item}[{${unit}}]`,
+                equation: `${(num === 1) ? "":num}${item}[{${unit}}]`,
                 evaluation: `Math.${item}(${eval(unit)}) * ${num}`,
                 task: "Evaluate"
             }
