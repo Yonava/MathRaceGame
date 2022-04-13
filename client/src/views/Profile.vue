@@ -2,63 +2,36 @@
 
   <div class="center">
 
-    <b-button pill style="width: 35vw; position: fixed; top: 0; margin-top: 1.5vh; left: 0; margin-left: 5vw;" variant="outline-danger" v-on:click="$router.push('/')">
-      Back 
-    </b-button>
+    
 
-    <div class="large-buffer"></div>
-    <div class="large-buffer"></div>
+    <div style="margin: 6%; font-size: 18pt;" v-if="!userFound">
+      <p style="font-size: 20pt; font-weight: bold; margin-top: 5vh;">User Not Found 🙁</p>
+    </div>
+    <div v-else>
 
-    <div>
+      <header style="display: flex; align-items: center; justify-content: center; width: 100vw; background-color: rgb(225, 225, 225); border-bottom: 2px solid black; position: fixed; height: 10vh;">
+        <h2 style="font-weight: bold; font-size: 20pt; margin-top: 3vh;">{{ userData.username }}</h2>
+      </header>
+      <div>
+    
+        <p>Account Created: {{ finishedFetching ? userData.accountCreationDate:'Loading...' }}</p>
+        <p>Last Login: {{ finishedFetching ? userData.lastLogin:'Loading...' }}</p>
+        <p>Races Completed: {{ finishedFetching ? gameData.racesCompleted:'Loading...' }}</p>
+        <p>Races Won: {{ finishedFetching ? gameData.racesWon:'Loading...' }}</p>
+        <p>Correct Answers: {{ finishedFetching ? gameData.correctAnswers:'Loading...' }}</p>
+        <p>Answer Accuracy: {{ finishedFetching ? `${gameData.accuracy}`:'Loading...' }}</p>
+        <p>Average Time Taken Per Correct Answer: {{ finishedFetching ? gameData.timeTaken:'Loading...' }}</p>
+        <p>Incorrect Answers: {{ finishedFetching ? gameData.incorrectAnswers:'Loading...' }}</p>
+        <p>Times Ready Pressed: {{ finishedFetching ? gameData.readyPressed:'Loading...' }}</p>
 
-      <b-card
-      :title="finishedFetching ? `${userData.username}s Profile and Stats`:'Loading Latest Profile Data...'"
-      img-src="https://www.incimages.com/uploaded_files/image/1920x1080/getty_470493341_20001333200092800_398689.jpg"
-      img-alt="Profile Image"
-      img-top
-      tag="article"
-      style="margin: 5%"
-      class="mb-2">
+        <p style="font-size: 20pt; opacity: 0;">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, provident.</p>
+        <br><br><br><br>
+      </div>
 
-          <b-card-text>
-            Account Created: {{ finishedFetching ? userData.accountCreationDate:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Last Login: {{ finishedFetching ? userData.lastLogin:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Races Completed: {{ finishedFetching ? gameData.racesCompleted:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Races Won: {{ finishedFetching ? gameData.racesWon:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Correct Answers: {{ finishedFetching ? gameData.correctAnswers:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Answer Accuracy: {{ finishedFetching ? `${gameData.accuracy}%`:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Average Time Taken Per Correct Answer: {{ finishedFetching ? gameData.timeTaken:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Incorrect Answers: {{ finishedFetching ? gameData.incorrectAnswers:'Loading...' }}
-          </b-card-text>
-
-          <b-card-text>
-            Times Ready Pressed: {{ finishedFetching ? gameData.readyPressed:'Loading...' }}
-          </b-card-text>
-
-          <b-button @click="logout()" variant="danger">Log Out</b-button>
-        </b-card>
-
+      <footer style="display: flex; align-items: center; justify-content: center; position: fixed; bottom: 0; background-color: white; width: 100vw; border-top: 1px solid black">
+        <b-button pill style="margin: 2%; width: 33vw" variant="outline-danger" v-on:click="$router.push('/')">Back</b-button>
+        <b-button pill style="margin: 2%; width: 33vw;" v-show="clientUser === userData.username" variant="danger" v-on:click="logout()">Logout</b-button>
+      </footer>
     </div>
 
   </div>
@@ -77,8 +50,13 @@ export default {
 
       finishedFetching: false,
       userData: undefined,
-      gameData: undefined
+      gameData: undefined,
+      userFound: true,
+      clientUser: null
     }
+  },
+  created() {
+    this.clientUser = localStorage?.username;
   },
   async mounted() {
 
@@ -88,9 +66,9 @@ export default {
     }
 
     this.userData = await DatabaseServices.findUser(this.$route.params.username);
+    if (!this.userData) this.userFound = false;
     this.finishedFetching = true;
 
-    console.log('gamedata' ,this.userData.gameData);
     this.gameData = gameDataParser(this.userData.gameData);
 
   },

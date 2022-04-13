@@ -41,7 +41,7 @@
 
       <div class="profile-btn-container" @click="$router.push(`/profile/${username}`)">
         <span style="margin-right: 2vw;"><b>{{ username ? `${username}`:'Sign In' }}</b></span>
-        <b-icon-person class="profile-icon"></b-icon-person>
+        <b-avatar :text="username ? `${username[0]}`:''"></b-avatar>
       </div>
 
       <div class="x-large-buffer"></div>
@@ -244,7 +244,7 @@ div.center {
 
 /* NAVIGATION DISPLAY */
 .icon-txt {
-  font-size: 6pt;
+  font-size: 8pt;
   margin-top: 0.25vh;
 }
 .icon {
@@ -261,8 +261,8 @@ div.center {
   height: 5vh;
   width: 5vh;
   margin-top: .5vh;
-  margin-right: 5vw;
-  margin-left: 5vw;
+  margin-right: 7vw;
+  margin-left: 7vw;
   margin-bottom: 0px;
 }
 .bottom-container {

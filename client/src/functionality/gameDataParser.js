@@ -44,8 +44,6 @@ export default function gameDataParser(gameData) {
     }
   }
 
-  console.log('racescompleted', gameData.length)
-
   return {
     correctAnswers,
     incorrectAnswers,
@@ -54,6 +52,6 @@ export default function gameDataParser(gameData) {
     racesWon,
     timeTaken: `${((timeTaken / correctAnswers) / 1000).toFixed(2)} Seconds`,
     racesCompleted: gameData.length,
-    accuracy: ((correctAnswers / (correctAnswers + incorrectAnswers)) * 100).toFixed(2)
+    accuracy: `${((correctAnswers / (correctAnswers + incorrectAnswers)) * 100).toFixed(2)}%`
   }
 }
