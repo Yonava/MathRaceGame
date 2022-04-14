@@ -6,10 +6,9 @@ export default class Geometry extends Equations {
 
     static Problem() {
         // Create dimensions of a shape
-        let precision = this.randNum(0, 2);
-        let length = this.randNum(1, 20, precision);
-        let width = this.randNum(1, 20, precision);
-        let height = this.randNum(1, 20, precision);
+        let length = this.randNum(1, 20);
+        let width = this.randNum(1, 20);
+        let height = this.randNum(1, 20);
 
         // Define if shape is a square or retangle
         let type2D = (length === width) ? "square" : "rectangle";

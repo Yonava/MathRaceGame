@@ -31,7 +31,7 @@ export default class Equations {
         const regexes = [/\//g, /Math\.sqrt\(/g, /\)/g, /\*?Math\.PI/g, /\*{2}/g, /\*/g];
         const replacements = ["\\over", "\\sqrt{", "}", "\\pi", "^", "\\cdot "];
 
-        for(let i = 0; i < formula.length; i++) {
+        for(let i = 0; i < regexes.length; i++) {
             formula = formula.replace(regexes[i], replacements[i]);
         }
 
@@ -40,6 +40,7 @@ export default class Equations {
 
         formula = "$$" + formula + "$$";
 
+        console.log(formula);
         return formula;
     }
 }

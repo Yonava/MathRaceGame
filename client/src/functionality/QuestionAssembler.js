@@ -1,6 +1,7 @@
 import Equations from "../classes/Equations"
 import Levels from "../classes/Levels"
 import Algebra from "../classes/subClasses/Algebra"
+import Calculus from "../classes/subClasses/Calculus";
 import Geometry from "../classes/subClasses/Geometry";
 import Trigonometry from "../classes/subClasses/Trigonometry";
 import shuffle from "./shuffleArray"
@@ -18,27 +19,37 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
             let options = [];
             let question;
 
-            switch (i) {
-              case 0:
-                question = Levels.levelOne();
-                break;
-              case 1:
-                question = Levels.levelTwo();
-                break;
-              case 2:
-                question = Levels.levelThree();
-                break;
-              case 3:
-                question = Algebra.Problem();
-                break;
-              case 4:
-                question = Geometry.Problem();
-                break;
-              case 5:
-                question = Trigonometry.Problem();
-                break;
-              default:
-                throw new Error("Invalid question level.");
+            switch(i) {
+                case 0:
+                    question = Levels.levelOne();
+                    question.value = 1;
+                    break;
+                case 1:
+                    question = Levels.levelTwo();
+                    question.value = 2;
+                    break;
+                case 2:
+                    question = Levels.levelThree();
+                    question.value = 3;
+                    break;
+                case 3:
+                    question = Algebra.Problem();
+                    question.value = 4;
+                    break;
+                case 4:
+                    question = Geometry.Problem();
+                    question.value = 4;
+                    break;
+                case 5:
+                    question = Trigonometry.Problem();
+                    question.value = 4;
+                    break;
+                case 6:
+                    question = Calculus.Problem();
+                    question.value = 4;
+                    break;
+                default:
+                    throw new Error("Invalid question level.");
             }
 
             question.evaluation = question.evaluation ?? question.equation;
@@ -71,6 +82,7 @@ export default function GenerateQuestions(numQuestions = [5, 5, 5, 5], numOption
                 equation: `${Equations.toMathjax(question.equation)}`,
                 task: question.task,
                 answer: options[0],
+                value: question.value,
                 options
             };
 

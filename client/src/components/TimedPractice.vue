@@ -1,12 +1,15 @@
 <template>
     <div>
         <b-badge pill variant="primary" id="Timer"> {{minutes + 1}}:00 </b-badge>
+        <br><br>
         <!-- Display question -->
-        <vue-mathjax :formula="itemized.equation"></vue-mathjax>
+        <p v-if="render" class="task"><strong>{{ itemized.task }}</strong></p>
+        <vue-mathjax v-if="render" :formula="itemized.equation"></vue-mathjax>
+        <br>
         <!-- Display possible answers -->
-        <p class="task"><strong>{{ itemized.task }}</strong></p>
         <b-form-group v-slot="{ ariaDescribedby }" v-for="i in itemized.options" :key="i.id">
         <b-form-radio
+            v-if="render"
             v-model="selected"
             :aria-describedby="ariaDescribedby"
             :name="itemized.equation" :value="i"
@@ -35,6 +38,10 @@ import sumArray from '../functionality/sumArray'
 export default {
     data: () => {
         return {
+            // Whether or not to render the questions (for loading Mathjax)
+            render: false,
+            // Points given by completing questions in the race
+            points: 0,
             // Selection of answers and if question is answered
             selected: '',
             answered: false,
@@ -106,6 +113,10 @@ export default {
         this.numQuestions = this.output.length;
     },
     created() {
+        setTimeout(() => {
+            this.render = true;
+        }, 100);
+
         this.minutes = this.duration - 1;
         this.timeTracker = setInterval(() => {
             let string = "";
@@ -137,6 +148,7 @@ export default {
             if (this.selected === this.itemized.answer) {
                 this.isCorrect = true;
                 this.numCorrect++;
+                this.points += this.output[0].value;
             }
             else this.isCorrect = false;
 
