@@ -43,11 +43,12 @@ export default {
       };
     },
     props: [
-        "chosenDifficulty"
+        "chosenDifficulty",
+        "numChoices"
     ],
     mounted() {
         // Create questions
-        this.output = GenerateQuestions(this.chosenDifficulty);
+        this.output = GenerateQuestions(this.chosenDifficulty, this.numChoices);
         shuffle(this.output);
         this.itemized = this.output[0];
     },
@@ -81,7 +82,7 @@ export default {
         output() {
             // Replenish and shuffle questions
             if (this.output.length < 2) {
-                let temp = GenerateQuestions(this.chosenDifficulty);
+                let temp = GenerateQuestions(this.chosenDifficulty, this.numChoices);
                 this.output.concat(temp);
                 shuffle(this.output);
             }

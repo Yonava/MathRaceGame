@@ -40,7 +40,6 @@ export default class Equations {
 
         formula = "$$" + formula + "$$";
 
-        console.log(formula);
         return formula;
     }
 }

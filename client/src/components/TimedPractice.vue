@@ -66,7 +66,8 @@ export default {
     props: [
         "qNum",
         "duration",
-        "difficultyChoice"
+        "difficultyChoice",
+        "numChoices"
     ],
     mounted() {
         let half = this.qNum / 2;
@@ -107,7 +108,7 @@ export default {
             this.chosenDifficulty[2] += (this.qNum - sum);
         }
 
-        this.output = GenerateQuestions(this.chosenDifficulty);
+        this.output = GenerateQuestions(this.chosenDifficulty, this.numChoices);
         shuffle(this.output);
         this.itemized = this.output[0];
         this.numQuestions = this.output.length;
