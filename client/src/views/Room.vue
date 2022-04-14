@@ -36,7 +36,7 @@
 
       <!-- Annoucement Display -->
       <div class="announcement-container">
-        <p class="announcement-title">Annoucements:</p><chat-text-fill></chat-text-fill>
+        <p class="announcement-title">Annoucements:</p>
 
         <div class="large-buffer"></div>
         <div class="small-buffer"></div>

@@ -50,7 +50,7 @@ export default function gameDataParser(gameData) {
     readyPressed, 
     gameDifficulty,
     racesWon,
-    timeTaken: `${((timeTaken / correctAnswers) / 1000).toFixed(2)} Seconds`,
+    timeTaken: ((timeTaken / correctAnswers) / 1000).toFixed(2),
     racesCompleted: gameData.length,
     accuracy: `${((correctAnswers / (correctAnswers + incorrectAnswers)) * 100).toFixed(2)}%`
   }

@@ -77,6 +77,10 @@ export default {
 
       if (isGuest) {
 
+        // Makes Sure Guest Accounts Cannot Have Duplicate Usernames
+        this.username += Math.floor(Math.random() * 1000);
+
+        // For Redundancy
         const doesUserExist = await DatabaseServices.findUser(this.username);
         if (doesUserExist) return this.errorMessage = 'This Username Has Been Taken By Another Account';
       }
@@ -97,6 +101,9 @@ export default {
 
       this.username = this.username.trim();
       this.errorMessage = validateUsername(this.username);
+      if (this.username.length > 5) {
+        this.errorMessage = `Guest Usernames Are Limited To 5 Characters`;
+      }
     }
   }
 }
