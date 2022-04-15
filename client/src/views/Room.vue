@@ -2,7 +2,7 @@
   <div>
     
     <!-- Pre-Game Waiting Area -->
-    <div v-if="!gameStarted">
+    <div v-if="!gameStarted && annoucements.length === 0">
       <WaitingArea
       ref="waitingArea"
       :host="sessionData.host"
@@ -214,7 +214,7 @@ export default {
   destroyed() {
     clearInterval(this.refreshConnection);
     clearInterval(this.checkRefreshTimers);
-    document.removeEventListener('visibilitychange', this.visibilityHandler)
+    document.removeEventListener('visibilitychange', this.visibilityHandler);
   },
   methods: {
     console() {
@@ -242,7 +242,6 @@ export default {
         }
       }
 
-      // this.playerInfo.sort((a, b) => b.qnum - a.qnum);
       this.reArrangePlayerList();
       this.$forceUpdate();
     },
@@ -254,11 +253,8 @@ export default {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 3000;
 
-          if (data.broadcastMessage) {
-            this.annoucements.push(data.broadcastMessage);
-            this.gameStarted = true;
-          }
-
+          if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
+          
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
@@ -287,7 +283,7 @@ export default {
         this.cooldownActive = true;
         setTimeout(() => {
           this.cooldownActive = false;
-        }, this.cooldownDuration)
+        }, this.cooldownDuration);
       }
     },
     updateStandings(startEvent = false, broadcastMessage = '') {
