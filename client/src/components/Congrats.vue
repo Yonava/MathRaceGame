@@ -37,6 +37,9 @@
 
 <script>
 
+// import GameDataTracker from "../functionality/updateGameData"
+import DatabaseServices from '../DatabaseServices'
+
 export default {
   data: () => {
     return {
@@ -47,9 +50,24 @@ export default {
   props: [
     'position'
   ],
-  created() {
+  async created() {
 
     this.finalPosition = String(this.position);
+
+    const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
+
+    if (userData) {
+      userData.gameData.push({
+        incorrectAnswers: this.$parent.gameData.incorrectAnswers ?? 0,
+        correctAnswers: this.$parent.gameData.correctAnswers ?? [],
+        readyPressed: this.$parent.gameData.readyPressed ?? 0,
+        difficulty: this.$parent.sessionData.difficulty,
+        sessionDate: this.$parent.sessionData.date,
+        position: this.finalPosition
+      });
+      
+      DatabaseServices.updateUserData(this.$parent.sessionData.clientName, userData.gameData);
+    }
 
     switch (this.finalPosition.substring(this.finalPosition.length-1)) {
       case '1':
@@ -57,6 +75,9 @@ export default {
         break;
       case '2':
         this.placementSuffix = 'nd';
+        break;
+      case '3':
+        this.placementSuffix = 'rd';
         break;
       default:
         this.placementSuffix = 'th';
@@ -76,6 +97,7 @@ export default {
         `${this.$parent.sessionData.clientName}: Statistically Speaking, I'm Smarter.`
       ];
 
+      // this.$parent.gameData = GameDataTracker.trashTalked(this.$parent.gameData);
       const brag = brags[Math.floor(Math.random() * brags.length)];
       this.$parent.updateStandings(false, false, brag);
       this.$parent.annoucements.push(brag);
@@ -90,6 +112,7 @@ export default {
         `${this.$parent.sessionData.clientName}: Keep Up The Effort!`
       ];
       
+      // this.$parent.gameData = GameDataTracker.encouragements(this.$parent.gameData);
       const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
       this.$parent.updateStandings(false, false, encouragement);
       this.$parent.annoucements.push(encouragement);
@@ -113,9 +136,9 @@ export default {
 }
 
 .trophy-icon {
-  width: 16vw; 
-  height: 12vh; 
-  margin-left: 19.5vw;
+  width: 10vw; 
+  height: 5vh; 
+  margin-left: 22vw;
 }
 
 .standard-btn {

@@ -23,6 +23,16 @@
 
     <div class="large-buffer"></div>
 
+    <div v-show="!signInType">
+      <input
+        type="file"
+        accept="image/jpeg/*"
+        @change="uploadImage()"
+      />
+    </div>
+
+    <div class="large-buffer"></div>
+
     <b-button style="width: 40vw;" @click="signInType ? login():signUp()" pill variant="info" :disabled="passwordColor !== 'success' || usernameColor !== 'success'">{{ signInType ? 'Login':'Create Account'}}</b-button>
 
     <div class="error-container">
@@ -67,13 +77,27 @@ export default {
       successMsg: false,
 
       /* True == login, False == Sign Up */
-      signInType: true
+      signInType: true,
+
+      pfpUpload: null
     }
   },
   async mounted() {
     document.title = 'Sign In - Math Race';
   },
   methods: {
+    uploadImage() {
+      const file = document.querySelector('input[type=file]').files[0]
+      const reader = new FileReader()
+
+      let rawImg;
+      reader.onloadend = () => {
+        rawImg = reader.result;
+        console.log(rawImg);
+      }
+      reader.readAsDataURL(file);
+      console.log(file)
+    },
     signUp() {
 
       this.processingRequest = true;
@@ -88,7 +112,8 @@ export default {
         
         await DatabaseServices.createNewUser({
           password: hashSync(this.password),
-          username: this.username
+          username: this.username,
+          pfp: this.pfpUpload ?? ''
         })
 
         const confirmAccountCreation = await DatabaseServices.findUser(this.username);
@@ -115,7 +140,7 @@ export default {
       const captureUserData = await DatabaseServices.findUser(this.username);
 
       if (captureUserData === null) {
-        return this.errorMsgUsername = `Username or Password is Incorrect`;
+        return this.errorMsgUsername = `Account Does Not Exist`;
       } else if (!compareSync(this.password, captureUserData.password)) {
         return this.errorMsgUsername = `Username or Password is Incorrect`;
       } 

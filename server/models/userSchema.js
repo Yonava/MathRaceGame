@@ -25,6 +25,10 @@ const UserSchema = mongoose.Schema({
       required: true,
       default: Date.now()
     },
+    pfp: {
+      type: String,
+      required: false
+    },
     accessLevel: {
       type: String,
       required: true,
