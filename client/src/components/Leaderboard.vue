@@ -12,7 +12,7 @@
           </b-tab>
 
           <b-tab v-on:click="fastest()" title="Fastest">
-            <p style="font-size: 18pt; font-weight: bold;">Avg. Time For Correct Answer:</p>
+            <p style="font-size: 18pt; font-weight: bold;">Avg. Time For Correct Answer (In Seconds):</p>
             <div v-for="player in playerData" :key="player.id">
               <p :style="`color: ${player.user === username ? 'red':''}`">{{ playerData.indexOf(player) + 1 }}. {{ player.user }} {{ player.timeTaken }}</p>
             </div>

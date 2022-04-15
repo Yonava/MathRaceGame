@@ -52,6 +52,17 @@ export default {
   ],
   async created() {
 
+  
+    const sessionDetails = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+
+    // guard clause to catch if session doesn't exist anymore
+    if (!sessionDetails) this.$router.push('/');
+    sessionDetails.finalPositions.push(this.$parent.sessionData.clientName);
+
+    const updatedPosList = await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
+    console.log(updatedPosList);
+     
+
     this.finalPosition = String(this.position);
 
     const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
@@ -93,7 +104,7 @@ export default {
         `${this.$parent.sessionData.clientName}: How Does It Feel To Be Below Me!`,
         `${this.$parent.sessionData.clientName}: It Really Takes You This Long???`,
         `${this.$parent.sessionData.clientName}: You Must Be Out of Practice...`,
-        `${this.$parent.sessionData.clientName}: Can You Even Solve 1+1? Geniunely Curious.`,
+        `${this.$parent.sessionData.clientName}: Can You Even Solve 1+1? Genuinely Curious.`,
         `${this.$parent.sessionData.clientName}: Statistically Speaking, I'm Smarter.`
       ];
 

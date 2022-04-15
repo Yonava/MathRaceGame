@@ -42,6 +42,11 @@ class DatabaseServices {
       return axios.delete(`${sessionUrl}${roomid}`);
     }
 
+    // Update Final Positions
+    static async updateFinalPositions(roomid, finalPositions) {
+      return axios.put(`${sessionUrl}${roomid}`, { finalPositions: finalPositions });
+    }
+
 
   /* USER SERVICES */
 
