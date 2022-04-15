@@ -2,7 +2,7 @@
   <div>
     
     <!-- Pre-Game Waiting Area -->
-    <div v-if="!gameStarted && annoucements.length === 0">
+    <div v-if="!gameStarted">
       <WaitingArea
       ref="waitingArea"
       :host="sessionData.host"
@@ -214,7 +214,7 @@ export default {
   destroyed() {
     clearInterval(this.refreshConnection);
     clearInterval(this.checkRefreshTimers);
-    document.removeEventListener('visibilitychange', this.visibilityHandler);
+    document.removeEventListener('visibilitychange', this.visibilityHandler)
   },
   methods: {
     console() {
@@ -224,6 +224,10 @@ export default {
       if (document.visibilityState === 'visible') {
         this.visibilityState = true;
         document.title = `Race ${this.sessionData.roomid}`;
+        if (!this.gameStarted) {
+          const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.sessionData.roomid);
+          if (hasGameBegun.hasBegun) this.gameStarted = true;
+        } 
       } else {
         this.visibilityState = false;
         document.title = 'Click Back!';
@@ -242,6 +246,7 @@ export default {
         }
       }
 
+      // this.playerInfo.sort((a, b) => b.qnum - a.qnum);
       this.reArrangePlayerList();
       this.$forceUpdate();
     },
@@ -254,7 +259,7 @@ export default {
           this.detectInboundConnection = 3000;
 
           if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
-          
+
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
@@ -283,7 +288,7 @@ export default {
         this.cooldownActive = true;
         setTimeout(() => {
           this.cooldownActive = false;
-        }, this.cooldownDuration);
+        }, this.cooldownDuration)
       }
     },
     updateStandings(startEvent = false, broadcastMessage = '') {

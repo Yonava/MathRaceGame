@@ -39,6 +39,8 @@
     </div>
 
     <div class="center">
+      <p v-show="$parent.annoucements.length > 0" class="back-btn" style="bottom: 14%; font-size: 8pt; font-weight: bold">It Looks Like This Race is in Progress!</p>
+      <b-button v-show="$parent.annoucements.length > 0" class="back-btn" style="bottom: 10%;" variant="info" v-on:click="$parent.gameStarted = true">Jump Into Game</b-button>
       <b-button class="back-btn" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
     </div>
 
