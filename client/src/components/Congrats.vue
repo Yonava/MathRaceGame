@@ -63,7 +63,7 @@ export default {
       console.log(confirmRequest.finalPositions);
     }
       
-    this.position = this.finalPositions.indexOf(this.$parent.sessionData.clientName) + 1;
+    this.position = this.positionList.indexOf(this.$parent.sessionData.clientName) + 1;
 
     const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
 
