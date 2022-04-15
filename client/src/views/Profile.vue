@@ -64,28 +64,27 @@ export default {
     return {
 
       finishedFetching: false,
-      userData: undefined,
+      userData: {gameData: []},
       gameData: undefined,
       userFound: true,
       clientUser: null
     }
   },
-  created() {
-    this.clientUser = localStorage?.username;
-  },
   async mounted() {
 
-    // reroute to sign-in if no user is logged in
-    if (this.$route.params.username === 'undefined') {
-      this.$router.push('/sign-in');
-    }
+      this.clientUser = localStorage?.username;
 
-    this.userData = await DatabaseServices.findUser(this.$route.params.username);
-    if (!this.userData) this.userFound = false;
-    this.finishedFetching = true;
+      // reroute to sign-in if no user is logged in
+      if (this.$route.params.username === 'undefined') {
+        this.$router.push('/sign-in');
+      }
 
-    document.title = `${this.$route.params.username} - Math Race`
-    this.gameData = gameDataParser(this.userData.gameData);
+      this.userData = await DatabaseServices.findUser(this.$route.params.username);
+      if (!this.userData) this.userFound = false;
+      this.finishedFetching = true;
+
+      document.title = `${this.$route.params.username} - Math Race`
+      this.gameData = gameDataParser(this.userData.gameData);
 
   },
   methods: {

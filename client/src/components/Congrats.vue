@@ -3,7 +3,7 @@
 
     <h1 class="main-title">Congratulations!</h1>
 
-    <p style="margin-top: 0.5vh;">You Finished In {{ finalPosition }}{{ placementSuffix }} Place</p>
+    <p style="margin-top: 0.5vh;">You Finished In {{ position }}{{ placementSuffix }} Place</p>
 
     <div class="large-buffer"></div>
 
@@ -43,13 +43,10 @@ import DatabaseServices from '../DatabaseServices'
 export default {
   data: () => {
     return {
-      finalPosition: undefined,
-      placementSuffix: undefined
+      placementSuffix: undefined,
+      position: 'Loading'
     }
   },
-  props: [
-    'position'
-  ],
   async created() {
 
   
@@ -59,11 +56,11 @@ export default {
     if (!sessionDetails) this.$router.push('/');
     sessionDetails.finalPositions.push(this.$parent.sessionData.clientName);
 
-    const updatedPosList = await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
-    console.log(updatedPosList);
-     
+    await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
+    
+    const confirmRequest = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
 
-    this.finalPosition = String(this.position);
+    console.log(confirmRequest.finalPositions);
 
     const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
 
@@ -74,13 +71,15 @@ export default {
         readyPressed: this.$parent.gameData.readyPressed ?? 0,
         difficulty: this.$parent.sessionData.difficulty,
         sessionDate: this.$parent.sessionData.date,
-        position: this.finalPosition
+        position: 2
       });
       
       DatabaseServices.updateUserData(this.$parent.sessionData.clientName, userData.gameData);
     }
 
-    switch (this.finalPosition.substring(this.finalPosition.length-1)) {
+    this.position = confirmRequest.finalPositions.indexOf(this.$parent.sessionData.clientName) + 1
+
+    switch (this.position) {
       case '1':
         this.placementSuffix = 'st';
         break;
