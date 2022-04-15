@@ -110,7 +110,7 @@ export default {
 
       // this.$parent.gameData = GameDataTracker.trashTalked(this.$parent.gameData);
       const brag = brags[Math.floor(Math.random() * brags.length)];
-      this.$parent.updateStandings(false, false, brag);
+      this.$parent.updateStandings(false, brag);
       this.$parent.annoucements.push(brag);
     },
     encourage() {
@@ -125,7 +125,7 @@ export default {
       
       // this.$parent.gameData = GameDataTracker.encouragements(this.$parent.gameData);
       const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
-      this.$parent.updateStandings(false, false, encouragement);
+      this.$parent.updateStandings(false, encouragement);
       this.$parent.annoucements.push(encouragement);
     }
   }

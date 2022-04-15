@@ -86,8 +86,7 @@
 
     <!-- Post Race Area -->
     <div v-if="qNumber > 20 && gameStarted">
-      <Congrats
-      :position="position" />
+      <Congrats />
     </div>
 
   </div>
@@ -138,9 +137,6 @@ export default {
 
       hideMathjaxPrerender: '',
 
-      /* increments each time someone crosses the finish line */
-      position: 0,
-
       annoucements: [],
       shiftAnnouncementTxt: '',
 
@@ -184,7 +180,7 @@ export default {
     document.title = `Race ${this.sessionData.roomid}`;
 
     // listens to see if user tabs out or minimizes our game
-    document.addEventListener('visibilitychange', this.visibilityHandler)
+    document.addEventListener('visibilitychange', this.visibilityHandler);
       
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
@@ -228,10 +224,6 @@ export default {
       if (document.visibilityState === 'visible') {
         this.visibilityState = true;
         document.title = `Race ${this.sessionData.roomid}`;
-        if (!this.gameStarted) {
-          const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.sessionData.roomid);
-          if (hasGameBegun.hasBegun) this.gameStarted = true;
-        } 
       } else {
         this.visibilityState = false;
         document.title = 'Click Back!';
@@ -262,9 +254,10 @@ export default {
           this.updatePlayerInfo(data);
           this.detectInboundConnection = 3000;
 
-          if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
-
-          this.position = data.position;
+          if (data.broadcastMessage) {
+            this.annoucements.push(data.broadcastMessage);
+            this.gameStarted = true;
+          }
 
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
@@ -297,16 +290,13 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings(startEvent = false, finished = false, broadcastMessage = '') {
-
-      if (finished) this.position++;
+    updateStandings(startEvent = false, broadcastMessage = '') {
 
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
-        position: this.position,
         broadcastMessage,
         startEvent
       };
@@ -342,15 +332,15 @@ export default {
       switch (this.qNumber) {
         case 12:
           this.annoucements.push(`${this.sessionData.clientName} Is Half Way There!`);
-          this.updateStandings(false, false, `${this.sessionData.clientName} Is Half Way There!`);
+          this.updateStandings(false, `${this.sessionData.clientName} Is Half Way There!`);
           break;
         case 18:
           this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
-          this.updateStandings(false, false, `${this.sessionData.clientName} Is About To Finish`);
+          this.updateStandings(false, `${this.sessionData.clientName} Is About To Finish`);
           break;
         case 21:
           this.annoucements.push(`${this.sessionData.clientName} Finished!`);
-          this.updateStandings(false, true, `${this.sessionData.clientName} Finished!`);
+          this.updateStandings(false, `${this.sessionData.clientName} Finished!`);
           break;
       }
     },
