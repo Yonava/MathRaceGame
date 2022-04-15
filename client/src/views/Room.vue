@@ -346,7 +346,6 @@ export default {
       }
     },
     gameStarted() {
-
       this.annoucements = ['And We Are Off To The Races!'];
     },
     annoucements() {
