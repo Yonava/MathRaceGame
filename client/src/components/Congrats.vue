@@ -44,23 +44,26 @@ export default {
   data: () => {
     return {
       placementSuffix: undefined,
-      position: 'Loading'
+      position: 'Loading',
+      positionList: []
     }
   },
   async created() {
 
-  
-    const sessionDetails = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+    while (!this.positionList.includes(this.$parent.sessionData.clientName)) {
 
-    // guard clause to catch if session doesn't exist anymore
-    if (!sessionDetails) this.$router.push('/');
-    sessionDetails.finalPositions.push(this.$parent.sessionData.clientName);
+      const sessionDetails = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+      // guard clause to catch if session doesn't exist anymore
+      if (!sessionDetails) this.$router.push('/');
+      sessionDetails.finalPositions.push(this.$parent.sessionData.clientName);
 
-    await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
-    
-    const confirmRequest = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
-
-    console.log(confirmRequest.finalPositions);
+      await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
+      const confirmRequest = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+      this.positionList = confirmRequest.finalPositions;
+      console.log(confirmRequest.finalPositions);
+    }
+      
+    this.position = this.finalPositions.indexOf(this.$parent.sessionData.clientName) + 1;
 
     const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
 
@@ -71,22 +74,20 @@ export default {
         readyPressed: this.$parent.gameData.readyPressed ?? 0,
         difficulty: this.$parent.sessionData.difficulty,
         sessionDate: this.$parent.sessionData.date,
-        position: 2
+        position: this.position
       });
       
       DatabaseServices.updateUserData(this.$parent.sessionData.clientName, userData.gameData);
     }
 
-    this.position = confirmRequest.finalPositions.indexOf(this.$parent.sessionData.clientName) + 1
-
     switch (this.position) {
-      case '1':
+      case 1:
         this.placementSuffix = 'st';
         break;
-      case '2':
+      case 2:
         this.placementSuffix = 'nd';
         break;
-      case '3':
+      case 3:
         this.placementSuffix = 'rd';
         break;
       default:
