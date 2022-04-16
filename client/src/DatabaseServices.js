@@ -29,7 +29,7 @@ class DatabaseServices {
 
     // Update Sent From Host When Game Begins
     static sessionStarted(roomid) {
-      return axios.put(`${sessionUrl}${roomid}/start`, { hasBegun: true })
+      return axios.put(`${sessionUrl}${roomid}/start`, { hasBegun: true });
     }
 
     // Post A Session to Sessions Database
