@@ -16,7 +16,7 @@ export default class Calculus extends Equations {
             {
                 equation: `${(number != 1) ? number : ""}${this.randItem(this.vars)}`,
                 evaluation: `${number}`,
-                task: "Find the derivative of:"
+                task: "Differentiate"
             }
         ];
 

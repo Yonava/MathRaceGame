@@ -131,7 +131,7 @@ export default {
 
 .page {
   margin: 0;
-  position: absolute;
+  position: fixed;
   top: 30%;
   left: 50%;
   -ms-transform: translate(-50%, -30%);
@@ -162,10 +162,9 @@ label {
 
 /* A modified version of the code on https://codepen.io/shashank_coder/pen/jOqxOpK for customizing the sliders */
 #num-questions, #question-timer, #num-options {
-  width: 200px;
+  width: 220px;
   height: 15px;
   -webkit-appearance: none;
-  /* background: #111; */
   outline: none;
   border-radius: 15px;
   overflow: hidden;
@@ -180,7 +179,7 @@ label {
   background: #333;
   cursor: pointer;
   border: 4px solid #333;
-  box-shadow: -407px 0 0 400px rgba(41, 37, 37, 0.781);
+  box-shadow: -407px 0 0 400px rgba(8, 162, 217, 0.781);
 }
 
 </style>
