@@ -27,13 +27,20 @@
       <div class="large-buffer"></div>
       
       <center>
-        <b-button size="lg" variant="info" @click="createRoom()">Create Room</b-button>
-        <br>
-        <h1 class="error-message">{{ errorMessage }}</h1>
+        <b-button size="lg" variant="info" :disabled="creatingRoom || !difficulty" @click="createRoom()">Create Room</b-button>
+        <div class="large-buffer"></div>
         <div v-show="creatingRoom">
           <b-icon-arrow-clockwise style="width: 10%; height: 10%;" animation="spin"></b-icon-arrow-clockwise>
         </div>
       </center>
+
+      <div class="large-buffer"></div>
+
+      <h5 v-show="description" style="font-weight: bold">Difficulty Description:</h5>
+
+      <p style="font-size: 14pt;">
+        {{ description }}
+      </p>
 
     </div>
   
@@ -56,29 +63,22 @@ export default {
       return {
         
         roomID: 0,
-        errorMessage: '',
 
         /* difficulty captures user input, difficultyStyle updates css style of display */
         difficulty: null,
         difficultyStyle: '',
 
+        description: '',
+
+        questions: undefined,
+
         creatingRoom: false
       }
     },
     methods: {
-      canRoomBeCreated() {
-        if (!this.difficulty) {
-          return "Select A Difficulty";
-        }
-
-        return "";
-      },
       async createRoom() {
 
         this.creatingRoom = true;
-        
-        this.errorMessage = this.canRoomBeCreated();
-        if (this.errorMessage) return;
 
         while (this.roomID < 1000) {
           this.roomID = Math.round(Math.random() * 10000);
@@ -86,12 +86,25 @@ export default {
 
         const doesRoomIDAlreadyExist = await DatabaseServices.findSessionByRoomID(String(this.roomID));
     
-        if (doesRoomIDAlreadyExist !== null) 
-          return this.errorMessage = "Problem Encountered While Creating Room, Try One More Time.";
+        if (doesRoomIDAlreadyExist !== null) return this.creatingRoom = false;
         
+        switch (this.difficulty) {
+          case 'Easy':
+            this.questions = GenerateQuestions([5, 5, 5, 5, 0, 0, 0]);
+            break;
+          case 'Intermediate':
+            this.questions = GenerateQuestions([3, 3, 3, 3, 3, 3, 2]);
+            break;
+          case 'Hard':
+            this.questions = GenerateQuestions([2, 2, 2, 2, 4, 4, 4]);
+            break;
+          default:
+            throw new Error('Error In Difficulty Selection!');
+        }
+
         try {
           await DatabaseServices.createNewSession({
-            questions: GenerateQuestions([4, 4, 3, 3, 3, 3]),
+            questions: this.questions,
             date: new Date,
             roomid: String(this.roomID),
             host: localStorage.username,
@@ -122,12 +135,23 @@ export default {
       switch (this.difficulty) {
         case 'Easy':
           this.difficultyStyle = 'color: green';
+          this.description = 
+          `On easy difficulty, the questions 
+          will not be too difficult. 
+          A bit of mental math will see you answering 
+          questions with relative ease throughout.`;
           break;
         case 'Intermediate':
           this.difficultyStyle = 'color: rgb(246,190,0)';
+          this.description = 
+          `On intermediate difficulty, expect questions
+          to become progressively more challenging as the race matures.`
           break;
         case 'Hard':
           this.difficultyStyle = 'color: red';
+          this.description =
+          `On hard difficulty, prepare for a challenge.
+          Hard will truely test your mental math abilities!`
           break;
         default:
           this.difficulty = '';

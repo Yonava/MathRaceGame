@@ -86,7 +86,6 @@ export default {
   },
   methods: {
     webShareAPI() {
-      console.log('clicked')
       if (navigator.share) {
         navigator.share({
           text: `Invite Someone To Room ${this.$parent.sessionData.roomid}`,
