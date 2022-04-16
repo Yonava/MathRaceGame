@@ -3,8 +3,12 @@
 
     <div class="wait-top-card">
 
-      <div class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
-
+      <div v-on:click="webShareAPI()" class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
+      
+      <b-modal id="copied" ok-only title="Copied To Clipboard">
+        <p>Invite Link Has Been Copied To Clipboard!</p>
+      </b-modal>
+      
       <div class="center">
         <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? `Waiting For ${host} To Start...`:`Race Is Beginning In ${countdownTimer}` }}</b></p>
       </div>
@@ -39,8 +43,8 @@
     </div>
 
     <div class="center">
-      <p v-show="$parent.annoucements.length > 0" class="back-btn" style="bottom: 14%; font-size: 8pt; font-weight: bold">It Looks Like This Race is in Progress!</p>
-      <b-button v-show="$parent.annoucements.length > 0" class="back-btn" style="bottom: 10%;" variant="info" v-on:click="$parent.gameStarted = true">Jump Into Game</b-button>
+      <p v-show="gameStartDetection" class="back-btn" style="bottom: 14%; font-size: 8pt; font-weight: bold">It Looks Like This Race is in Progress!</p>
+      <b-button v-show="gameStartDetection" class="back-btn" style="bottom: 10%;" variant="info" v-on:click="$parent.gameStarted = true">Jump Into Game</b-button>
       <b-button class="back-btn" variant="danger" v-on:click="$router.push('/')">Leave Session</b-button>
     </div>
 
@@ -55,7 +59,9 @@ export default {
     return {
       readyTransition: 'width: 96vw;',
       countdownTimer: 10,
-      disableStartButton: false
+      disableStartButton: false,
+      gameStartDetection: false,
+      linkCopied: false
     };
   },
   props: [
@@ -66,13 +72,32 @@ export default {
 
     this.refresh = setInterval(() => {
       this.$forceUpdate();
-    }, 250)
-  },
-  destroyed() {
-    clearInterval(this.refresh);
+    }, 250);
+
+    this.detectGameStateChange = setInterval(() => {
+      this.gameStartDetection = this.$parent.annoucements.includes(this.$parent.startMessage);
+    }, 1000);
 
   },
+  destroyed() {
+
+    clearInterval(this.refresh);
+    clearInterval(this.detectGameStateChange);
+  },
   methods: {
+    webShareAPI() {
+      console.log('clicked')
+      if (navigator.share) {
+        navigator.share({
+          text: `Invite Someone To Room ${this.$parent.sessionData.roomid}`,
+          url: `https://math-race-game.herokuapp.com/go/${this.$parent.sessionData.roomid}`,
+          title: 'Math Race Invite'
+        })
+      } else {
+        navigator.clipboard.writeText(`https://math-race-game.herokuapp.com/go/${this.$parent.sessionData.roomid}`);
+        this.$bvModal.show('copied');
+      }
+    },
     toggleReadiness() {
 
       this.$parent.isUserReady = !this.$parent.isUserReady;

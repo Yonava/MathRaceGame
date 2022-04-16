@@ -60,7 +60,6 @@ export default {
       await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
       const confirmRequest = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
       this.positionList = confirmRequest.finalPositions;
-      console.log(confirmRequest.finalPositions);
     }
       
     this.position = this.positionList.indexOf(this.$parent.sessionData.clientName) + 1;
@@ -94,6 +93,9 @@ export default {
         this.placementSuffix = 'th';
         break;
     }
+
+    this.$parent.annoucements.push(`${this.$parent.sessionData.clientName} Finished In ${this.position}${this.placementSuffix}!`);
+    this.$parent.updateStandings(false, `${this.$parent.sessionData.clientName} Finished In ${this.position}${this.placementSuffix}!`);
   },
   methods: {
     brag() {

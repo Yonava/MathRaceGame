@@ -138,6 +138,10 @@ export default {
       hideMathjaxPrerender: '',
 
       annoucements: [],
+
+      /* first message displayed through announcements when game starts */
+      startMessage: 'And We Are Off To The Races!',
+
       shiftAnnouncementTxt: '',
 
       timeTracker: 0,
@@ -159,7 +163,7 @@ export default {
       this.$router.push('/');
     } else {
 
-      this.gameStarted = this.sessionData.hasBegun;
+      if (this.sessionData.hasBegun) this.gameStarted = this.sessionData.hasBegun;
       this.connect();
 
       if (localStorage.raceData) {
@@ -320,7 +324,6 @@ export default {
   },
   watch: {
     isUserReady() {
-
       this.updateStandings();
     },
     qNumber() {
@@ -328,7 +331,7 @@ export default {
       this.hideMathjaxPrerender = 'white';
       setTimeout(() => {
         this.hideMathjaxPrerender = '';
-      }, 200)
+      }, 200);
 
       switch (this.qNumber) {
         case 12:
@@ -339,14 +342,10 @@ export default {
           this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
           this.updateStandings(false, `${this.sessionData.clientName} Is About To Finish`);
           break;
-        case 21:
-          this.annoucements.push(`${this.sessionData.clientName} Finished!`);
-          this.updateStandings(false, `${this.sessionData.clientName} Finished!`);
-          break;
       }
     },
     gameStarted() {
-      this.annoucements = ['And We Are Off To The Races!'];
+      this.annoucements = [this.startMessage];
     },
     annoucements() {
 
