@@ -36,7 +36,7 @@
 
       <!-- Annoucement Display -->
       <div class="announcement-container">
-        <p class="announcement-title">Annoucements:</p><chat-text-fill></chat-text-fill>
+        <p class="announcement-title">Annoucements:</p>
 
         <div class="large-buffer"></div>
         <div class="small-buffer"></div>
@@ -73,8 +73,8 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <!-- <button v-on:click="qNumber++">answer</button>  
-      <button v-on:click="console">log gamedata</button>  -->
+      <button v-show="sessionData.clientName === 'YonaVA' || sessionData.clientName === 'sudo'" v-on:click="qNumber++">answer</button>  
+      <!-- <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">
@@ -86,8 +86,7 @@
 
     <!-- Post Race Area -->
     <div v-if="qNumber > 20 && gameStarted">
-      <Congrats
-      :position="position" />
+      <Congrats />
     </div>
 
   </div>
@@ -138,10 +137,11 @@ export default {
 
       hideMathjaxPrerender: '',
 
-      /* increments each time someone crosses the finish line */
-      position: 0,
-
       annoucements: [],
+
+      /* first message displayed through announcements when game starts */
+      startMessage: 'And We Are Off To The Races!',
+
       shiftAnnouncementTxt: '',
 
       timeTracker: 0,
@@ -163,7 +163,7 @@ export default {
       this.$router.push('/');
     } else {
 
-      this.gameStarted = this.sessionData.hasBegun;
+      if (this.sessionData.hasBegun) this.gameStarted = this.sessionData.hasBegun;
       this.connect();
 
       if (localStorage.raceData) {
@@ -184,7 +184,7 @@ export default {
     document.title = `Race ${this.sessionData.roomid}`;
 
     // listens to see if user tabs out or minimizes our game
-    document.addEventListener('visibilitychange', this.visibilityHandler)
+    document.addEventListener('visibilitychange', this.visibilityHandler);
       
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
@@ -264,8 +264,6 @@ export default {
 
           if (data.broadcastMessage) return this.annoucements.push(data.broadcastMessage);
 
-          this.position = data.position;
-
           // only returns true if host broadcasted a signal to start
           if (data.startEvent) this.$refs.waitingArea.startCountdown();
         });
@@ -297,16 +295,13 @@ export default {
         }, this.cooldownDuration)
       }
     },
-    updateStandings(startEvent = false, finished = false, broadcastMessage = '') {
-
-      if (finished) this.position++;
+    updateStandings(startEvent = false, broadcastMessage = '') {
 
       const data = {
         qnum: this.qNumber,
         user: this.sessionData.clientName,
         isUserReady: this.isUserReady,
         refreshTimer: this.refreshTimer,
-        position: this.position,
         broadcastMessage,
         startEvent
       };
@@ -329,7 +324,6 @@ export default {
   },
   watch: {
     isUserReady() {
-
       this.updateStandings();
     },
     qNumber() {
@@ -337,26 +331,21 @@ export default {
       this.hideMathjaxPrerender = 'white';
       setTimeout(() => {
         this.hideMathjaxPrerender = '';
-      }, 200)
+      }, 200);
 
       switch (this.qNumber) {
         case 12:
           this.annoucements.push(`${this.sessionData.clientName} Is Half Way There!`);
-          this.updateStandings(false, false, `${this.sessionData.clientName} Is Half Way There!`);
+          this.updateStandings(false, `${this.sessionData.clientName} Is Half Way There!`);
           break;
         case 18:
           this.annoucements.push(`${this.sessionData.clientName} Is About To Finish!`);
-          this.updateStandings(false, false, `${this.sessionData.clientName} Is About To Finish`);
-          break;
-        case 21:
-          this.annoucements.push(`${this.sessionData.clientName} Finished!`);
-          this.updateStandings(false, true, `${this.sessionData.clientName} Finished!`);
+          this.updateStandings(false, `${this.sessionData.clientName} Is About To Finish`);
           break;
       }
     },
     gameStarted() {
-
-      this.annoucements = ['And We Are Off To The Races!'];
+      this.annoucements = [this.startMessage];
     },
     annoucements() {
 

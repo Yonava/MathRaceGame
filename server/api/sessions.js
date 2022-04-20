@@ -31,7 +31,8 @@ router.post('/', async (req, res) => {
     questions: req.body.questions,
     date: req.body.date,
     host: req.body.host,
-    difficulty: req.body.difficulty
+    difficulty: req.body.difficulty,
+    finalPositions: req.body.finalPositions
   });
 
   try {
@@ -63,6 +64,21 @@ router.put('/:roomid/start', async (req, res) => {
       { hasBegun: req.body.hasBegun } }
     );
     res.json(updatedSession);
+  } catch (error) {
+    res.json({ message: error })
+  }
+  
+});
+
+router.put('/:roomid', async (req, res) => {
+
+  try {
+    const updatedFinalPos = await Session.updateOne(
+      { roomid: req.params.roomid }, 
+      { $set: 
+      { finalPositions: req.body.finalPositions } }
+    );
+    res.json(updatedFinalPos);
   } catch (error) {
     res.json({ message: error })
   }

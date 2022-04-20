@@ -29,7 +29,7 @@ class DatabaseServices {
 
     // Update Sent From Host When Game Begins
     static sessionStarted(roomid) {
-      return axios.put(`${sessionUrl}${roomid}/start`, { hasBegun: true })
+      return axios.put(`${sessionUrl}${roomid}/start`, { hasBegun: true });
     }
 
     // Post A Session to Sessions Database
@@ -40,6 +40,11 @@ class DatabaseServices {
     // Close Session
     static deleteSessionByRoomID(roomid) {
       return axios.delete(`${sessionUrl}${roomid}`);
+    }
+
+    // Update Final Positions
+    static async updateFinalPositions(roomid, finalPositions) {
+      return axios.put(`${sessionUrl}${roomid}`, { finalPositions: finalPositions });
     }
 
 

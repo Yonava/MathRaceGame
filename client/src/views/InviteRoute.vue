@@ -15,9 +15,10 @@
     <!-- Input Username -->
     <div v-else class="center" style="padding: 5%;">
 
+      <!-- Taken Out For Showcase Only {{ sessionInfo.date }} -->
       <center>
         <p>Joining Room <b style="color: #008b8b">{{ sessionInfo.roomid }}</b>
-        Created <b style="color: #008b8b">{{ sessionInfo.date }}</b>
+        Created On <b style="color: #008b8b">4/20</b>
         By <b style="color: #008b8b">{{ sessionInfo.host }}</b></p>
       </center>
 
@@ -30,7 +31,7 @@
 
       <center>
         <p class="error-msg-transition" :style="errorMessage ? 'color:red;transform:translateY(0%)':'color:rgba(0,0,0,0);transform:translateY(50%)'">
-          {{  errorMessage ? errorMessage:'Resolved'}}
+          {{ errorMessage ? errorMessage:'Resolved' }}
         </p>
       </center>
 
@@ -77,6 +78,10 @@ export default {
 
       if (isGuest) {
 
+        // Makes Sure Guest Accounts Cannot Have Duplicate Usernames
+        this.username += Math.floor(Math.random() * 1000);
+
+        // For Redundancy
         const doesUserExist = await DatabaseServices.findUser(this.username);
         if (doesUserExist) return this.errorMessage = 'This Username Has Been Taken By Another Account';
       }
@@ -97,6 +102,9 @@ export default {
 
       this.username = this.username.trim();
       this.errorMessage = validateUsername(this.username);
+      if (this.username.length > 5) {
+        this.errorMessage = `Guest Usernames Are Limited To 5 Characters`;
+      }
     }
   }
 }

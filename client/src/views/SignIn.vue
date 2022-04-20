@@ -1,10 +1,11 @@
 <template>
   <div class="signin-parent">
-    <center>
+
+    <header>
       <h1 class="title">
         {{ signInType ? 'Login':'Sign Up For Math Race'}}
       </h1>
-    </center>
+    </header>
 
     <!-- Sign In Form -->
     <b-input-group prepend="Username" class="mt-3 input-fields">
@@ -23,13 +24,14 @@
 
     <div class="large-buffer"></div>
 
-    <div v-show="!signInType">
+    <!-- FOR LATER IMPLEMENTATION -->
+    <!-- <div v-show="!signInType">
       <input
         type="file"
         accept="image/jpeg/*"
         @change="uploadImage()"
       />
-    </div>
+    </div> -->
 
     <div class="large-buffer"></div>
 

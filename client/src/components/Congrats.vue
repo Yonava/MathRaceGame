@@ -3,7 +3,7 @@
 
     <h1 class="main-title">Congratulations!</h1>
 
-    <p style="margin-top: 0.5vh;">You Finished In {{ finalPosition }}{{ placementSuffix }} Place</p>
+    <p style="margin-top: 0.5vh;">You Finished In {{ position }}{{ placementSuffix }} Place</p>
 
     <div class="large-buffer"></div>
 
@@ -13,20 +13,20 @@
 
     <div style="display: flex; flex-direction: column;">
 
-      <b-button class="standard-btn" v-on:click="encourage()" variant="success">Cheer On The Remaining Racers</b-button>
+      <b-button class="standard-btn" :disabled="chatCooldown" v-on:click="encourage(); chatCooldown = true;" variant="success">Cheer On The Remaining Racers</b-button>
       <div class="small-buffer"></div>
 
       <p style="font-weight: bold; margin: 0px; margin-left: 24vw;">OR</p>
 
       <div class="small-buffer"></div>
-      <b-button class="standard-btn" v-on:click="brag()" variant="danger">Trash Talk</b-button>
+      <b-button class="standard-btn" :disabled="$parent.sessionData.clientName !== 'sudo' || chatCooldown" v-on:click="brag()" variant="danger">Trash Talk</b-button>
+      <p style="font-size: 8pt; margin-top: 3px;">Trash Talk Disabled For CS Showcase</p>
 
     </div>
 
     <div class="large-buffer"></div>
     <div class="large-buffer"></div>
 
-    <p class="no-re-entry">Re-Entry Is Prohibited</p>
     <b-button class="standard-btn" v-on:click="$router.push('/')" variant="outline-danger">
       Exit Room
       <b-icon icon="door-open-fill"></b-icon>
@@ -43,16 +43,27 @@ import DatabaseServices from '../DatabaseServices'
 export default {
   data: () => {
     return {
-      finalPosition: undefined,
-      placementSuffix: undefined
+      chatCooldown: false,
+      placementSuffix: undefined,
+      position: 'Loading',
+      positionList: []
     }
   },
-  props: [
-    'position'
-  ],
   async created() {
 
-    this.finalPosition = String(this.position);
+    while (!this.positionList.includes(this.$parent.sessionData.clientName)) {
+
+      const sessionDetails = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+      // guard clause to catch if session doesn't exist anymore
+      if (!sessionDetails) this.$router.push('/');
+      sessionDetails.finalPositions.push(this.$parent.sessionData.clientName);
+
+      await DatabaseServices.updateFinalPositions(this.$parent.sessionData.roomid, sessionDetails.finalPositions);
+      const confirmRequest = await DatabaseServices.findSessionByRoomID(this.$parent.sessionData.roomid);
+      this.positionList = confirmRequest.finalPositions;
+    }
+      
+    this.position = this.positionList.indexOf(this.$parent.sessionData.clientName) + 1;
 
     const userData = await DatabaseServices.findUser(this.$parent.sessionData.clientName);
 
@@ -63,26 +74,29 @@ export default {
         readyPressed: this.$parent.gameData.readyPressed ?? 0,
         difficulty: this.$parent.sessionData.difficulty,
         sessionDate: this.$parent.sessionData.date,
-        position: this.finalPosition
+        position: this.position
       });
       
       DatabaseServices.updateUserData(this.$parent.sessionData.clientName, userData.gameData);
     }
 
-    switch (this.finalPosition.substring(this.finalPosition.length-1)) {
-      case '1':
+    switch (this.position) {
+      case 1:
         this.placementSuffix = 'st';
         break;
-      case '2':
+      case 2:
         this.placementSuffix = 'nd';
         break;
-      case '3':
+      case 3:
         this.placementSuffix = 'rd';
         break;
       default:
         this.placementSuffix = 'th';
         break;
     }
+
+    this.$parent.annoucements.push(`${this.$parent.sessionData.clientName} Finished In ${this.position}${this.placementSuffix}!`);
+    this.$parent.updateStandings(false, `${this.$parent.sessionData.clientName} Finished In ${this.position}${this.placementSuffix}!`);
   },
   methods: {
     brag() {
@@ -93,13 +107,13 @@ export default {
         `${this.$parent.sessionData.clientName}: How Does It Feel To Be Below Me!`,
         `${this.$parent.sessionData.clientName}: It Really Takes You This Long???`,
         `${this.$parent.sessionData.clientName}: You Must Be Out of Practice...`,
-        `${this.$parent.sessionData.clientName}: Can You Even Solve 1+1? Geniunely Curious.`,
+        `${this.$parent.sessionData.clientName}: Can You Even Solve 1+1? Genuinely Curious.`,
         `${this.$parent.sessionData.clientName}: Statistically Speaking, I'm Smarter.`
       ];
 
       // this.$parent.gameData = GameDataTracker.trashTalked(this.$parent.gameData);
       const brag = brags[Math.floor(Math.random() * brags.length)];
-      this.$parent.updateStandings(false, false, brag);
+      this.$parent.updateStandings(false, brag);
       this.$parent.annoucements.push(brag);
     },
     encourage() {
@@ -114,8 +128,17 @@ export default {
       
       // this.$parent.gameData = GameDataTracker.encouragements(this.$parent.gameData);
       const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
-      this.$parent.updateStandings(false, false, encouragement);
+      this.$parent.updateStandings(false, encouragement);
       this.$parent.annoucements.push(encouragement);
+    }
+  },
+  watch: {
+    chatCooldown() {
+      if (this.chatCooldown) {
+        setTimeout(() => {
+          this.chatCooldown = false;
+        }, 5000);
+      }
     }
   }
 }
@@ -143,12 +166,7 @@ export default {
 
 .standard-btn {
   width: 55vw;
-}
-
-.no-re-entry {
-  margin: 0px; 
-  font-size: 8pt; 
-  font-weight: bold;
+  transition: 750ms;
 }
 
 </style>

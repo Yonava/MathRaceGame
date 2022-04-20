@@ -27,6 +27,11 @@ const SessionSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  finalPositions: {
+    type: Array,
+    required: true,
+    default: []
   }
     
 

@@ -2,7 +2,7 @@
 
   <div class="center">
 
-    <div style="margin: 6%; font-size: 18pt;" v-if="!userFound">
+    <div style="margin: 6%; font-size: 18pt;" v-if="!userFound && finishedFetching">
       <p style="font-size: 20pt; font-weight: bold; margin-top: 5vh;">User Not Found 🙁</p>
     </div>
 
@@ -22,11 +22,10 @@
         </center>
 
         <p class="stats-txt">Races Completed: <span>{{ finishedFetching ? gameData.racesCompleted:'Calculating...' }}</span></p>
-        <p class="stats-txt">Races Completed: <span>{{ finishedFetching ? gameData.racesCompleted:'Calculating...' }}</span></p>
         <p class="stats-txt">Races Won: <span>{{ finishedFetching ? gameData.racesWon:'Calculating...' }}</span></p>
         <p class="stats-txt">Correct Answers: <span>{{ finishedFetching ? gameData.correctAnswers:'Calculating...' }}</span></p>
         <p class="stats-txt">Answer Accuracy: <span>{{ finishedFetching ? gameData.accuracy:'Calculating...' }}</span></p>
-        <p class="stats-txt">Avg. Time Per Correct Answer: <span>{{ finishedFetching ? gameData.timeTaken:'Calculating...' }}</span></p>
+        <p class="stats-txt">Avg. Time Per Correct Answer: <span>{{ finishedFetching ? `${gameData.timeTaken}${gameData.timeTaken != 'N/A' ? ' Seconds':''}`:'Calculating...' }}</span></p>
         <p class="stats-txt">Incorrect Answers: <span>{{ finishedFetching ? gameData.incorrectAnswers:'Calculating...' }}</span></p>
         <p class="stats-txt">Times Ready Pressed: <span>{{ finishedFetching ? gameData.readyPressed:'Calculating...' }}</span></p>
 
@@ -65,27 +64,27 @@ export default {
     return {
 
       finishedFetching: false,
-      userData: undefined,
+      userData: {gameData: []},
       gameData: undefined,
       userFound: true,
       clientUser: null
     }
   },
-  created() {
-    this.clientUser = localStorage?.username;
-  },
   async mounted() {
 
-    // reroute to sign-in if no user is logged in
-    if (this.$route.params.username === 'undefined') {
-      this.$router.push('/sign-in');
-    }
+      this.clientUser = localStorage?.username;
 
-    this.userData = await DatabaseServices.findUser(this.$route.params.username);
-    if (!this.userData) this.userFound = false;
-    this.finishedFetching = true;
+      // reroute to sign-in if no user is logged in
+      if (this.$route.params.username === 'undefined') {
+        this.$router.push('/sign-in');
+      }
 
-    this.gameData = gameDataParser(this.userData.gameData);
+      this.userData = await DatabaseServices.findUser(this.$route.params.username);
+      if (!this.userData) this.userFound = false;
+      this.finishedFetching = true;
+
+      document.title = `${this.$route.params.username} - Math Race`
+      this.gameData = gameDataParser(this.userData.gameData);
 
   },
   methods: {
