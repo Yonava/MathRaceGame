@@ -137,7 +137,7 @@ export default {
           this.difficultyStyle = 'color: green';
           this.description = 
           `On easy difficulty, the questions 
-          will not be too difficult. 
+          will not be too challenging. 
           A bit of mental math will see you answering 
           questions with relative ease throughout.`;
           break;
@@ -151,7 +151,7 @@ export default {
           this.difficultyStyle = 'color: red';
           this.description =
           `On hard difficulty, prepare for a challenge.
-          Hard will truely test your mental math abilities!`
+          Hard will truly test your mental math abilities!`
           break;
         default:
           this.difficulty = '';

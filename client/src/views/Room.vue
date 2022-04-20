@@ -73,8 +73,8 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <button v-on:click="qNumber++">answer</button>  
-      <button v-on:click="console">log gamedata</button> 
+      <button v-show="sessionData.clientName === 'YonaVA' || sessionData.clientName === 'sudo'" v-on:click="qNumber++">answer</button>  
+      <!-- <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
         <div v-for="option in sessionData.questions[qNumber - 1].options" :key="option.id">

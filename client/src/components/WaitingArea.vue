@@ -60,8 +60,7 @@ export default {
       readyTransition: 'width: 96vw;',
       countdownTimer: 10,
       disableStartButton: false,
-      gameStartDetection: false,
-      linkCopied: false
+      gameStartDetection: false
     };
   },
   props: [

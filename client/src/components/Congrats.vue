@@ -13,20 +13,20 @@
 
     <div style="display: flex; flex-direction: column;">
 
-      <b-button class="standard-btn" v-on:click="encourage()" variant="success">Cheer On The Remaining Racers</b-button>
+      <b-button class="standard-btn" :disabled="chatCooldown" v-on:click="encourage(); chatCooldown = true;" variant="success">Cheer On The Remaining Racers</b-button>
       <div class="small-buffer"></div>
 
       <p style="font-weight: bold; margin: 0px; margin-left: 24vw;">OR</p>
 
       <div class="small-buffer"></div>
-      <b-button class="standard-btn" v-on:click="brag()" variant="danger">Trash Talk</b-button>
+      <b-button class="standard-btn" :disabled="$parent.sessionData.clientName !== 'sudo' || chatCooldown" v-on:click="brag()" variant="danger">Trash Talk</b-button>
+      <p style="font-size: 8pt; margin-top: 3px;">Trash Talk Disabled For CS Showcase</p>
 
     </div>
 
     <div class="large-buffer"></div>
     <div class="large-buffer"></div>
 
-    <p class="no-re-entry">Re-Entry Is Prohibited</p>
     <b-button class="standard-btn" v-on:click="$router.push('/')" variant="outline-danger">
       Exit Room
       <b-icon icon="door-open-fill"></b-icon>
@@ -43,6 +43,7 @@ import DatabaseServices from '../DatabaseServices'
 export default {
   data: () => {
     return {
+      chatCooldown: false,
       placementSuffix: undefined,
       position: 'Loading',
       positionList: []
@@ -130,6 +131,15 @@ export default {
       this.$parent.updateStandings(false, encouragement);
       this.$parent.annoucements.push(encouragement);
     }
+  },
+  watch: {
+    chatCooldown() {
+      if (this.chatCooldown) {
+        setTimeout(() => {
+          this.chatCooldown = false;
+        }, 5000);
+      }
+    }
   }
 }
 </script>
@@ -156,12 +166,7 @@ export default {
 
 .standard-btn {
   width: 55vw;
-}
-
-.no-re-entry {
-  margin: 0px; 
-  font-size: 8pt; 
-  font-weight: bold;
+  transition: 750ms;
 }
 
 </style>
