@@ -13,10 +13,6 @@ export default class Levels extends Equations {
             {
                 // random num in [0, 12] to a power in [0,2]
                 equation: `${Arithmetic.ExpoEq(2, 12)}`
-            },
-            {
-                // Decimals
-                equation: `${Arithmetic.BaseEq(this.randItem(["+", "-"]), 0.1, 2.5, 2)}`
             }
         ];
 
@@ -28,6 +24,10 @@ export default class Levels extends Equations {
         // Choose which perfect square to use for sqrt eq
         let root = this.randItem(this.squares);
         const template = [
+            {
+                // Decimals
+                equation: `${Arithmetic.BaseEq(this.randItem(["+", "-"]), 0.1, 2.5, 2)}`
+            },
             {
                 equation: `${this.randNum(5,15)} + ${Arithmetic.BaseEq('*', 2, 10)}`
             },
