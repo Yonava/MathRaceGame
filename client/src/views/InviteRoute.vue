@@ -15,10 +15,9 @@
     <!-- Input Username -->
     <div v-else class="center" style="padding: 5%;">
 
-      <!-- Taken Out For Showcase Only {{ sessionInfo.date }} -->
       <center>
         <p>Joining Room <b style="color: #008b8b">{{ sessionInfo.roomid }}</b>
-        Created On <b style="color: #008b8b">4/20</b>
+        Created On <b style="color: #008b8b">{{ sessionInfo.date }}</b>
         By <b style="color: #008b8b">{{ sessionInfo.host }}</b></p>
       </center>
 

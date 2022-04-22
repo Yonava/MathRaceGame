@@ -19,8 +19,7 @@
       <p style="font-weight: bold; margin: 0px; margin-left: 24vw;">OR</p>
 
       <div class="small-buffer"></div>
-      <b-button class="standard-btn" :disabled="$parent.sessionData.clientName !== 'sudo' || chatCooldown" v-on:click="brag()" variant="danger">Trash Talk</b-button>
-      <p style="font-size: 8pt; margin-top: 3px;">Trash Talk Disabled For CS Showcase</p>
+      <b-button class="standard-btn" :disabled="chatCooldown" v-on:click="brag(); chatCooldown = true;" variant="danger">Trash Talk</b-button>
 
     </div>
 

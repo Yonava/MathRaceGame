@@ -71,11 +71,15 @@
           </div>
         </b-button>
 
+        <br>
+
+        <p>Release v1.0!</p>
+
         <!-- End Connect to Multiplayer Sessions -->
 
-        <!-- <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+        <button v-show="username === 'YonaVA'" style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
           Delete All Sessions
-        </button> -->
+        </button>
 
       </div>
 
@@ -162,8 +166,8 @@ export default {
     async deleteSession(session) {
 
       if (session === 'all') {
-        const sessions = await DatabaseServices.getAllSessions();
-        for (let i in sessions) DatabaseServices.deleteSessionByRoomID(sessions[i].roomid);
+        const sessions = await DatabaseServices.getAllUsers();
+        for (let i in sessions) DatabaseServices.deleteAccount(sessions[i].username);
         return;
       }
       

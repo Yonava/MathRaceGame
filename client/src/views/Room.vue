@@ -73,7 +73,7 @@
       <div class="options-buffer"></div>
 
       <!-- TEMPT TESTING ELEMENT -->
-      <button v-show="sessionData.clientName === 'YonaVA' || sessionData.clientName === 'sudo'" v-on:click="qNumber++">answer</button>  
+      <button v-show="sessionData.clientName === 'YonaVA'" v-on:click="qNumber++">answer</button>  
       <!-- <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">

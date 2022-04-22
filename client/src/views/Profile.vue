@@ -2,8 +2,10 @@
 
   <div class="center">
 
-    <div style="margin: 6%; font-size: 18pt;" v-if="!userFound && finishedFetching">
-      <p style="font-size: 20pt; font-weight: bold; margin-top: 5vh;">User Not Found 🙁</p>
+    <div class="center" v-if="!userFound && finishedFetching">
+      <p style="font-weight: bold; margin-top: 10vh; font-size: 18pt;">User Not Found 🙁</p>
+      <br>
+      <b-button variant="danger" v-on:click="$router.push('/')">Back</b-button>
     </div>
 
     <div v-else>
