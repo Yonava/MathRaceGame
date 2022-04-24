@@ -45,9 +45,7 @@
 <script>
 
 export default {
-  created() {
-    document.title = 'Info - Math Race';
-  }
+
 }
 </script>
 

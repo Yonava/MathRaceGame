@@ -106,7 +106,7 @@ export default {
 
       this.readyTransition = 'width: 3vw;';
       setTimeout(() => {
-        this.readyTransition = 'width: 96vw;'
+        this.readyTransition = 'width: 96vw;';
       }, 200)
     },
     beginGame() {

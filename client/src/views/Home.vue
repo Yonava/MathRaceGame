@@ -153,6 +153,7 @@ export default {
     switchView(view, isEntering = false) {
 
       if (!isEntering) {
+        document.title = `${view ? view:'Home'} - Math Race`;
         this.viewController = view;
         this.viewSelected = view;
         return;
@@ -172,11 +173,6 @@ export default {
       }
       
       DatabaseServices.deleteSessionByRoomID(session)
-
-      this.sessionDeletedMsg = true;
-      setTimeout(() => {
-        this.sessionDeletedMsg = false;
-      }, 3000);
     }
   }
 }
