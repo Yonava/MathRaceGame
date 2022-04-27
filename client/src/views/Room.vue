@@ -54,10 +54,7 @@
       <!-- Room ID Display At Bottom Of Screen -->
       <p class="roomid-display-txt">math-race-game.herokuapp.com/go/{{ sessionData.roomid }}</p>
       
-
     </div>
-
-
 
     <!-- Race Area -->
     <div v-if="gameStarted && qNumber < (sessionData.questions.length + 1)">
@@ -72,8 +69,8 @@
 
       <div class="options-buffer"></div>
 
-      <!-- TEMPT TESTING ELEMENT -->
-      <button v-show="sessionData.clientName === 'YonaVA' || sessionData.clientName === 'sudo'" v-on:click="qNumber++">answer</button>  
+      <!-- FOR ADMIN TESTING ONLY -->
+      <button v-show="sessionData.clientName === 'YonaVA'" v-on:click="qNumber++">answer</button>  
       <!-- <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
@@ -142,6 +139,7 @@ export default {
       /* first message displayed through announcements when game starts */
       startMessage: 'And We Are Off To The Races!',
 
+      /* styling the push down effect when new annoucements are broadcast */
       shiftAnnouncementTxt: '',
 
       timeTracker: 0,

@@ -71,11 +71,15 @@
           </div>
         </b-button>
 
+        <br>
+
+        <p>Release v1.0!</p>
+
         <!-- End Connect to Multiplayer Sessions -->
 
-        <!-- <button style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
+        <button v-show="username === 'YonaVA'" style="position: fixed; bottom: 10%" class="btn btn-outline-danger btn-lg main-menu-button" v-on:click="deleteSession('all')">
           Delete All Sessions
-        </button> -->
+        </button>
 
       </div>
 
@@ -149,6 +153,7 @@ export default {
     switchView(view, isEntering = false) {
 
       if (!isEntering) {
+        document.title = `${view ? view:'Home'} - Math Race`;
         this.viewController = view;
         this.viewSelected = view;
         return;
@@ -162,17 +167,12 @@ export default {
     async deleteSession(session) {
 
       if (session === 'all') {
-        const sessions = await DatabaseServices.getAllSessions();
-        for (let i in sessions) DatabaseServices.deleteSessionByRoomID(sessions[i].roomid);
+        const sessions = await DatabaseServices.getAllUsers();
+        for (let i in sessions) DatabaseServices.deleteAccount(sessions[i].username);
         return;
       }
       
       DatabaseServices.deleteSessionByRoomID(session)
-
-      this.sessionDeletedMsg = true;
-      setTimeout(() => {
-        this.sessionDeletedMsg = false;
-      }, 3000);
     }
   }
 }
