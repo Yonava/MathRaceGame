@@ -7,3 +7,5 @@ export default function sumArray(inArray) {
 
     return sum;
 }
+
+// use reduce instead, josh!! tisk tisk
