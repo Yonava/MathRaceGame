@@ -35,8 +35,3 @@ answer every question wins.
 
 ## Created by Yona Voss-Andreae and Joshua Burdick
 
-### Developement Team:
-#### Yona Voss-Andreae (Lead Backend)
-#### Joshua Burdick (Lead Frontend)
-#### Isaac Libis
-
