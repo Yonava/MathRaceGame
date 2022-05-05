@@ -1,20 +1,4 @@
-### For Mr. Cressey
-
-#### Open a terminal in server directory and run the command:
-```
-npm run dev
-```
-#### In another terminal, run this command from the client directory:
-```
-npm run serve
-```
-#### Inside of both directories, run this command to automatically install all project dependencies:
-```
-npm install
-```
-
-
-# MathRacePuzzleGame
+# Math Race, Created by Yona Voss-Andreae and Joshua Burdick
 
 ```
 Math race is designed to be a mobile first 
@@ -32,6 +16,3 @@ will give their answer in a Kahoot
 style manner, the first player to 
 answer every question wins.
 ```
-
-## Created by Yona Voss-Andreae and Joshua Burdick
-
