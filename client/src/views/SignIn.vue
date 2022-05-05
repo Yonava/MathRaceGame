@@ -54,7 +54,7 @@
     <br>
 
     <p v-show="processingRequest"><b>{{ signInType ? 'Logging In...':'Creating Account...' }}</b></p>
-    <p v-show="successMsg" class="success-msg">Account Was Successfully Created!</p>
+    <p v-show="successMsg" class="success-msg">Account Was Successfully Created! Click Login Below</p>
 
     <footer class="return-btn">
       <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
@@ -156,7 +156,7 @@ export default {
         }
 
         // Prompts User For Login If Account Was Created Successfully
-        this.signInType = true;
+        // this.signInType = true; -> Disabled cus users keep getting confused about the auto redirect to login!
         this.successMsg = true;
         this.processingRequest = false;
         setTimeout(() => {

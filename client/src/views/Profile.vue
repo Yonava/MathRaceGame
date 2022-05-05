@@ -78,14 +78,16 @@ export default {
 
       // reroute to sign-in if no user is logged in
       if (this.$route.params.username === 'undefined') {
+        document.title = 'Sign In - Math Race';
         this.$router.push('/sign-in');
+      } else {
+        document.title = `${this.$route.params.username} - Math Race`
       }
 
       this.userData = await DatabaseServices.findUser(this.$route.params.username);
       if (!this.userData) this.userFound = false;
       this.finishedFetching = true;
 
-      document.title = `${this.$route.params.username} - Math Race`
       this.gameData = gameDataParser(this.userData.gameData);
 
   },

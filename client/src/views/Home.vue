@@ -47,9 +47,6 @@
       <div class="x-large-buffer"></div>
       <div class="x-large-buffer"></div>
 
-      <!-- Session Details -->
-      <!-- <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p> -->
-
       <div class="center">
 
         <b-button v-show="!username" class="main-menu-button" @click="$router.push('/sign-in')" variant="info">Sign In To Create Sessions</b-button> 
@@ -74,6 +71,11 @@
         <br>
 
         <p>Release v1.0!</p>
+
+        <!-- Session Details -->
+        <div class="center">
+          <p style="font-size: 9pt;">Session Accessed Through {{ $parent.throughApp ? "App":"Browser"}}</p>
+        </div>
 
         <!-- End Connect to Multiplayer Sessions -->
 
