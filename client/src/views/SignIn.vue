@@ -177,7 +177,7 @@ export default {
           return this.errorMsgUsername = `Account Does Not Exist`;
         case undefined:
           return this.errorMsgUsername = 'There Has Been An Issue Communicating With Our Servers, Check Your Connection And Try Again';
-        case true:
+        default:
           if (!compareSync(this.password, captureUserData.password)) {
             return this.errorMsgUsername = `Username or Password is Incorrect`;
           } 
