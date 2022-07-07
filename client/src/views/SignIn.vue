@@ -60,6 +60,7 @@
       <p>{{ signInType ? "Don't Have An Account Already? Sign Up!":"Have An Account Already? Login!"}}</p>
       <b-button style="margin-bottom: 2.5vh;" @click="signInType = !signInType" class="input-fields" :variant="signInType ? 'primary':'secondary'">{{ signInType ? 'Sign Up':'Login' }}</b-button>
       <b-button style="margin-bottom: 2.5vh; width: 90vw;" @click="$router.push('/')" variant="danger">Back</b-button>
+      <p style="font-size: 6pt;">Patch v1.1</p>
     </footer>
 
   </div>
