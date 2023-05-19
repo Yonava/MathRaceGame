@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
     <!-- Pre-Game Waiting Area -->
     <div v-if="!gameStarted">
       <WaitingArea
@@ -9,7 +9,7 @@
       :playerData="playerInfo" />
     </div>
 
-    
+
     <!-- Fixed Element Container -->
     <div v-else>
 
@@ -23,7 +23,6 @@
           <div class="progress-bar-fill" :style="`height: ${(qNumber - 1) * 3}vh; background-color: rgb(0, ${255 - (qNumber * 7)}, 0);`"></div>
 
           <div class="opponent-container" :style="`bottom: ${((player.qnum - 1) * 3) - 1.25}vh;`" v-for="player in playerInfo" :key="player.id">
-            <!--  -->
             <div class="inner-opponent-container" v-show="player.user !== sessionData.clientName && player.qnum <= 20">
               <span class="opponent-nametag">{{ player.user }}</span>
               <div class="arrow-right"></div>
@@ -53,7 +52,7 @@
 
       <!-- Room ID Display At Bottom Of Screen -->
       <p class="roomid-display-txt">math-race-game.herokuapp.com/go/{{ sessionData.roomid }}</p>
-      
+
     </div>
 
     <!-- Race Area -->
@@ -70,7 +69,7 @@
       <div class="options-buffer"></div>
 
       <!-- FOR ADMIN TESTING ONLY -->
-      <button v-show="sessionData.clientName === 'YonaVA'" v-on:click="qNumber++">answer</button>  
+      <button v-show="sessionData.clientName === 'YonaVA'" v-on:click="qNumber++">answer</button>
       <!-- <button v-on:click="console">log gamedata</button>  -->
 
       <div class="options-container">
@@ -107,7 +106,7 @@ export default {
 
       /* included in each player object to detect if they are still in game */
       refreshTimer: 5000,
-      
+
       /* reset on socket callback to detect if client socket has disconnected */
       detectInboundConnection: 5000,
 
@@ -156,7 +155,7 @@ export default {
     // this line for testing purposes only!
     // localStorage.raceData = '';
     // this.sessionData = {"_id":"6250d63ae42bc5193289755b","roomid":"6225","questions":[{"equation":"$$2**1$$","task":"Evaluate","answer":2,"options":[2,1,0,3]},{"equation":"$$8*2$$","task":"Evaluate","answer":16,"options":[24,21,13,16]},{"equation":"$$6+4$$","task":"Evaluate","answer":10,"options":[8,10,6,5]},{"equation":"$$0.89+1.45$$","task":"Evaluate","answer":2.34,"options":[1.78,2.34,3.16,2.27]},{"equation":"$$\\sqrt{361} + 7-5$$","task":"Evaluate","answer":21,"options":[18,28,11,21]},{"equation":"$$7**3$$","task":"Evaluate","answer":343,"options":[220,401,281,343]},{"equation":"$$3**3$$","task":"Evaluate","answer":27,"options":[36,21,35,27]},{"equation":"$$\\sqrt{121} + 18-17$$","task":"Evaluate","answer":12,"options":[9,8,12,10]},{"equation":"$$(9+9)^0$$","task":"Evaluate","answer":1,"options":[4,2,1,3]},{"equation":"$$(5+7)^2$$","task":"Evaluate","answer":144,"options":[216,150,202,144]},{"equation":"$$(7+6)^2$$","task":"Evaluate","answer":169,"options":[169,211,144,93]},{"equation":"$$8c + 6 = 7$$","task":"Solve for c","answer":0.13,"options":[0.12,0.15,0.13,0.08]},{"equation":"$$9x = 7$$","task":"Solve for x","answer":0.78,"options":[0.51,0.9,0.72,0.78]},{"equation":"$$2x = 3$$","task":"Solve for x","answer":1.5,"options":[1.56,2.13,1.33,1.5]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 17.1 and width 5.8.","answer":99.18,"options":[94.22,146.79,90.25,99.18]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.5 and width 5.2.","answer":39,"options":[39,38,42,43]},{"equation":"$$$$","task":"Find the area of the rectangle with  length 7.67 and width 12.92.","answer":99.1,"options":[123.88,131.8,99.1,113.96]},{"equation":"$$5cos({\\pi\\over2})$$","task":"Evaluate","answer":0,"options":[0,1,3,-1]},{"equation":"$$9sin({\\pi})$$","task":"Evaluate","answer":0,"options":[-3,-1,0,1]},{"equation":"$$3cos({\\pi})$$","task":"Evaluate","answer":-3,"options":[-4,-6,-2,-3]}],"date":"2022-04-09T00:41:30.460Z","host":"2xLogger","difficulty":"Easy","hasBegun":true,"__v":0}
-    
+
     if (this.sessionData.roomid === undefined) {
       this.$router.push('/');
     } else {
@@ -183,7 +182,7 @@ export default {
 
     // listens to see if user tabs out or minimizes our game
     document.addEventListener('visibilitychange', this.visibilityHandler);
-      
+
     // ensures client pings the server every 250 milliseconds
     this.refreshConnection = setInterval(() => {
       if (this.visibilityState) this.updateStandings();
@@ -229,7 +228,7 @@ export default {
         if (!this.gameStarted) {
           const hasGameBegun = await DatabaseServices.findSessionByRoomID(this.sessionData.roomid);
           if (hasGameBegun.hasBegun) this.gameStarted = true;
-        } 
+        }
       } else {
         this.visibilityState = false;
         document.title = 'Click Back!';
@@ -309,7 +308,7 @@ export default {
 
       if (startEvent) {
         setTimeout(() => {
-          DatabaseServices.sessionStarted(this.sessionData.roomid); 
+          DatabaseServices.sessionStarted(this.sessionData.roomid);
         }, 10000); // Countdown Time Accounted For
       }
     },
@@ -325,7 +324,7 @@ export default {
       this.updateStandings();
     },
     qNumber() {
-  
+
       this.hideMathjaxPrerender = 'white';
       setTimeout(() => {
         this.hideMathjaxPrerender = '';
@@ -361,38 +360,38 @@ export default {
 /* Annoucement System */
 
 .announcement-txt {
-  font-size: 9pt; 
+  font-size: 9pt;
   margin-bottom: 0%;
   transition: 200ms;
 }
 
 .announcement-container {
-  position: fixed; 
-  bottom: 0; 
-  width: 65vw; 
-  height: 30vh; 
-  left: 2vw; 
+  position: fixed;
+  bottom: 0;
+  width: 65vw;
+  height: 30vh;
+  left: 2vw;
   background-color: white;
 }
 
 .announcement-title {
-  font-weight: bold; 
-  position: absolute; 
-  top: 0; 
-  left: 0; 
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
   font-size: 14pt
 }
 
 /* Misc */
 
 .roomid-display-txt {
-  position: fixed; 
-  bottom: 0; 
-  margin-bottom: 0px; 
-  margin-left: 0.5vw; 
-  font-weight: bold; 
-  width: 100vw; 
-  background-color: white; 
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 0px;
+  margin-left: 0.5vw;
+  font-weight: bold;
+  width: 100vw;
+  background-color: white;
   user-select: default;
   font-size: 10pt;
 }
@@ -400,56 +399,56 @@ export default {
 /* Progress Display */
 
 .ribbon {
-  margin-bottom: 1vh; 
-  width: 9vw; 
+  margin-bottom: 1vh;
+  width: 9vw;
   height: 9vw;
 }
 
 .progress-bar-fill {
   position: absolute;
-  width: 10vw; 
-  bottom: 0; 
-  transition: 500ms; 
+  width: 10vw;
+  bottom: 0;
+  transition: 500ms;
   border-bottom: 1px solid black;
 }
 
 .progress-bar-outline {
-  border: 1px solid black; 
-  border-right: none; 
-  height: 60vh; 
+  border: 1px solid black;
+  border-right: none;
+  height: 60vh;
   width: 10vw;
 }
 
 .progress-container {
-  display: flex; 
-  flex-direction: column; 
-  right: 0; 
-  top: 0; 
-  margin-top: 15vh; 
-  position: fixed; 
-  justify-content: center; 
+  display: flex;
+  flex-direction: column;
+  right: 0;
+  top: 0;
+  margin-top: 15vh;
+  position: fixed;
+  justify-content: center;
   align-items: center
 }
 
 .opponent-container {
-  display: flex; 
-  flex-direction: row; 
-  align-items: center; 
-  position: absolute; 
-  transition: 500ms; 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  transition: 500ms;
   right: 11vw;
   z-index: 5;
 }
 
 .inner-opponent-container {
-  display: flex; 
-  flex-direction: row; 
+  display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
 .arrow-right {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-top: 1.5vh solid transparent;
   border-bottom: 1.5vh solid transparent;
   border-left: 1.5vh solid rgb(230, 41, 41);
@@ -457,14 +456,14 @@ export default {
 }
 
 .opponent-nametag {
-  font-size: 10pt; 
+  font-size: 10pt;
   font-weight: bold;
 }
 
 /* Question Display */
 
 .task-display {
-  text-decoration: underline; 
+  text-decoration: underline;
   font-weight: bold
 }
 
@@ -476,37 +475,37 @@ export default {
 }
 
 .mathjax {
-  font-size: 16pt; 
+  font-size: 16pt;
   position: absolute;
   bottom: 0;
 }
 
 .prompt-container {
-  background-color: white; 
-  position: fixed; 
-  left: 0; 
-  top: 15vh; 
-  height: 12.5vh; 
-  width: 55vw; 
+  background-color: white;
+  position: fixed;
+  left: 0;
+  top: 15vh;
+  height: 12.5vh;
+  width: 55vw;
   margin-left: 7.5vw;
 }
 
 .options-buffer {
-  width: 100vw; 
-  height: 30vh; 
-  background-color: white; 
+  width: 100vw;
+  height: 30vh;
+  background-color: white;
   z-index: -1
 }
 
 .options-container {
-  display: flex; 
-  flex-direction: column; 
-  margin-left: 7.5vw; 
+  display: flex;
+  flex-direction: column;
+  margin-left: 7.5vw;
   position: fixed;
 }
 
 .option-btn {
-  margin-top: 1vh; 
+  margin-top: 1vh;
   width: 55vw;
 }
 
