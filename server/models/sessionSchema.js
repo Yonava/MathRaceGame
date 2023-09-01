@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const conn = mongoose.createConnection('mongodb+srv://math-race-user:mathpassword@cluster0.n5hn0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+const { MONGO_SESSIONS_URI } = process.env;
+const conn = mongoose.createConnection(MONGO_SESSIONS_URI);
 
 const SessionSchema = mongoose.Schema({
   roomid: {
@@ -33,10 +34,9 @@ const SessionSchema = mongoose.Schema({
     required: true,
     default: []
   }
-    
+
 
 });
 
 
 module.exports = conn.model('Session', SessionSchema);
-

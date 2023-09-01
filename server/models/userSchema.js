@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const conn = mongoose.createConnection('mongodb+srv://math-race-users:userData@math-race-users.awkeu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+
+const { MONGO_USERS_URI } = process.env;
+const conn = mongoose.createConnection(MONGO_USERS_URI);
 
 const UserSchema = mongoose.Schema({
     username: {
