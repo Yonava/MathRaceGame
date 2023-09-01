@@ -52,7 +52,7 @@
       </div>
 
       <!-- Room ID Display At Bottom Of Screen -->
-      <p class="roomid-display-txt">math-race-game.herokuapp.com/go/{{ sessionData.roomid }}</p>
+      <p class="roomid-display-txt">https://race.up.railway.app/go/{{ sessionData.roomid }}</p>
 
     </div>
 

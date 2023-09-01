@@ -4,11 +4,11 @@
     <div class="wait-top-card">
 
       <div v-on:click="webShareAPI()" class="roomid-display">Room {{ $parent.sessionData.roomid }}</div>
-      
+
       <b-modal id="copied" ok-only title="Copied To Clipboard">
         <p>Invite Link Has Been Copied To Clipboard!</p>
       </b-modal>
-      
+
       <div class="center">
         <p style="margin: 0%;"><b>{{ countdownTimer === 10 ? `Waiting For ${host} To Start...`:`Race Is Beginning In ${countdownTimer}` }}</b></p>
       </div>
@@ -23,7 +23,7 @@
       </div>
 
       <h1 class="list-title">Participants:</h1>
-    
+
     </div>
 
     <div style="margin-top: 21vh; width: 100vw;"></div>
@@ -88,11 +88,11 @@ export default {
       if (navigator.share) {
         navigator.share({
           text: `Invite Someone To Room ${this.$parent.sessionData.roomid}`,
-          url: `https://math-race-game.herokuapp.com/go/${this.$parent.sessionData.roomid}`,
+          url: `https://race.up.railway.app/go/${this.$parent.sessionData.roomid}`,
           title: 'Math Race Invite'
         })
       } else {
-        navigator.clipboard.writeText(`https://math-race-game.herokuapp.com/go/${this.$parent.sessionData.roomid}`);
+        navigator.clipboard.writeText(`https://race.up.railway.app/go/${this.$parent.sessionData.roomid}`);
         this.$bvModal.show('copied');
       }
     },
@@ -177,7 +177,7 @@ export default {
 
 .users {
   height: 6.5vh;
-  display: flex; 
+  display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
@@ -185,14 +185,14 @@ export default {
 }
 
 .player-tag {
-  color: white; 
-  font-size: 15pt; 
+  color: white;
+  font-size: 15pt;
   margin: 2%;
 }
 
 .back-btn {
-  position: fixed; 
-  bottom: 2.5%; 
+  position: fixed;
+  bottom: 2.5%;
   width: 60vw;
 }
 

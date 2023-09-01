@@ -61,7 +61,7 @@ export default {
     }
   },
   created() {
-    fetch(`https://math-race-game.herokuapp.com/api/sessions/${this.$route.params.roomid}`)
+    fetch(`https://race.up.railway.app/api/sessions/${this.$route.params.roomid}`)
       .then(response => response.json())
       .then(data => {
         this.sessionInfo = data;
@@ -118,7 +118,7 @@ export default {
   font-weight: bold;
   padding: 0%;
   margin: 0%;
-} 
+}
 
 /* gets rid of up and down arrows in input */
 /* Chrome, Safari, Edge, Opera */

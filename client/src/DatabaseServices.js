@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const sessionUrl = 'https://math-race-game.herokuapp.com/api/sessions/';
-const userUrl = 'https://math-race-game.herokuapp.com/api/users/';
+const sessionUrl = 'https://race.up.railway.app/api/sessions/';
+const userUrl = 'https://race.up.railway.app/api/users/';
 
 class DatabaseServices {
 
