@@ -28,9 +28,9 @@ io.on('connection', socket => {
     console.log(`user ${socket.id} is connected.`)
 
     socket.on('score', (data, room) => {
-      socket.to(room).emit('scoreRecieved', data)
+      socket.to(room).emit('scoreReceived', data)
     });
-    
+
     socket.on('disconnectMsg', username => {
       console.log(`${username} left.`)
     });
@@ -38,7 +38,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       console.log('Disconnect Successful.')
     });
-    
+
     socket.on('joinRoom', room => {
       socket.join(room)
     });

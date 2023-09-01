@@ -17,7 +17,7 @@ class DatabaseServices {
       }
     }
 
-    // Find Session With Corrosponding Room ID
+    // Find Session With Corresponding Room ID
     static async findSessionByRoomID(roomid) {
       try {
         const res = await axios.get(`${sessionUrl}${roomid}`);
@@ -25,7 +25,7 @@ class DatabaseServices {
       } catch (error) {
         console.warn(`${sessionUrl}${roomid}`, error);
       }
-    }  
+    }
 
     // Update Sent From Host When Game Begins
     static sessionStarted(roomid) {

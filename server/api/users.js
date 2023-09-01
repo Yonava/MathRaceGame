@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
 
+  console.log('GET request received.')
+
   try {
     const users = await UserBase.find();
     res.json(users);
@@ -59,30 +61,30 @@ router.put('/:username', async (req, res) => {
 
   try {
     const updatedUserData = await UserBase.updateOne(
-      { username: req.params.username }, 
-      { $set: 
+      { username: req.params.username },
+      { $set:
       { gameData: req.body.gameData } }
     );
     res.json(updatedUserData);
   } catch (error) {
     res.json({ message: error })
   }
-  
+
 });
 
 router.put('/:username/updateLastLogin', async (req, res) => {
 
   try {
     const updatedUserData = await UserBase.updateOne(
-      { username: req.params.username }, 
-      { $set: 
+      { username: req.params.username },
+      { $set:
       { lastLogin: req.body.lastLogin } }
     );
     res.json(updatedUserData);
   } catch (error) {
     res.json({ message: error })
   }
-  
+
 });
 
 module.exports = router;
